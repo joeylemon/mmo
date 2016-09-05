@@ -46,6 +46,8 @@
 	-webkit-box-shadow: inset 0 0 5px #2D2D2D;
 	box-shadow: inset 0 0 5px #2D2D2D;
 	
+	border-radius: 2px;
+	
 	text-align: center;
 	font-family: profont;
 	color: #000;
@@ -87,7 +89,7 @@
 
 .login .new {
 	color: #fff;
-	background-color: #098E00;
+	background-color: #E4B969;
 }
 
 .login .button:hover {

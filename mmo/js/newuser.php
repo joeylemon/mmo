@@ -17,8 +17,19 @@ $uuid = $_POST["uuid"];
 $encrypted_pass = encrypt_decrypt("encrypt", $password);
 
 if(isset($username)){
-	$conn->query("INSERT INTO `users`(`username`, `password`, `uuid`, `level`, `inv`) VALUES ('" . $username . "','" . $encrypted_pass . "','" . $uuid . "',1,'')");
-	echo "success";
+	$result = $conn->query("SELECT * FROM users WHERE username='" . $username . "'");
+	$exists = false;
+	while($row = $result->fetch_assoc()){
+		$exists = true;
+		break;
+	}
+	
+	if($exists == false){
+		$conn->query("INSERT INTO `users`(`username`, `password`, `uuid`, `level`, `inv`) VALUES ('" . $username . "','" . $encrypted_pass . "','" . $uuid . "',1,'')");
+		echo "Success";
+	}else{
+		echo "Username already exists!";
+	}
 }else{
 	echo "This page is for internal usage only.";
 }

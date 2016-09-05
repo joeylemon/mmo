@@ -16,10 +16,10 @@
 				<span class="title">Existing User</span>
 				<hr>
 				<form id="existing-login" onsubmit="login()" action="javascript:void(0);">
-					<span id="username-title" class="input-title">Username</span>
+					<span id="username-title-existing" class="input-title">Username</span>
 					<input id="existing-username" type="text" placeholder="username" name="user"></input>
 					<br>
-					<span id="password-title" class="input-title">Password</span>
+					<span id="password-title-existing" class="input-title">Password</span>
 					<input id="existing-password" type="password" placeholder="password" name="pass"></input>
 					
 					<input class="button" type="submit" value="log in"></input>
@@ -35,11 +35,11 @@
 				<span class="title">Create an Account</span>
 				<hr>
 				<form id="new-login" onsubmit="login()" action="javascript:void(0);">
-					<span id="username-title" class="input-title">New Username</span>
+					<span id="username-title-new" class="input-title">New Username</span>
 					<br>
 					<input id="new-username" type="text" placeholder="username" name="user"></input>
 					<br>
-					<span id="password-title" class="input-title">New Password</span>
+					<span id="password-title-new" class="input-title">New Password</span>
 					<br>
 					<input id="new-password" type="password" placeholder="password" name="pass"></input>
 					

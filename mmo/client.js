@@ -16,6 +16,7 @@ var existing = true;
 var player;
 var ogre = new Sprite(Sprites.OGRE);
 
+$("#existing-username").focus();
 loadWorld();
 
 var dir = 1;
@@ -61,6 +62,10 @@ function drawCircle(x, y, radius, fill){
 
 function showLogin(type){
 	if(type == "new"){
+		var form = document.getElementById("new-login");
+		form.elements["new-username"].value = "";
+		form.elements["new-password"].value = "";
+	
 		$("#existing-user").fadeOut(250);
 		$("#new-user").delay(250).fadeIn(250);
 		existing = false;
@@ -112,7 +117,7 @@ function login(){
 				url: "js/newuser.php",
 				data: {'username': username, 'password': password, 'uuid': getNewUUID()},
 				success: function (result){
-					if(result == "success"){
+					if(result == "Success"){
 						alert('Created new account');
 						
 						var form = document.getElementById("existing-login");
@@ -136,17 +141,26 @@ function flashBadInput(){
 	var flashes = 4;
 	var red = true;
 	
+	var id1 = "#username-title-existing";
+	if(!existing){
+		id1 = "#username-title-new";
+	}
+	var id2 = "#password-title-existing";
+	if(!existing){
+		id2 = "#password-title-new";
+	}
+	
 	for(var i = 0; i < flashes; i++){
 		if(red == true && ((i + 1) < flashes)){
 			setTimeout(function(){
-				$("#username-title").css("color", "#951111");
-				$("#password-title").css("color", "#951111");
+				$(id1).css("color", "#951111");
+				$(id2).css("color", "#951111");
 			}, (delay * i));
 			red = false;
 		}else{
 			setTimeout(function(){
-				$("#username-title").css("color", "#000000");
-				$("#password-title").css("color", "#000000");
+				$(id1).css("color", "#000000");
+				$(id2).css("color", "#000000");
 			}, (delay * i));
 			red = true;
 		}
