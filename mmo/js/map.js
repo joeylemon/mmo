@@ -19,7 +19,7 @@ function loadMap(){
 }
 
 function loadWorld(){
-	loadJSONMap("world.json", loadMap);
+	loadJSONMap("js/world.json", loadMap);
 }
 
 function renderCell(x, y, id){

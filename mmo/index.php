@@ -56,8 +56,8 @@
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	
-	<script src="player.js"></script>
-	<script src="map.js"></script>
-	<script src="sprite.js"></script>
-	<script src="script.js"></script>
+	<script src="js/player.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/sprite.js"></script>
+	<script src="client.js"></script>
 </html>

@@ -31,7 +31,6 @@ var task = setInterval(function(){
 	if(offsetY <= getMaxY() * -1){
 		moveY = 0.5;
 	}
-	console.log(getMaxX());
 	
 	ctx.translate(-0.5, -0.5);
 	offsetX += moveX;
@@ -87,7 +86,7 @@ function login(){
 		if(existing){
 			$.ajax({
 				type: "POST",
-				url: "login.php",
+				url: "js/login.php",
 				data: {'username': username, 'password': password},
 				success: function (result){
 					if(result != "empty"){
@@ -102,7 +101,7 @@ function login(){
 		}else{
 			$.ajax({
 				type: "POST",
-				url: "newuser.php",
+				url: "js/newuser.php",
 				data: {'username': username, 'password': password, 'uuid': getNewUUID()},
 				success: function (result){
 					if(result == "success"){
