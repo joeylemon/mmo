@@ -18,26 +18,33 @@ var ogre = new Sprite(Sprites.OGRE);
 
 loadWorld();
 
+var dir = 1;
 var offsetX = 0;
 var offsetY = 0;
+
 var task = setInterval(function(){
 	ctx.clearRect(0, 0, width, height);
 	
-	var moveX = -0.5;
-	var moveY = -0.5;
-	if(offsetX <= getMaxX() * -1){
-		moveX = 0.5;
-	}
-	if(offsetY <= getMaxY() * -1){
-		moveY = 0.5;
+	ctx.save();
+	
+	if((offsetX - canvas.width) <= getMaxX() * -1){
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		offsetX = 0;
+		offsetY = 0;
+	}else if((offsetY - canvas.height) <= getMaxY() * -1){
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		offsetX = 0;
+		offsetY = 0;
 	}
 	
-	ctx.translate(-0.5, -0.5);
-	offsetX += moveX;
-	offsetY += moveY;
+	ctx.translate(offsetX, offsetY);
+	offsetX -= 0.2;
+	offsetY -= 0.25;
 	
 	loadMap();
-	ogre.draw(50, 50, "atk_right");
+	//ogre.draw(50, 50, "atk_right");
+	
+	ctx.restore();
 }, 15);
 
 function drawRect(x, y, width, height, fill){

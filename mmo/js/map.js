@@ -1,37 +1,36 @@
 var ctx = document.getElementById("game").getContext("2d");
 var map = undefined;
+
 var maxX = 0;
 var maxY = 0;
+
+var tileset;
+var set;
+
 
 function loadMap(){
 	if (!map)
 		return;
-	var num_of_loaded = 0
-	for (var i = 0; i < map.tilesets.length; ++i){
-		map.tilesets[i].img = new Image();
-		map.tilesets[i].img.onload = function(){
-			if (++num_of_loaded == map.tilesets.length){
-				init();
-			}
-		}
-		map.tilesets[i].img.src = map.tilesets[i].image;
-	}
+	init();
 }
 
 function loadWorld(){
+	tileset = new Image();
+	tileset.src = "js/tilesheet.png";
+	
 	loadJSONMap("js/world.json", loadMap);
 }
 
 function renderCell(x, y, id){
 	if (id == 0)
 		return; // Skip empty cells
-		
-	var set;
 	
-	// Search right tileset image
-	for (var i = 0; i < map.tilesets.length; ++i){
-		if (map.tilesets[i].firstgid <= id)
-			set = map.tilesets[i];
+	if(set == undefined){
+		// Search right tileset image
+		for (var i = 0; i < map.tilesets.length; ++i){
+			if (map.tilesets[i].firstgid <= id)
+				set = map.tilesets[i];
+		}
 	}
 	
 	var tile_id = id - set.firstgid;
@@ -40,7 +39,7 @@ function renderCell(x, y, id){
 	var tile_y = Math.floor(tile_id / set_width);
 	
 	ctx.drawImage(
-		set.img, tile_x * set.tilewidth, tile_y * set.tileheight,
+		tileset, tile_x * set.tilewidth, tile_y * set.tileheight,
 		set.tilewidth, set.tileheight,
 		x * set.tilewidth, y * set.tileheight,
 		set.tilewidth, set.tileheight
@@ -54,12 +53,11 @@ function init(){
 			var y = Math.floor((cell - x) / map.layers[layer].height);
 			renderCell(x, y, map.layers[layer].data[cell]);
 			
-			if(x > maxX){
-				maxX = x;
+			if((x * map.tilewidth) > maxX){
+				maxX = (x * map.tilewidth);
 			}
-			
-			if(y > maxY){
-				maxY = y;
+			if((y * map.tileheight) > maxY){
+				maxY = (y * map.tileheight);
 			}
 		}
 	}

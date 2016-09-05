@@ -51,9 +51,6 @@ Sprite.prototype.draw = function(x, y, animation){
 		//sx += length * this.data.width;
 		//sy += row * this.data.height;
 		
-		console.log("sx: " + sx);
-		console.log("sy: " + sy);
-		
 		var img = new Image();
 		
 		img.onload = function(){
