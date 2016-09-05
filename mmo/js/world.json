@@ -74,7 +74,7 @@
         {
          "columns":30,
          "firstgid":1,
-         "image":"tilesheet.png",
+         "image":"js/tilesheet.png",
          "imageheight":4704,
          "imagewidth":960,
          "margin":0,

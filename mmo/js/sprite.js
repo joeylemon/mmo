@@ -1,9 +1,20 @@
+var Sprites = {
+	OGRE: "ogre"
+};
+
+
 var ctx = document.getElementById("game").getContext("2d");
 
-var Sprite = function(image, width, height){
-	this.image = image;
-	this.width = width;
-	this.height = height;
+var Sprite = function(id){
+	this.id = id;
+	this.setData();
+};
+
+Sprite.prototype.setData = function(){
+	var sprite = this;
+	$.getJSON("js/sprites/" + this.id + ".json", function(value){
+		sprite.data = value;
+	});
 };
 
 Sprite.prototype.getImage = function(){
@@ -11,18 +22,49 @@ Sprite.prototype.getImage = function(){
 };
 
 Sprite.prototype.getWidth = function(){
-	return this.width;
+	return this.data.width;
 };
 
 Sprite.prototype.getHeight = function(){
-	return this.height;
+	return this.data.height;
 };
 
-Sprite.prototype.draw = function(x, y, step){
-	var startX = 0 + (step * this.width);
-	var startY = 8;
-	var sx = step * this.width;
-	if(step > 1){
-		sx = step * (this.width * 2);
+Sprite.prototype.getOffsetX = function(){
+	return this.data.offset_x;
+};
+
+Sprite.prototype.getOffsetY = function(){
+	return this.data.offset_y;
+};
+
+Sprite.prototype.draw = function(x, y, animation){
+	if(this.data != undefined){
+		var width = this.data.width;
+		var height = this.data.height;
+	
+		var length = this.data.animations[animation].length;
+		var row = this.data.animations[animation].row;
+		
+		var sx = 8;
+		var sy = 8;
+		
+		//sx += length * this.data.width;
+		//sy += row * this.data.height;
+		
+		console.log("sx: " + sx);
+		console.log("sy: " + sy);
+		
+		var img = new Image();
+		
+		img.onload = function(){
+			ctx.drawImage(
+				img, 
+				sx, sy, 
+				width, height, 
+				x, y, 
+				width * 2, height * 2);
+		}
+		
+		img.src = "js/sprites/images/" + this.data.id + ".png";
 	}
 };

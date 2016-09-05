@@ -14,7 +14,7 @@ ctx.setTransform(scale, 0, 0, scale, left, top);
 var existing = true;
 
 var player;
-var ogre = new Sprite("ogre.png", 43.9, 43.9);
+var ogre = new Sprite(Sprites.OGRE);
 
 loadWorld();
 
@@ -37,6 +37,7 @@ var task = setInterval(function(){
 	offsetY += moveY;
 	
 	loadMap();
+	ogre.draw(50, 50, "atk_right");
 }, 15);
 
 function drawRect(x, y, width, height, fill){
