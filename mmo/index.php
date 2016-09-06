@@ -1,13 +1,17 @@
 <html>
 	<head>
-		<title>Project | Joey Lemon</title>
+		<title>Binary Heroes | Joey Lemon</title>
 		<link rel="icon" type="img/ico" href="/images/favicon.ico">
 		<link rel='stylesheet' type='text/css' href='styling.css' />
 		<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' />
 	</head>
 	
-	<body style="background-color: #2D2D2D;-moz-box-shadow: inset 0 0 500px #000;-webkit-box-shadow: inset 0 0 500px #000;box-shadow: inset 0 0 500px #000;">
+	<body style="background-color: #2D2D2D;">
 		<canvas id="game" class="game"></canvas>
+		
+		<div id="borders" class="borders"></div>
+
+		<div id="loader" class="sk-fading-circle"></div>
 		
 		<div class="center-container">
 		
@@ -15,12 +19,12 @@
 			<div id="existing-user" class="login">
 				<span class="title">Existing User</span>
 				<hr>
-				<form id="existing-login" onsubmit="login()" action="javascript:void(0);">
+				<form id="existing-login" onsubmit="login()" action="javascript:void(0);" autocomplete="on">
 					<span id="username-title-existing" class="input-title">Username</span>
-					<input id="existing-username" type="text" placeholder="username" name="user"></input>
+					<input id="existing-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 					<br>
 					<span id="password-title-existing" class="input-title">Password</span>
-					<input id="existing-password" type="password" placeholder="password" name="pass"></input>
+					<input id="existing-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 					
 					<input class="button" type="submit" value="log in"></input>
 				</form>
@@ -32,18 +36,18 @@
 			
 			<!-- Begin new user creation -->
 			<div id="new-user" class="login" style="display: none;width: 600px;">
-				<span class="title">Create an Account</span>
+				<span class="title">Create Your Hero</span>
 				<hr>
-				<form id="new-login" onsubmit="login()" action="javascript:void(0);">
-					<span id="username-title-new" class="input-title">New Username</span>
+				<form id="new-login" onsubmit="login()" action="javascript:void(0);" autocomplete="off">
+					<span id="username-title-new" class="input-title">Hero Name</span>
 					<br>
-					<input id="new-username" type="text" placeholder="username" name="user"></input>
+					<input id="new-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 					<br>
-					<span id="password-title-new" class="input-title">New Password</span>
+					<span id="password-title-new" class="input-title">Account Password</span>
 					<br>
-					<input id="new-password" type="password" placeholder="password" name="pass"></input>
+					<input id="new-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 					
-					<input class="button new" type="submit" value="create account"></input>
+					<input class="button new" type="submit" value="create hero"></input>
 				</form>
 								
 				<div class="break"></div>
@@ -51,13 +55,32 @@
 			</div>
 			<!-- End new user creation -->
 			
+			<!-- Begin new hero display -->
+			<div id="new-hero" class="login new-hero">
+				<span class="title">New Hero</span>
+				<hr>
+				<div class="player">
+					<img src="styles/player.png"></img>
+				</div>
+				<div class="stats">
+					Name: <span id="new-hero-name"></span>
+					<br>
+					Level: 1
+					<br>
+					Armor: cloth
+				</div>
+			</div>
+			<!-- End new hero display -->
+			
 		</div>
 	</body>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	
 	<script src="js/player.js"></script>
 	<script src="js/map.js"></script>
 	<script src="js/sprite.js"></script>
+	<script src="script.js"></script>
 	<script src="client.js"></script>
 </html>

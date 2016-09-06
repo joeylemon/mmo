@@ -63,6 +63,7 @@ function loadJSONMap(url, callback){
 		map = json;
 		set = map.tilesets[0];
 		callback();
+		$("body").css("backgroundColor", "#22AB00");
 	});
 }
 

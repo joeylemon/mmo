@@ -14,7 +14,7 @@ $username = $_POST["username"];
 $password = $_POST["password"];
 $uuid = $_POST["uuid"];
 
-$encrypted_pass = encrypt_decrypt("encrypt", $password);
+$hash_pass = createHash($password);
 
 if(isset($username)){
 	$result = $conn->query("SELECT * FROM users WHERE username='" . $username . "'");
@@ -25,7 +25,7 @@ if(isset($username)){
 	}
 	
 	if($exists == false){
-		$conn->query("INSERT INTO `users`(`username`, `password`, `uuid`, `level`, `inv`) VALUES ('" . $username . "','" . $encrypted_pass . "','" . $uuid . "',1,'')");
+		$conn->query("INSERT INTO `users`(`username`, `password`, `uuid`, `level`, `inv`) VALUES ('" . $username . "','" . $hash_pass . "','" . $uuid . "',1,'')");
 		echo "Success";
 	}else{
 		echo "Username already exists!";
@@ -35,25 +35,11 @@ if(isset($username)){
 }
 
 
-function encrypt_decrypt($action, $string) {
-    $output = false;
+function createHash($password){
+	return password_hash($password, PASSWORD_DEFAULT);
+}
 
-    $encrypt_method = "AES-256-CBC";
-    $secret_key = 'ayy lmaooo mayne this my stuff right here';
-    $secret_iv = 'dont be tryna sneak up all in here yo ayyy';
-
-    $key = hash('sha256', $secret_key);
-    
-    $iv = substr(hash('sha256', $secret_iv), 0, 16);
-
-    if( $action == 'encrypt' ) {
-        $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
-        $output = base64_encode($output);
-    }
-    else if( $action == 'decrypt' ){
-        $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
-    }
-
-    return $output;
+function passMatchesHash($password, $hash){
+	return password_verify($password, $hash);
 }
 ?>
