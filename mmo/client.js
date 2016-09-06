@@ -60,6 +60,10 @@ function draw(){
 		offsetX += camera.x;
 	}else if(nextcamera.x && !nextcamera.y){
 		offsetY += camera.y;
+	}else if(player == null){
+		offsetX = 0;
+		offsetY = 0;
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
 	}
 	
 	loadMap();

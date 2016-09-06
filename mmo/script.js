@@ -3,6 +3,17 @@ var loggingIn = false;
 
 var player;
 
+var soundtrack = new Audio("sounds/soundtrack.m4a");
+soundtrack.addEventListener('ended', function(){
+	var audio = this;
+	setTimeout(function(){
+		audio.currentTime = 0;
+		audio.play();
+	}, 2000);
+}, false);
+soundtrack.volume = 0.25;
+soundtrack.play();
+
 initializePage();
 $("#existing-username").focus();
 
@@ -75,6 +86,7 @@ function login(){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
 					player = new Player(object.uuid, object.username, object.level, object.inv);
+					fadeSoundtrackOut();
 					$("#existing-user").fadeOut(250);
 					$("#borders").fadeOut(250);
 				}else{
@@ -143,4 +155,17 @@ function alertBadInput(loc, error){
 	setTimeout(function(){
 		$("#" + id).tooltip('hide');
 	}, 2000);
+}
+
+function fadeSoundtrackOut(){
+	var volume = soundtrack.volume;
+	var task = setInterval(function(){
+		volume -= 0.006;
+		if(volume <= 0){
+			clearInterval(task);
+			soundtrack.pause();
+		}else{
+			soundtrack.volume = volume;
+		}
+	}, 100);
 }

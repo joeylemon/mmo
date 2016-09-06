@@ -97,7 +97,6 @@ Sprite.prototype.getNextAnimation = function(){
 	var next = this.nextAnim;
 	var current = Date.now();
 	if((current - next.time) > 50){
-		console.log(this.nextAnim);
 		if(next.col + 1 <= next.length){
 			this.nextAnim = {col: next.col + 1, row: next.row, length: next.length, time: current};
 		}else{
