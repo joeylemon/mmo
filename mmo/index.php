@@ -10,8 +10,6 @@
 		<canvas id="game" class="game"></canvas>
 		
 		<div id="borders" class="borders"></div>
-
-		<div id="loader" class="sk-fading-circle"></div>
 		
 		<div class="center-container">
 		

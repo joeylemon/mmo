@@ -14,17 +14,8 @@ soundtrack.addEventListener('ended', function(){
 soundtrack.volume = 0.25;
 soundtrack.play();
 
-initializePage();
 $("#existing-username").focus();
 
-
-function initializePage(){
-	document.getElementById("loader").innerHTML = '<div class="sk-circle1 sk-circle"></div><div class="sk-circle2 sk-circle"></div>' + 
-		'<div class="sk-circle3 sk-circle"></div><div class="sk-circle4 sk-circle"></div><div class="sk-circle5 sk-circle"></div>' + 
-		'<div class="sk-circle6 sk-circle"></div><div class="sk-circle7 sk-circle"></div><div class="sk-circle8 sk-circle"></div>' +
-		'<div class="sk-circle9 sk-circle"></div><div class="sk-circle10 sk-circle"></div><div class="sk-circle11 sk-circle"></div>' +
-		'<div class="sk-circle12 sk-circle"></div>';
-}
 
 function showLogin(type){
 	if(type == "new"){
@@ -82,7 +73,6 @@ function login(){
 			url: "js/login.php",
 			data: {'username': username, 'password': password},
 			success: function (result){
-				console.log(result);
 				if(result.length > 30){
 					var object = $.parseJSON(result);
 					player = new Player(object.uuid, object.username, object.level, object.inv);
@@ -131,12 +121,15 @@ function login(){
 }
 
 function setLoggingIn(set){
+	var ids = getFormIDs();
 	if(set){
 		loggingIn = true;
-		$("#loader").fadeIn(25);
+		$("#" + ids.username).css("opacity", "0.5").blur();
+		$("#" + ids.password).css("opacity", "0.5").blur();
 	}else{
 		loggingIn = false;
-		$("#loader").fadeOut(25);
+		$("#" + ids.username).css("opacity", "1");
+		$("#" + ids.password).css("opacity", "1");
 	}
 }
 
@@ -146,11 +139,11 @@ function alertBadInput(loc, error){
 	if(loc == "username"){
 		id = ids.username;
 		document.getElementById(ids.username).innerHTML = error;
-		$("#" + ids.username).attr('title', error).tooltip('fixTitle').tooltip('show');
+		$("#" + ids.username).attr('title', error).tooltip('fixTitle').tooltip('show').focus();
 	}else if(loc == "password"){
 		id = ids.password;
 		document.getElementById(ids.password).innerHTML = error;
-		$("#" + ids.password).attr('title', error).tooltip('fixTitle').tooltip('show');
+		$("#" + ids.password).attr('title', error).tooltip('fixTitle').tooltip('show').focus();
 	}
 	setTimeout(function(){
 		$("#" + id).tooltip('hide');
