@@ -42,7 +42,7 @@ loadWorld();
 window.requestAnimationFrame(draw);
 
 setTimeout(function(){
-	sprite.startAnimation("atk_down");
+	sprite.startAnimation(Animations.ATTACK_DOWN);
 }, 1000);
 
 function draw(){
@@ -73,7 +73,8 @@ function draw(){
 	sprite.setX(player_x);
 	sprite.setY(player_y);
 	if(!sprite.isDoingAnimation()){
-		sprite.draw(1, 8);
+		var idle = sprite.getIdleImage();
+		sprite.draw(idle.col, idle.row);
 	}else{
 		var anim = sprite.getNextAnimation();
 		sprite.draw(anim.col, anim.row);
@@ -100,17 +101,23 @@ function getCamera(){
 	var x = 0;
 	var y = 0;
 	if(player != undefined){
-		if(isPressingKey(Key.UP, keys)){
-			y += settings.player_speed;
-		}
-		if(isPressingKey(Key.DOWN, keys)){
-			y += -settings.player_speed;
-		}
 		if(isPressingKey(Key.LEFT, keys)){
 			x += settings.player_speed;
 		}
 		if(isPressingKey(Key.RIGHT, keys)){
 			x += -settings.player_speed;
+			sprite.startAnimation(Animations.WALK_RIGHT);
+			sprite.setIdleImage(Animations.WALK_RIGHT);
+		}
+		if(isPressingKey(Key.UP, keys)){
+			y += settings.player_speed;
+			sprite.startAnimation(Animations.WALK_UP);
+			sprite.setIdleImage(Animations.WALK_UP);
+		}
+		if(isPressingKey(Key.DOWN, keys)){
+			y += -settings.player_speed;
+			sprite.startAnimation(Animations.WALK_DOWN);
+			sprite.setIdleImage(Animations.WALK_DOWN);
 		}
 	}else{
 		x = settings.idle_camera_speed.x;

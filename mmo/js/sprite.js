@@ -3,6 +3,18 @@ var Sprites = {
 	CLOTH_ARMOR: "clotharmor"
 };
 
+var Animations = {
+	ATTACK_RIGHT: "atk_right",
+	WALK_RIGHT: "walk_right",
+	IDLE_RIGHT: "idle_right",
+	ATTACK_UP: "atk_up",
+	WALK_UP: "walk_up",
+	IDLE_UP: "idle_up",
+	ATTACK_DOWN: "atk_down",
+	WALK_DOWN: "walk_down",
+	IDLE_DOWN: "idle_down",
+};
+
 
 var ctx = document.getElementById("game").getContext("2d");
 
@@ -74,17 +86,29 @@ Sprite.prototype.draw = function(column, row){
 			sx, sy, 
 			width, height, 
 			x, y, 
-			width * 3, height * 3);
+			width * 2, height * 2);
+	}
+};
+
+Sprite.prototype.setIdleImage = function(animation){
+	var row = this.data.animations[animation].row;
+	this.idleImage = {col: 1, row: row};
+};
+
+Sprite.prototype.getIdleImage = function(){
+	if(this.idleImage != undefined){
+		return this.idleImage;
+	}else{
+		return {col: 1, row: 8};
 	}
 };
 
 Sprite.prototype.startAnimation = function(animation){
 	if(this.data != undefined && this.image != undefined && !this.animating){
-		var sprite = this;
-		
 		var length = this.data.animations[animation].length;
 		var row = this.data.animations[animation].row;
 		
+		this.animating = true;
 		this.nextAnim = {col: 1, row: row, length: length, time: Date.now()};
 	}
 };
@@ -96,11 +120,12 @@ Sprite.prototype.isDoingAnimation = function(){
 Sprite.prototype.getNextAnimation = function(){
 	var next = this.nextAnim;
 	var current = Date.now();
-	if((current - next.time) > 50){
+	if((current - next.time) > 75){
 		if(next.col + 1 <= next.length){
 			this.nextAnim = {col: next.col + 1, row: next.row, length: next.length, time: current};
 		}else{
 			this.nextAnim = undefined;
+			this.animating = false;
 		}
 	}
 	return next;
