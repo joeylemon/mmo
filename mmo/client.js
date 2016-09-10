@@ -26,12 +26,11 @@ var Key = {
 };
 
 /* Initialize game variables */
+var myIndex;
 var drawing = true;
-var keys = new Array();
 
-var player_x = (canvas.width / 2) - 24;
-var player_y = (canvas.height / 2) - 24;
-var sprite = new Sprite(Sprites.CLOTH_ARMOR, player_x, player_y);
+var keys = new Array();
+var players = new Array();
 
 var dir = 1;
 var offsetX = 0;
@@ -41,9 +40,13 @@ var offsetY = 0;
 loadWorld();
 window.requestAnimationFrame(draw);
 
-setTimeout(function(){
-	sprite.startAnimation(Animations.ATTACK_DOWN);
-}, 1000);
+var playertask = setInterval(function(){
+	if(player != undefined){
+		myIndex = players.length;
+		players.push(player);
+		clearInterval(playertask);
+	}
+}, 100);
 
 function draw(){
 	ctx.clearRect(0, 0, width, height);
@@ -68,17 +71,17 @@ function draw(){
 	
 	loadMap();
 	
-	ctx.restore();
-	
-	sprite.setX(player_x);
-	sprite.setY(player_y);
-	if(!sprite.isDoingAnimation()){
-		var idle = sprite.getIdleImage();
-		sprite.draw(idle.col, idle.row);
-	}else{
-		var anim = sprite.getNextAnimation();
-		sprite.draw(anim.col, anim.row);
+	if(myIndex != undefined){
+		var center = getCenter();
+		players[myIndex].setX(center.x);
+		players[myIndex].setY(center.y);
 	}
+	for(var i = 0; i < players.length; i++){
+		var p = players[i];
+		p.draw();
+	}
+	
+	ctx.restore();
 	
 	if(drawing){
 		window.requestAnimationFrame(draw);
@@ -103,26 +106,34 @@ function getCamera(){
 	if(player != undefined){
 		if(isPressingKey(Key.LEFT, keys)){
 			x += settings.player_speed;
+			players[myIndex].getSprite().startAnimation(Animations.WALK_LEFT);
+			players[myIndex].getSprite().setIdleImage(Animations.IDLE_LEFT);
 		}
 		if(isPressingKey(Key.RIGHT, keys)){
 			x += -settings.player_speed;
-			sprite.startAnimation(Animations.WALK_RIGHT);
-			sprite.setIdleImage(Animations.WALK_RIGHT);
+			players[myIndex].getSprite().startAnimation(Animations.WALK_RIGHT);
+			players[myIndex].getSprite().setIdleImage(Animations.IDLE_RIGHT);
 		}
 		if(isPressingKey(Key.UP, keys)){
 			y += settings.player_speed;
-			sprite.startAnimation(Animations.WALK_UP);
-			sprite.setIdleImage(Animations.WALK_UP);
+			players[myIndex].getSprite().startAnimation(Animations.WALK_UP);
+			players[myIndex].getSprite().setIdleImage(Animations.IDLE_UP);
 		}
 		if(isPressingKey(Key.DOWN, keys)){
 			y += -settings.player_speed;
-			sprite.startAnimation(Animations.WALK_DOWN);
-			sprite.setIdleImage(Animations.WALK_DOWN);
+			players[myIndex].getSprite().startAnimation(Animations.WALK_DOWN);
+			players[myIndex].getSprite().setIdleImage(Animations.IDLE_DOWN);
 		}
 	}else{
 		x = settings.idle_camera_speed.x;
 		y = settings.idle_camera_speed.y;
 	}
+	return {x: x, y: y};
+}
+
+function getCenter(){
+	var x = (canvas.width / 2) - offsetX - 64;
+	var y = (canvas.height / 2) - offsetY - 64;
 	return {x: x, y: y};
 }
 
@@ -188,6 +199,10 @@ document.onkeydown = function(event) {
 		code = event.charCode;
 	}
 	
+	if(myIndex == undefined){
+		return;
+	}
+	
 	if(code == 38 || code == 87){
 		addKey(Key.UP);
 	}else if(code == 40 || code == 83){
@@ -208,13 +223,21 @@ document.onkeyup = function(event) {
 		code = event.charCode;
 	}
 	
+	if(myIndex == undefined){
+		return;
+	}
+	
 	if(code == 38 || code == 87){
 		removeKey(Key.UP);
+		players[myIndex].getSprite().stopAnimation(Animations.WALK_UP);
 	}else if(code == 40 || code == 83){
 		removeKey(Key.DOWN);
+		players[myIndex].getSprite().stopAnimation(Animations.WALK_DOWN);
 	}else if(code == 37 || code == 65){
 		removeKey(Key.LEFT);
+		players[myIndex].getSprite().stopAnimation(Animations.WALK_LEFT);
 	}else if(code == 39 || code == 68){
 		removeKey(Key.RIGHT);
+		players[myIndex].getSprite().stopAnimation(Animations.WALK_RIGHT);
 	}
 };

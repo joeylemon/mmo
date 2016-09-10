@@ -25,7 +25,7 @@ if(isset($username)){
 	}
 	
 	if($exists == false){
-		$conn->query("INSERT INTO `users`(`username`, `password`, `uuid`, `level`, `inv`) VALUES ('" . $username . "','" . $hash_pass . "','" . $uuid . "',1,'')");
+		$conn->query("INSERT INTO `users`(`username`, `password`, `uuid`, `level`, `inv`, `pos`) VALUES ('" . $username . "','" . $hash_pass . "','" . $uuid . "',1,'{\"armor\":\"clotharmor\"}','{\"x\":0,\"y\":0}')");
 		echo "Success";
 	}else{
 		echo "Username already exists!";

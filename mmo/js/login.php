@@ -24,7 +24,7 @@ if(isset($username)){
 		$hash_pass = $row["password"];
 		if(passMatchesHash($password, $hash_pass)){
 			echo '{';
-			echo '"username":"' . $row["username"] . '","level":"' . $row["level"] . '","uuid":"' . $row["uuid"] . '","inv":"' . $row["inv"] . '"';
+			echo '"username":"' . $row["username"] . '","level":' . $row["level"] . ',"uuid":"' . $row["uuid"] . '","inv":' . $row["inv"] . ',"pos":' . $row["pos"];
 			echo '}';
 			
 			break;

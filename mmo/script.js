@@ -75,7 +75,7 @@ function login(){
 			success: function (result){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
-					player = new Player(object.uuid, object.username, object.level, object.inv);
+					player = new Player(object.uuid, object.username, object.level, object.inv, object.pos);
 					fadeSoundtrackOut();
 					$("#existing-user").fadeOut(250);
 					$("#borders").fadeOut(250);

@@ -7,6 +7,9 @@ var Animations = {
 	ATTACK_RIGHT: "atk_right",
 	WALK_RIGHT: "walk_right",
 	IDLE_RIGHT: "idle_right",
+	ATTACK_LEFT: "atk_left",
+	WALK_LEFT: "walk_left",
+	IDLE_LEFT: "idle_left",
 	ATTACK_UP: "atk_up",
 	WALK_UP: "walk_up",
 	IDLE_UP: "idle_up",
@@ -109,7 +112,16 @@ Sprite.prototype.startAnimation = function(animation){
 		var row = this.data.animations[animation].row;
 		
 		this.animating = true;
-		this.nextAnim = {col: 1, row: row, length: length, time: Date.now()};
+		this.nextAnim = {col: 1, row: row, length: length, time: Date.now(), anim: animation};
+	}
+};
+
+Sprite.prototype.stopAnimation = function(animation){
+	if(this.animating){
+		if(this.nextAnim.anim == animation){
+			this.animating = false;
+			this.nextAnim = undefined;
+		}
 	}
 };
 
@@ -122,7 +134,7 @@ Sprite.prototype.getNextAnimation = function(){
 	var current = Date.now();
 	if((current - next.time) > 75){
 		if(next.col + 1 <= next.length){
-			this.nextAnim = {col: next.col + 1, row: next.row, length: next.length, time: current};
+			this.nextAnim = {col: next.col + 1, row: next.row, length: next.length, time: current, anim: next.anim};
 		}else{
 			this.nextAnim = undefined;
 			this.animating = false;
