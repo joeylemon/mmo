@@ -3,19 +3,26 @@ var Sprites = {
 	CLOTH_ARMOR: "clotharmor"
 };
 
+var Orientations = {
+	UP: 0,
+	DOWN: 1,
+	LEFT: 2,
+	RIGHT: 3
+};
+
 var Animations = {
-	ATTACK_RIGHT: "atk_right",
-	WALK_RIGHT: "walk_right",
-	IDLE_RIGHT: "idle_right",
-	ATTACK_LEFT: "atk_left",
-	WALK_LEFT: "walk_left",
-	IDLE_LEFT: "idle_left",
-	ATTACK_UP: "atk_up",
-	WALK_UP: "walk_up",
-	IDLE_UP: "idle_up",
-	ATTACK_DOWN: "atk_down",
-	WALK_DOWN: "walk_down",
-	IDLE_DOWN: "idle_down",
+	ATTACK_RIGHT: {name: "atk_right", orientation: 3, type: "attack"},
+	WALK_RIGHT: {name: "walk_right", orientation: 3, type: "walk"},
+	IDLE_RIGHT: {name: "idle_right", orientation: 3, type: "idle"},
+	ATTACK_LEFT: {name: "atk_left", orientation: 2, type: "attack"},
+	WALK_LEFT: {name: "walk_left", orientation: 2, type: "walk"},
+	IDLE_LEFT: {name: "idle_left", orientation: 2, type: "idle"},
+	ATTACK_UP: {name: "atk_up", orientation: 0, type: "attack"},
+	WALK_UP: {name: "walk_up", orientation: 0, type: "walk"},
+	IDLE_UP: {name: "idle_up", orientation: 0, type: "idle"},
+	ATTACK_DOWN: {name: "atk_down", orientation: 1, type: "attack"},
+	WALK_DOWN: {name: "walk_down", orientation: 1, type: "walk"},
+	IDLE_DOWN: {name: "idle_down", orientation: 1, type: "idle"}
 };
 
 
@@ -71,6 +78,14 @@ Sprite.prototype.setY = function(y){
 	this.y = y;
 };
 
+Sprite.prototype.getOrientation = function(){
+	if(this.orientation != undefined){
+		return this.orientation;
+	}else{
+		return 1;
+	}
+};
+
 Sprite.prototype.draw = function(column, row){
 	if(this.data != undefined && this.image != undefined){
 		var x = this.x;
@@ -94,8 +109,9 @@ Sprite.prototype.draw = function(column, row){
 };
 
 Sprite.prototype.setIdleImage = function(animation){
-	var row = this.data.animations[animation].row;
+	var row = this.data.animations[animation.name].row;
 	this.idleImage = {col: 1, row: row};
+	this.orientation = animation.orientation;
 };
 
 Sprite.prototype.getIdleImage = function(){
@@ -107,18 +123,22 @@ Sprite.prototype.getIdleImage = function(){
 };
 
 Sprite.prototype.startAnimation = function(animation){
+	if(animation.type == "attack"){
+		this.animating = false;
+	}
 	if(this.data != undefined && this.image != undefined && !this.animating){
-		var length = this.data.animations[animation].length;
-		var row = this.data.animations[animation].row;
+		var length = this.data.animations[animation.name].length;
+		var row = this.data.animations[animation.name].row;
 		
 		this.animating = true;
-		this.nextAnim = {col: 1, row: row, length: length, time: Date.now(), anim: animation};
+		this.orientation = animation.orientation;
+		this.nextAnim = {col: 1, row: row, length: length, time: Date.now(), anim: animation.name};
 	}
 };
 
 Sprite.prototype.stopAnimation = function(animation){
 	if(this.animating){
-		if(this.nextAnim.anim == animation){
+		if(this.nextAnim.anim == animation.name){
 			this.animating = false;
 			this.nextAnim = undefined;
 		}

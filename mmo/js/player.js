@@ -8,6 +8,20 @@ function getNewUUID(){
 		s4() + '-' + s4() + s4() + s4();
 }
 
+function drawText(x, y, text, size, stroke, width, fill){
+	ctx.font = size + "px profont";
+	ctx.textAlign = "center";
+	if(width > 0){
+		ctx.strokeStyle = stroke;
+		ctx.lineWidth = width;
+		ctx.strokeText(text, x, y);
+	}
+	ctx.fillStyle = fill;
+	ctx.fillText(text, x, y);
+}
+
+
+
 
 var Player = function(uuid, name, level, inventory, position){
 	this.uuid = uuid;
@@ -68,4 +82,6 @@ Player.prototype.draw = function(){
 		var anim = this.sprite.getNextAnimation();
 		this.sprite.draw(anim.col, anim.row);
 	}
+	drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 6, "#fff");
+	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level, 15, "#000", 3, "#17AF00");
 };

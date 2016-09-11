@@ -241,3 +241,24 @@ document.onkeyup = function(event) {
 		players[myIndex].getSprite().stopAnimation(Animations.WALK_RIGHT);
 	}
 };
+
+document.onmousedown = function(event) {
+	var code = event.button;
+	
+	if(myIndex == undefined){
+		return;
+	}
+	
+	if(code == 0){
+		var sprite = players[myIndex].getSprite();
+		if(sprite.orientation == Orientations.UP){
+			sprite.startAnimation(Animations.ATTACK_UP);
+		}else if(sprite.orientation == Orientations.DOWN){
+			sprite.startAnimation(Animations.ATTACK_DOWN);
+		}else if(sprite.orientation == Orientations.LEFT){
+			sprite.startAnimation(Animations.ATTACK_LEFT);
+		}else if(sprite.orientation == Orientations.RIGHT){
+			sprite.startAnimation(Animations.ATTACK_RIGHT);
+		}
+	}
+};
