@@ -25,6 +25,25 @@ var Key = {
 	RIGHT: "right"
 };
 
+socket.on('msg', function(data){
+	if(data.type == "get_players_res"){
+		for(var i = 0; i < data.players.length; i++){
+			var object = data.players[i];
+			var p = new Player(object.uuid, object.username, object.level, $.parseJSON(object.inv), $.parseJSON(object.pos));
+			players.push(p);
+		}
+		myIndex = players.length;
+		players.push(player);
+	}else if(data.type == "join"){
+		var object = data;
+		var p = new Player(object.uuid, object.username, object.level, $.parseJSON(object.inv), $.parseJSON(object.pos));
+		players.push(p);
+	}else if(data.type == "loc"){
+		players[data.index].setX(data.x);
+		players[data.index].setY(data.y);
+	}
+});
+
 /* Initialize game variables */
 var myIndex;
 var drawing = true;
@@ -42,8 +61,7 @@ window.requestAnimationFrame(draw);
 
 var playertask = setInterval(function(){
 	if(player != undefined){
-		myIndex = players.length;
-		players.push(player);
+		broadcast("get_players", {uuid: player.uuid});
 		clearInterval(playertask);
 	}
 }, 100);
@@ -75,6 +93,13 @@ function draw(){
 		var center = getCenter();
 		players[myIndex].setX(center.x);
 		players[myIndex].setY(center.y);
+		
+		var msg = {
+			index: myIndex,
+			x: center.x,
+			y: center.y
+		};
+		broadcast("loc", msg);
 	}
 	for(var i = 0; i < players.length; i++){
 		var p = players[i];

@@ -1,3 +1,5 @@
+var socket = io();
+
 var existing = true;
 var loggingIn = false;
 
@@ -70,12 +72,14 @@ function login(){
 		setLoggingIn(true);
 		$.ajax({
 			type: "POST",
-			url: "js/login.php",
+			url: "js/login.js",
 			data: {'username': username, 'password': password},
 			success: function (result){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
-					player = new Player(object.uuid, object.username, object.level, object.inv, object.pos);
+					broadcast("user_info", object);
+					player = new Player(object.uuid, object.username, object.level, $.parseJSON(object.inv), $.parseJSON(object.pos));
+					
 					fadeSoundtrackOut();
 					$("#existing-user").fadeOut(250);
 					$("#borders").fadeOut(250);
@@ -94,10 +98,10 @@ function login(){
 		setLoggingIn(true);
 		$.ajax({
 			type: "POST",
-			url: "js/newuser.php",
+			url: "js/newuser.js",
 			data: {'username': username, 'password': password, 'uuid': getNewUUID()},
 			success: function (result){
-				if(result == "Success"){
+				if(result != "bad username"){
 					var form = document.getElementById("existing-login");
 					form.elements["existing-username"].value = username;
 					form.elements["existing-password"].value = password;
@@ -161,4 +165,9 @@ function fadeSoundtrackOut(){
 			soundtrack.volume = volume;
 		}
 	}, 100);
+}
+
+function broadcast(type, data){
+	data["type"] = type;
+	socket.emit("msg", data);
 }
