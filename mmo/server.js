@@ -117,6 +117,7 @@ io.on('connection', function(socket){
 			}
 			var response = {
 				type: "get_players_res",
+				nextindex: users.length - 1,
 				players: newarray
 			};
 			socket.emit('msg', response);

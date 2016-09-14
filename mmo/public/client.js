@@ -12,6 +12,18 @@ var top = canvas.height / 2  - (height * scale) / 2;
 var left = canvas.width / 2 - (width * scale) / 2;
 ctx.setTransform(scale, 0, 0, scale, left, top);
 
+/* Initialize game variables */
+var myIndex;
+var drawing = true;
+var lastKeysID = -1;
+
+var keys = new Array();
+var players = new Array();
+
+var dir = 1;
+var offsetX = 0;
+var offsetY = 0;
+
 /* Initialize constants */
 var settings = {
 	idle_camera_speed: {x: -0.10, y: -0.175},
@@ -29,31 +41,36 @@ socket.on('msg', function(data){
 	if(data.type == "get_players_res"){
 		for(var i = 0; i < data.players.length; i++){
 			var object = data.players[i];
-			var p = new Player(object.uuid, object.username, object.level, $.parseJSON(object.inv), $.parseJSON(object.pos));
+			var p = new Player(object.uuid, object.username, object.level, object.inv, object.pos);
 			players.push(p);
 		}
-		myIndex = players.length;
+		myIndex = data.nextindex;
 		players.push(player);
-	}else if(data.type == "join"){
+	}
+	
+	if(players[myIndex] == undefined || data.uuid == undefined || data.uuid == players[myIndex].uuid){
+		return;
+	}
+	
+	if(data.type == "join"){
+		console.log("player joined");
 		var object = data;
-		var p = new Player(object.uuid, object.username, object.level, $.parseJSON(object.inv), $.parseJSON(object.pos));
+		var p = new Player(object.uuid, object.username, object.level, object.inv, object.pos);
 		players.push(p);
+	}else if(data.type == "keys"){
+		var array = data.keys;
+		console.log(array);
+		if(array.length > 0){
+			players[data.index].setKeys(array);
+		}else{
+			players[data.index].clearKeys();
+		}
 	}else if(data.type == "loc"){
+		players[data.index].clearKeys();
 		players[data.index].setX(data.x);
 		players[data.index].setY(data.y);
 	}
 });
-
-/* Initialize game variables */
-var myIndex;
-var drawing = true;
-
-var keys = new Array();
-var players = new Array();
-
-var dir = 1;
-var offsetX = 0;
-var offsetY = 0;
 
 
 loadWorld();
@@ -61,6 +78,9 @@ window.requestAnimationFrame(draw);
 
 var playertask = setInterval(function(){
 	if(player != undefined){
+		console.log(player.getObject());
+		broadcast("user_info", player.getObject());
+		broadcast("join", player.getObject());
 		broadcast("get_players", {uuid: player.uuid});
 		clearInterval(playertask);
 	}
@@ -72,7 +92,7 @@ function draw(){
 	
 	ctx.translate(offsetX, offsetY);
 	
-	var camera = getCamera();
+	var camera = getCamera(myIndex);
 	var nextcamera = isOffWorld(offsetX + camera.x, offsetY + camera.y);
 	if(!nextcamera.x && !nextcamera.y){
 		offsetX += camera.x;
@@ -81,7 +101,7 @@ function draw(){
 		offsetX += camera.x;
 	}else if(nextcamera.x && !nextcamera.y){
 		offsetY += camera.y;
-	}else if(player == null){
+	}else if(myIndex == undefined){
 		offsetX = 0;
 		offsetY = 0;
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -89,21 +109,21 @@ function draw(){
 	
 	loadMap();
 	
+	for(var i = 0; i < players.length; i++){
+		if(i != myIndex){
+			var p = players[i];
+			var cam = getCamera(i);
+			p.setX(p.getX() - cam.x);
+			p.setY(p.getY() - cam.y);
+			p.draw();
+		}
+	}
+	
 	if(myIndex != undefined){
 		var center = getCenter();
 		players[myIndex].setX(center.x);
 		players[myIndex].setY(center.y);
-		
-		var msg = {
-			index: myIndex,
-			x: center.x,
-			y: center.y
-		};
-		broadcast("loc", msg);
-	}
-	for(var i = 0; i < players.length; i++){
-		var p = players[i];
-		p.draw();
+		players[myIndex].draw();
 	}
 	
 	ctx.restore();
@@ -113,45 +133,62 @@ function draw(){
 	}
 }
 
-function drawRect(x, y, width, height, fill){
-	ctx.fillStyle = fill;
-	ctx.fillRect(x, y, width, height);
-}
-
-function drawCircle(x, y, radius, fill){
-	ctx.beginPath();
-	ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-	ctx.fillStyle = fill;
-	ctx.fill();
-}
-
-function getCamera(){
+function getCamera(index){
 	var x = 0;
 	var y = 0;
-	if(player != undefined){
-		if(isPressingKey(Key.LEFT, keys)){
+	if(index != undefined){
+		var array = players[index].getKeys();
+		if(index == myIndex){
+			array = keys;
+		}
+		if(isPressingKey(Key.LEFT, array)){
 			x += settings.player_speed;
-			players[myIndex].getSprite().startAnimation(Animations.WALK_LEFT);
-			players[myIndex].getSprite().setIdleImage(Animations.IDLE_LEFT);
+			players[index].getSprite().startAnimation(Animations.WALK_LEFT);
+			players[index].getSprite().setIdleImage(Animations.IDLE_LEFT);
 		}
-		if(isPressingKey(Key.RIGHT, keys)){
+		if(isPressingKey(Key.RIGHT, array)){
 			x += -settings.player_speed;
-			players[myIndex].getSprite().startAnimation(Animations.WALK_RIGHT);
-			players[myIndex].getSprite().setIdleImage(Animations.IDLE_RIGHT);
+			players[index].getSprite().startAnimation(Animations.WALK_RIGHT);
+			players[index].getSprite().setIdleImage(Animations.IDLE_RIGHT);
 		}
-		if(isPressingKey(Key.UP, keys)){
+		if(isPressingKey(Key.UP, array)){
 			y += settings.player_speed;
-			players[myIndex].getSprite().startAnimation(Animations.WALK_UP);
-			players[myIndex].getSprite().setIdleImage(Animations.IDLE_UP);
+			players[index].getSprite().startAnimation(Animations.WALK_UP);
+			players[index].getSprite().setIdleImage(Animations.IDLE_UP);
 		}
-		if(isPressingKey(Key.DOWN, keys)){
+		if(isPressingKey(Key.DOWN, array)){
 			y += -settings.player_speed;
-			players[myIndex].getSprite().startAnimation(Animations.WALK_DOWN);
-			players[myIndex].getSprite().setIdleImage(Animations.IDLE_DOWN);
+			players[index].getSprite().startAnimation(Animations.WALK_DOWN);
+			players[index].getSprite().setIdleImage(Animations.IDLE_DOWN);
+		}
+		
+		if(index == myIndex){
+			var id = getKeysID();
+			if(lastKeysID != id){
+				if(id > 1){
+					var msg = {
+						index: myIndex,
+						uuid: players[myIndex].getUUID(),
+						keys: keys
+					};
+					broadcast("keys", msg);
+				}else if(id == 1){
+					var msg = {
+						index: myIndex,
+						uuid: players[myIndex].getUUID(),
+						x: players[myIndex].getX(),
+						y: players[myIndex].getY()
+					};
+					broadcast("loc", msg);
+				}
+				lastKeysID = id;
+			}
 		}
 	}else{
-		x = settings.idle_camera_speed.x;
-		y = settings.idle_camera_speed.y;
+		if(index == myIndex){
+			x = settings.idle_camera_speed.x;
+			y = settings.idle_camera_speed.y;
+		}
 	}
 	return {x: x, y: y};
 }

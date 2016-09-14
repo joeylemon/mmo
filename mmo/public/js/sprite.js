@@ -162,3 +162,8 @@ Sprite.prototype.getNextAnimation = function(){
 	}
 	return next;
 };
+
+Sprite.prototype.stopAllAnimations = function(){
+	this.animating = false;
+	this.nextAnim = undefined;
+};

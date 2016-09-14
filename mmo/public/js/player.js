@@ -29,7 +29,12 @@ var Player = function(uuid, name, level, inventory, position){
 	this.level = level;
 	this.inventory = inventory;
 	this.position = position;
+	this.keys = new Array();
 	this.sprite = new Sprite(this.inventory.armor, this.position.x, this.position.y);
+};
+
+Player.prototype.getObject = function(){
+	return {uuid: this.uuid, username: this.name, level: this.level, inv: this.inventory, pos: this.position};
 };
 
 Player.prototype.getUUID = function(){
@@ -68,6 +73,19 @@ Player.prototype.setX = function(x){
 Player.prototype.setY = function(y){
 	this.position.y = y;
 	this.sprite.setY(y);
+};
+
+Player.prototype.setKeys = function(array){
+	this.keys = array;
+};
+
+Player.prototype.getKeys = function(){
+	return this.keys;
+};
+
+Player.prototype.clearKeys = function(){
+	this.keys = new Array();
+	this.sprite.stopAllAnimations();
 };
 
 Player.prototype.getSprite = function(){
