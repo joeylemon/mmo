@@ -1,28 +1,3 @@
-function getNewUUID(){
-	function s4(){
-		return Math.floor((1 + Math.random()) * 0x10000)
-			.toString(16)
-			.substring(1);
-	}
-	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-		s4() + '-' + s4() + s4() + s4();
-}
-
-function drawText(x, y, text, size, stroke, width, fill){
-	ctx.font = size + "px profont";
-	ctx.textAlign = "center";
-	if(width > 0){
-		ctx.strokeStyle = stroke;
-		ctx.lineWidth = width;
-		ctx.strokeText(text, x, y);
-	}
-	ctx.fillStyle = fill;
-	ctx.fillText(text, x, y);
-}
-
-
-
-
 var Player = function(uuid, name, level, inventory, position){
 	this.uuid = uuid;
 	this.name = name;
@@ -45,12 +20,24 @@ Player.prototype.getName = function(){
 	return this.name;
 };
 
-Player.prototype.getLevel = function(){
+Player.prototype.getLevelObject = function(){
 	return this.level;
 };
 
+Player.prototype.getLevel = function(){
+	return this.level.level;
+};
+
 Player.prototype.setLevel = function(newlevel){
-	this.level = newlevel;
+	this.level.level = newlevel;
+};
+
+Player.prototype.getXP = function(){
+	return this.level.xp;
+};
+
+Player.prototype.setXP = function(newxp){
+	this.level.xp = newxp;
 };
 
 Player.prototype.getArmor = function(){
@@ -92,6 +79,24 @@ Player.prototype.getSprite = function(){
 	return this.sprite;
 };
 
+Player.prototype.attack = function(mouse, true_center, off_center, off_mouse){
+	var orientation = getOrientation(true_center, mouse);
+	if(orientation == Orientations.UP){
+		this.sprite.startAnimation(Animations.ATTACK_UP);
+		this.sprite.setIdleImage(Animations.IDLE_UP);
+	}else if(orientation == Orientations.DOWN){
+		this.sprite.startAnimation(Animations.ATTACK_DOWN);
+		this.sprite.setIdleImage(Animations.IDLE_DOWN);
+	}else if(orientation == Orientations.LEFT){
+		this.sprite.startAnimation(Animations.ATTACK_LEFT);
+		this.sprite.setIdleImage(Animations.IDLE_LEFT);
+	}else if(orientation == Orientations.RIGHT){
+		this.sprite.startAnimation(Animations.ATTACK_RIGHT);
+		this.sprite.setIdleImage(Animations.IDLE_RIGHT);
+	}
+	var proj = new Projectile(off_center, off_mouse, Projectiles.LIGHTNING);
+};
+
 Player.prototype.draw = function(){
 	if(!this.sprite.isDoingAnimation()){
 		var idle = this.sprite.getIdleImage();
@@ -101,5 +106,5 @@ Player.prototype.draw = function(){
 		this.sprite.draw(anim.col, anim.row);
 	}
 	drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 6, "#fff");
-	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level, 15, "#000", 3, "#17AF00");
+	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level.level, 15, "#000", 3, "#17AF00");
 };

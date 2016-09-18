@@ -1,33 +1,3 @@
-var Sprites = {
-	OGRE: "ogre",
-	CLOTH_ARMOR: "clotharmor"
-};
-
-var Orientations = {
-	UP: 0,
-	DOWN: 1,
-	LEFT: 2,
-	RIGHT: 3
-};
-
-var Animations = {
-	ATTACK_RIGHT: {name: "atk_right", orientation: 3, type: "attack"},
-	WALK_RIGHT: {name: "walk_right", orientation: 3, type: "walk"},
-	IDLE_RIGHT: {name: "idle_right", orientation: 3, type: "idle"},
-	ATTACK_LEFT: {name: "atk_left", orientation: 2, type: "attack"},
-	WALK_LEFT: {name: "walk_left", orientation: 2, type: "walk"},
-	IDLE_LEFT: {name: "idle_left", orientation: 2, type: "idle"},
-	ATTACK_UP: {name: "atk_up", orientation: 0, type: "attack"},
-	WALK_UP: {name: "walk_up", orientation: 0, type: "walk"},
-	IDLE_UP: {name: "idle_up", orientation: 0, type: "idle"},
-	ATTACK_DOWN: {name: "atk_down", orientation: 1, type: "attack"},
-	WALK_DOWN: {name: "walk_down", orientation: 1, type: "walk"},
-	IDLE_DOWN: {name: "idle_down", orientation: 1, type: "idle"}
-};
-
-
-var ctx = document.getElementById("game").getContext("2d");
-
 var Sprite = function(id, x, y){
 	this.x = x;
 	this.y = y;
@@ -38,10 +8,10 @@ var Sprite = function(id, x, y){
 
 Sprite.prototype.setData = function(){
 	var sprite = this;
-	
+
 	$.getJSON("js/sprites/" + this.id + ".json", function(value){
 		sprite.data = value;
-		
+
 		var img = new Image();
 		img.onload = function(){
 			sprite.image = img;
@@ -90,20 +60,20 @@ Sprite.prototype.draw = function(column, row){
 	if(this.data != undefined && this.image != undefined){
 		var x = this.x;
 		var y = this.y;
-		
+
 		var image = this.image;
-		
+
 		var width = this.data.width;
 		var height = this.data.height;
-		
+
 		var sx = width * (column - 1);
 		var sy = height * row;
-		
+
 		ctx.drawImage(
-			image, 
-			sx, sy, 
-			width, height, 
-			x, y, 
+			image,
+			sx, sy,
+			width, height,
+			x, y,
 			width * 2, height * 2);
 	}
 };
@@ -129,7 +99,7 @@ Sprite.prototype.startAnimation = function(animation){
 	if(this.data != undefined && this.image != undefined && !this.animating){
 		var length = this.data.animations[animation.name].length;
 		var row = this.data.animations[animation.name].row;
-		
+
 		this.animating = true;
 		this.orientation = animation.orientation;
 		this.nextAnim = {col: 1, row: row, length: length, time: Date.now(), anim: animation.name};

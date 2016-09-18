@@ -1,0 +1,16 @@
+{
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "jlemon.org",
+  "port": "22",
+  "target": "/home/joeyclemon/public_html/mmo",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "joeyclemon",
+  "password": "we4Ufras",
+  "watch": [],
+  "transport": "scp"
+}

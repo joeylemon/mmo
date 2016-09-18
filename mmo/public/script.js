@@ -1,5 +1,3 @@
-var socket = io();
-
 var existing = true;
 var loggingIn = false;
 
@@ -24,7 +22,7 @@ function showLogin(type){
 		var form = document.getElementById("new-login");
 		form.elements["new-username"].value = "";
 		form.elements["new-password"].value = "";
-	
+
 		$("#existing-user").fadeOut(250);
 		$("#new-user").delay(250).fadeIn(250);
 		existing = false;
@@ -53,21 +51,21 @@ function login(){
 	var form = getForm();
 	var username = form.username;
 	var password = form.password;
-	
+
 	if(loggingIn){
 		return;
 	}
-	
+
 	if(username.length < 3 || username.length > 16){
 		alertBadInput("username", "Username must be 3-16 characters.");
 		return;
 	}
-	
+
 	if(password.length < 3 || password.length > 30){
 		alertBadInput("password", "Password must be 3-30 characters.");
 		return;
 	}
-	
+
 	if(existing){
 		setLoggingIn(true);
 		$.ajax({
@@ -77,11 +75,16 @@ function login(){
 			success: function (result){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
-					player = new Player(object.uuid, object.username, object.level, $.parseJSON(object.inv), $.parseJSON(object.pos));
-					
+					player = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos));
+
 					fadeSoundtrackOut();
+					document.getElementById("inv-username").innerHTML = object.username;
+					document.getElementById("inv-level").innerHTML = object.level;
+
 					$("#existing-user").fadeOut(250);
 					$("#borders").fadeOut(250);
+					$("body").css("cursor", "url(styles/cursor.png), auto");
+					//$("body").css("cursor", "context-menu");
 				}else{
 					if(result == "bad username"){
 						alertBadInput("username", "Username does not exist.");
@@ -89,7 +92,7 @@ function login(){
 						alertBadInput("password", "Password is incorrect.");
 					}
 				}
-				
+
 				setLoggingIn(false);
 			}
 		});
@@ -104,19 +107,19 @@ function login(){
 					var form = document.getElementById("existing-login");
 					form.elements["existing-username"].value = username;
 					form.elements["existing-password"].value = password;
-					
+
 					$("#new-user").fadeOut(250);
 					$("#new-hero").delay(250).fadeIn(250);
 					setTimeout(function(){
 						$("#new-hero").fadeOut(250);
 						showLogin("existing");
 					}, 5000);
-					
+
 					document.getElementById("new-hero-name").innerHTML = username;
 				}else{
 					alertBadInput("username", "Username already exists.");
 				}
-				
+
 				setLoggingIn(false);
 			}
 		});
@@ -141,12 +144,12 @@ function alertBadInput(loc, error){
 	var id;
 	if(loc == "username"){
 		id = ids.username;
-		document.getElementById(ids.username).innerHTML = error;
-		$("#" + ids.username).attr('title', error).tooltip('fixTitle').tooltip('show').focus();
+		document.getElementById(id).innerHTML = error;
+		$("#" + id).attr('title', error).tooltip('fixTitle').tooltip('show').focus();
 	}else if(loc == "password"){
 		id = ids.password;
-		document.getElementById(ids.password).innerHTML = error;
-		$("#" + ids.password).attr('title', error).tooltip('fixTitle').tooltip('show').focus();
+		document.getElementById(id).innerHTML = error;
+		$("#" + id).attr('title', error).tooltip('fixTitle').tooltip('show').focus();
 	}
 	setTimeout(function(){
 		$("#" + id).tooltip('hide');
@@ -166,7 +169,10 @@ function fadeSoundtrackOut(){
 	}, 100);
 }
 
-function broadcast(type, data){
-	data["type"] = type;
-	socket.emit("msg", data);
+function showInventory(){
+	$("#inventory").fadeIn(250);
+}
+
+function hideInventory(){
+	$("#inventory").fadeOut(250);
 }

@@ -18,7 +18,7 @@ function loadMap(){
 function loadWorld(){
 	tilesetImg = new Image();
 	tilesetImg.src = "js/tilesheet.png";
-	
+
 	loadJSONMap("js/world.json", loadMap);
 }
 
@@ -28,7 +28,7 @@ function renderCell(x, y, id){
 		var set_width = set.imagewidth / set.tilewidth;
 		var tile_x = tile_id % set_width
 		var tile_y = Math.floor(tile_id / set_width);
-		
+
 		ctx.drawImage(
 			tilesetImg, tile_x * set.tilewidth, tile_y * set.tileheight,
 			set.tilewidth, set.tileheight,
@@ -44,7 +44,7 @@ function init(){
 			var x = cell % map.layers[layer].width;
 			var y = Math.floor((cell - x) / map.layers[layer].height);
 			renderCell(x, y, map.layers[layer].data[cell]);
-			
+
 			if(!maxSet){
 				if((x * map.tilewidth) > maxX){
 					maxX = (x * map.tilewidth);
