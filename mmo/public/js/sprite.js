@@ -74,21 +74,22 @@ Sprite.prototype.draw = function(column, row){
 			sx, sy,
 			width, height,
 			x, y,
-			width * 2, height * 2);
+			width, height);
 	}
 };
 
-Sprite.prototype.setIdleImage = function(animation){
+Sprite.prototype.setIdleAnimation = function(animation){
 	var row = this.data.animations[animation.name].row;
-	this.idleImage = {col: 1, row: row};
+	var length = this.data.animations[animation.name].length;
+	this.idleAnim = {length: length, row: row};
 	this.orientation = animation.orientation;
 };
 
-Sprite.prototype.getIdleImage = function(){
-	if(this.idleImage != undefined){
-		return this.idleImage;
+Sprite.prototype.getIdleAnimation = function(){
+	if(this.idleAnim != undefined){
+		return this.idleAnim;
 	}else{
-		return {col: 1, row: 8};
+		return {length: 2, row: 8};
 	}
 };
 

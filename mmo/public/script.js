@@ -1,7 +1,7 @@
 var existing = true;
 var loggingIn = false;
 
-var player;
+var myplayer;
 
 var soundtrack = new Audio("sounds/soundtrack.m4a");
 soundtrack.addEventListener('ended', function(){
@@ -12,7 +12,7 @@ soundtrack.addEventListener('ended', function(){
 	}, 2000);
 }, false);
 soundtrack.volume = 0.25;
-soundtrack.play();
+//soundtrack.play();
 
 $("#existing-username").focus();
 
@@ -75,16 +75,16 @@ function login(){
 			success: function (result){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
-					player = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos));
+					var levelObject = $.parseJSON(object.level);
+					var player = new Player(object.uuid, object.username, levelObject, $.parseJSON(object.inv), $.parseJSON(object.pos));
+					player.setXPBar();
+					broadcast("user_info", player.getObject());
+					broadcast("join", player.getObject());
+					broadcast("get_players", {uuid: player.uuid});
+					myplayer = player;
 
-					fadeSoundtrackOut();
 					document.getElementById("inv-username").innerHTML = object.username;
-					document.getElementById("inv-level").innerHTML = object.level;
-
-					$("#existing-user").fadeOut(250);
-					$("#borders").fadeOut(250);
-					$("body").css("cursor", "url(styles/cursor.png), auto");
-					//$("body").css("cursor", "context-menu");
+					document.getElementById("inv-level").innerHTML = levelObject.level;
 				}else{
 					if(result == "bad username"){
 						alertBadInput("username", "Username does not exist.");

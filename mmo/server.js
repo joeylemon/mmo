@@ -53,6 +53,7 @@ io.on('connection', function(socket){
 	console.log("Client connected (" + ip + ")");
 
 	socket.on('msg', function(data){
+		var user = users[getUserIndex(socket.id)];
 		if(data.type == "user_info"){
 			addUser(data, id, socket);
 		}else if(data.type == "get_players"){
@@ -78,9 +79,15 @@ io.on('connection', function(socket){
 			};
 			socket.emit('msg', response);
 		}else if(data.type == "update"){
-			users[getUserIndex(socket.id)][data.property] = data.newvalue;
+			user[data.property] = data.newvalue;
+		}else if(data.type == "update_xp"){
+			user.level.xp = data.newxp;
+		}else if(data.type == "level_up"){
+			user.level.level = data.newlevel;
+			user.level.xp = 0;
+			broadcast(data);
 		}else if(data.type == "loc"){
-			users[getUserIndex(socket.id)].pos = {x: data.x, y: data.y};
+			user.pos = {x: data.x, y: data.y};
 			broadcast(data);
 		}else{
 			broadcast(data);

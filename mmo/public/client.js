@@ -12,79 +12,86 @@ TODO:
 
 
 /* Initialize game variables */
-var myIndex;
+var then;
+var elapsed;
+var fps = 500;
 var drawing = true;
 var lastKeysID = -1;
+var fpsInterval = 1000 / fps;
 
 var keys = new Array();
-var players = new Array();
 var projectiles = new Array();
+var flyingtexts = new Array();
 
 
 loadWorld();
+
+then = Date.now();
 window.requestAnimationFrame(draw);
 
-var playertask = setInterval(function(){
-	if(player != undefined){
-		broadcast("user_info", player.getObject());
-		broadcast("join", player.getObject());
-		broadcast("get_players", {uuid: player.uuid});
-		/*
-		offsetX = -player.getX();
-		offsetY = -player.getY();
-		*/
-		clearInterval(playertask);
-	}
-}, 100);
-
 function draw(){
-	ctx.clearRect(0, 0, width, height);
-	ctx.save();
+	now = Date.now();
+	elapsed = now - then;
 
-	ctx.translate(offsetX, offsetY);
+	if(elapsed > fpsInterval){
+		then = now - (elapsed % fpsInterval);
 
-	var camera = getCamera(myIndex);
-	var nextcamera = isOffWorld(offsetX + camera.x, offsetY + camera.y);
-	if(!nextcamera.x && !nextcamera.y){
-		offsetX += camera.x;
-		offsetY += camera.y;
-	}else if(!nextcamera.x && nextcamera.y){
-		offsetX += camera.x;
-	}else if(nextcamera.x && !nextcamera.y){
-		offsetY += camera.y;
-	}else if(myIndex == undefined){
-		offsetX = 0;
-		offsetY = 0;
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-	}
+		ctx.clearRect(0, 0, width, height);
+		ctx.save();
 
-	loadMap();
+		ctx.translate(offsetX, offsetY);
 
-	for(var i = 0; i < projectiles.length; i++){
-		var proj = projectiles[i];
-		proj.draw();
-	}
-
-	for(var i = 0; i < players.length; i++){
-		var p = players[i];
-		if(i != myIndex && p != null){
-			var cam = getCamera(i);
-			p.setX(p.getX() - cam.x);
-			p.setY(p.getY() - cam.y);
-			p.draw();
+		var camera = getCamera(myIndex);
+		var nextcamera = isOffWorld(offsetX + camera.x, offsetY + camera.y);
+		if(!nextcamera.x && !nextcamera.y){
+			offsetX += camera.x;
+			offsetY += camera.y;
+		}else if(!nextcamera.x && nextcamera.y){
+			offsetX += camera.x;
+		}else if(nextcamera.x && !nextcamera.y){
+			offsetY += camera.y;
+		}else if(myIndex == undefined){
+			offsetX = 0;
+			offsetY = 0;
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
 		}
-	}
 
-	if(myIndex != undefined){
-		var center = getCenter();
-		me().setX(center.x);
-		me().setY(center.y);
-		me().draw();
-	}
+		drawMap(false);
 
-	ctx.restore();
+		for(var i = 0; i < projectiles.length; i++){
+			var proj = projectiles[i];
+			proj.draw();
+		}
+
+		for(var i = 0; i < players.length; i++){
+			var p = players[i];
+			if(i != myIndex && p != null){
+				var cam = getCamera(i);
+				p.setX(p.getX() - cam.x);
+				p.setY(p.getY() - cam.y);
+				p.draw();
+			}
+		}
+
+		if(myIndex != undefined){
+			var center = getCenter();
+			me().setX(center.x);
+			me().setY(center.y);
+			me().draw();
+		}
+		
+		drawMap(true);
+		
+		for(var i = 0; i < flyingtexts.length; i++){
+			var text = flyingtexts[i];
+			text.draw();
+		}
+
+		ctx.restore();
+	}
 
 	if(drawing){
+		lastDraw = Date.now();
 		window.requestAnimationFrame(draw);
 	}
 }
@@ -92,7 +99,7 @@ function draw(){
 function getCamera(index){
 	var x = 0;
 	var y = 0;
-	if(index != undefined){
+	if(index != undefined && players[index] != null){
 		var array = players[index].getKeys();
 		if(index == myIndex){
 			array = keys;
@@ -100,22 +107,22 @@ function getCamera(index){
 		if(isPressingKey(Key.LEFT, array)){
 			x += Settings.player_speed;
 			players[index].getSprite().startAnimation(Animations.WALK_LEFT);
-			players[index].getSprite().setIdleImage(Animations.IDLE_LEFT);
+			players[index].getSprite().setIdleAnimation(Animations.IDLE_LEFT);
 		}
 		if(isPressingKey(Key.RIGHT, array)){
 			x += -Settings.player_speed;
 			players[index].getSprite().startAnimation(Animations.WALK_RIGHT);
-			players[index].getSprite().setIdleImage(Animations.IDLE_RIGHT);
+			players[index].getSprite().setIdleAnimation(Animations.IDLE_RIGHT);
 		}
 		if(isPressingKey(Key.UP, array)){
 			y += Settings.player_speed;
 			players[index].getSprite().startAnimation(Animations.WALK_UP);
-			players[index].getSprite().setIdleImage(Animations.IDLE_UP);
+			players[index].getSprite().setIdleAnimation(Animations.IDLE_UP);
 		}
 		if(isPressingKey(Key.DOWN, array)){
 			y += -Settings.player_speed;
 			players[index].getSprite().startAnimation(Animations.WALK_DOWN);
-			players[index].getSprite().setIdleImage(Animations.IDLE_DOWN);
+			players[index].getSprite().setIdleAnimation(Animations.IDLE_DOWN);
 		}
 
 		if(index == myIndex){
@@ -129,13 +136,7 @@ function getCamera(index){
 					};
 					broadcast("keys", msg);
 				}else if(id == 1){
-					var msg = {
-						index: myIndex,
-						uuid: me().getUUID(),
-						x: me().getX(),
-						y: me().getY()
-					};
-					broadcast("loc", msg);
+					sendLocation();
 				}
 				lastKeysID = id;
 			}
@@ -214,17 +215,14 @@ function getPlayerByUUID(uuid){
 	return index;
 }
 
-function me(){
-	return players[myIndex];
-}
-
-function levelUp(){
-	me().setLevel(me().getLevel() + 1);
-	broadcast("update", {property: "level", newvalue: me().getLevelObject()});
-}
-
-function canLevelUp(){
-
+function sendLocation(){
+	var msg = {
+		index: myIndex,
+		uuid: me().getUUID(),
+		x: me().getX(),
+		y: me().getY()
+	};
+	broadcast("loc", msg);
 }
 
 socket.on('msg', function(data){
@@ -238,8 +236,9 @@ socket.on('msg', function(data){
 				players.push(null);
 			}
 		}
-		myIndex = data.nextindex;
-		players.push(player);
+		myIndex = players.length;
+		players.push(myplayer);
+		removeLoginScreen();
 	}
 
 	if(me() == undefined || data.uuid == undefined || data.uuid == me().uuid){
@@ -262,11 +261,14 @@ socket.on('msg', function(data){
 			players[data.index].clearKeys();
 		}
 	}else if(data.type == "loc"){
-		players[data.index].clearKeys();
-		players[data.index].setX(data.x);
-		players[data.index].setY(data.y);
+		var player = players[data.index];
+		player.setX(data.x);
+		player.setY(data.y);
+		player.clearKeys();
 	}else if(data.type == "attack"){
 		players[data.index].attack(data.mouse, data.true_center, data.off_center, data.off_mouse);
+	}else if(data.type == "level_up"){
+		players[data.index].setLevel(data.newlevel);
 	}
 });
 
@@ -293,7 +295,6 @@ document.onkeydown = function(event) {
 		addKey(Key.RIGHT);
 	}else if(code == 69){
 		showInventory();
-		levelUp();
 	}else if(code == 27){
 		hideInventory();
 	}
@@ -338,6 +339,26 @@ document.onmousedown = function(event) {
 
 	if(code == 0){
 		me().attack(mouse, getTrueCenter(), getCharacterCenter(), getMouse());
+		me().addXP(50);
 		broadcast("attack", {index: myIndex, uuid: me().uuid, mouse: mouse, true_center: getTrueCenter(), off_center: getCharacterCenter(), off_mouse: getMouse()});
+		var cell = getTileAt(me().getX(), me().getY());
+		if(cell){
+			console.log(me().getX() + ", " + me().getY());
+			console.log(cell.true_x + ", " + cell.true_y + " (" + cell.id + ")");
+		}
+	}else if(code == 2){
+		keys = new Array();
 	}
 };
+
+document.onmouseup = function(event) {
+	var code = event.button;
+
+	if(code == 2){
+		keys = new Array();
+	}
+};
+
+$(window).blur(function(e){
+	keys = new Array();
+});

@@ -11,18 +11,26 @@
 
 		<div id="borders" class="borders"></div>
 
+		<div id="xp-container" class="xp-container">
+			<div id="xp-bar" class="xp-bar">
+				<span id="xp-bar-level" class="xp-bar-level"></span>
+			</div>
+		</div>
+
 		<div class="center-container">
 
 			<!-- Begin existing user login -->
 			<div id="existing-user" class="login">
 				<span class="title">Existing User</span>
 				<hr>
-				<form id="existing-login" onsubmit="login()" action="javascript:void(0);" autocomplete="on">
+				<form id="existing-login" onsubmit="login()" action="javascript:void(0);" autocomplete="off">
 					<span id="username-title-existing" class="input-title">Username</span>
-					<input id="existing-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+					<br>
+					<input class="always-white" id="existing-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 					<br>
 					<span id="password-title-existing" class="input-title">Password</span>
-					<input id="existing-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+					<br>
+					<input class="always-white" id="existing-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 
 					<input class="button" type="submit" value="log in"></input>
 				</form>
@@ -33,17 +41,17 @@
 			<!-- End existing user login -->
 
 			<!-- Begin new user creation -->
-			<div id="new-user" class="login" style="display: none;width: 600px;">
+			<div id="new-user" class="login" style="display: none;">
 				<span class="title">Create Your Hero</span>
 				<hr>
 				<form id="new-login" onsubmit="login()" action="javascript:void(0);" autocomplete="off">
 					<span id="username-title-new" class="input-title">Hero Name</span>
 					<br>
-					<input id="new-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+					<input class="always-white" id="new-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 					<br>
 					<span id="password-title-new" class="input-title">Account Password</span>
 					<br>
-					<input id="new-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+					<input class="always-white" id="new-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 
 					<input class="button new" type="submit" value="create hero"></input>
 				</form>
@@ -77,7 +85,7 @@
 						<img src="styles/player.png"></img>
 					</div>
 					<div class="stats">
-						Username: <span class="stat" id="inv-username"></span>
+						Hero: <span class="stat" id="inv-username"></span>
 						<br>
 						Level: <span class="stat" id="inv-level"></span>
 					</div>
@@ -93,6 +101,7 @@
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/enums.js"></script>
+	<script src="js/flyingtext.js"></script>
 	<script src="js/player.js"></script>
 	<script src="js/map.js"></script>
 	<script src="js/sprite.js"></script>

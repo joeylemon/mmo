@@ -19,12 +19,18 @@ ctx.setTransform(scale, 0, 0, scale, left, top);
 /* Initialize game variables */
 var socket = io();
 
+var myIndex;
+
 var offsetX = 0;
 var offsetY = 0;
 var mouse = {
 	x: 0,
 	y: 0
 };
+
+var textBlocked = false;
+
+var players = new Array();
 
 /* Initialize enums */
 var Settings = {
@@ -41,7 +47,8 @@ var Key = {
 
 var Sprites = {
 	OGRE: "ogre",
-	CLOTH_ARMOR: "clotharmor"
+	CLOTH_ARMOR: "clotharmor",
+	GOLDEN_ARMOR: "goldenarmor"
 };
 
 var Orientations = {
@@ -67,13 +74,26 @@ var Animations = {
 };
 
 var Projectiles = {
-	LIGHTNING: {name: "lightning_bolt", color: "#81DAF5", stroke: "#646464", size: 7, speed: 10}
+	LIGHTNING: {name: "lightning_bolt", color: "#fff", stroke: "rgba(0, 0, 0, 0.2)", size: 8, speed: 10, amount: 2, space: 0.9}
+};
+
+var TextColor = {
+	XP: "rgba(0, 223, 0, 0.75)",
+	LEVEL_UP: "rgba(254, 154, 46, 0.75)"
 };
 
 /* Initialize functions */
 function broadcast(type, data){
 	data["type"] = type;
 	socket.emit("msg", data);
+}
+
+function me(){
+	return players[myIndex];
+}
+
+function getNextLevel(current){
+	return current * 100;
 }
 
 function getNewUUID(){
@@ -84,18 +104,6 @@ function getNewUUID(){
 	}
 	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 		s4() + '-' + s4() + s4() + s4();
-}
-
-function drawText(x, y, text, size, stroke, width, fill){
-	ctx.font = size + "px profont";
-	ctx.textAlign = "center";
-	if(width > 0){
-		ctx.strokeStyle = stroke;
-		ctx.lineWidth = width;
-		ctx.strokeText(text, x, y);
-	}
-	ctx.fillStyle = fill;
-	ctx.fillText(text, x, y);
 }
 
 function getCenter(){
@@ -138,4 +146,60 @@ function getOrientation(pos, mouse){
 		}
 	}
 	return orientation;
+}
+
+function getRandom(num){
+	return Math.floor(Math.random() * num);
+}
+
+function getLevelColor(level){
+	var r = 23 + level;
+	var g = 175 - level;
+	var b = 0;
+
+	if(g < 0){
+		g = 0;
+	}else if(r > 150){
+		g = 175 - level;
+	}
+
+	if(r > 255){
+		r = 255;
+	}
+
+	return {r: r, g: g, b: b};
+}
+
+function distance(p1, p2){
+	return Math.sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y));
+}
+
+function isTextBlocked(){
+	return textBlocked;
+}
+
+function setTextBlocked(set){
+	textBlocked = set;
+}
+
+function removeLoginScreen(){
+	fadeSoundtrackOut();
+
+	$("#existing-user").fadeOut(250);
+	$("#borders").fadeOut(250);
+
+	$("body").css("cursor", "url(styles/cursor.png), auto");
+	$("#xp-container").fadeIn(250);
+}
+
+function drawText(x, y, text, size, stroke, width, fill){
+	ctx.font = size + "px profont";
+	ctx.textAlign = "center";
+	if(width > 0){
+		ctx.strokeStyle = stroke;
+		ctx.lineWidth = width;
+		ctx.strokeText(text, x, y);
+	}
+	ctx.fillStyle = fill;
+	ctx.fillText(text, x, y);
 }
