@@ -5,9 +5,17 @@ var Player = function(uuid, name, level, inventory, position){
 	this.inventory = inventory;
 	this.position = position;
 	this.keys = new Array();
+	
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
+	
+	this.flyingtexts = new Array();
+	this.blocktext = false;
+	
+	this.lastAttack = 0;
+	
 	this.sprite = new Sprite(this.inventory.armor, this.position.x, this.position.y);
+	this.sword = new Sprite(Sprites.SWORD, this.position.x + SwordOffsets.DOWN, this.position.y + SwordOffsets.DOWN);
 };
 
 Player.prototype.getObject = function(){
@@ -36,7 +44,6 @@ Player.prototype.setLevel = function(newlevel){
 
 Player.prototype.addLevel = function(){
 	this.level.level += 1;
-	document.getElementById("inv-level").innerHTML = this.level.level;
 };
 
 Player.prototype.getXP = function(){
@@ -49,8 +56,8 @@ Player.prototype.setXP = function(newxp){
 
 Player.prototype.addXP = function(xp){
 	this.level.xp += xp;
-	var text = new Text(this.position, "+" + xp + " xp", {size: 25, color: TextColor.XP});
-	text.show();
+	var text = new Text("+" + xp + " xp", {size: 25, color: TextColor.XP});
+	this.addText(text);
 	if(this.canLevelUp()){
 		this.levelUp();
 	}else{
@@ -79,9 +86,9 @@ Player.prototype.levelUp = function(){
 	this.addLevel();
 	this.setXP(0);
 	broadcast("level_up", {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
-	
-	var text = new Text(this.position, "Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP});
-	text.show();
+
+	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP});
+	this.addText(text);
 };
 
 Player.prototype.getArmor = function(){
@@ -103,11 +110,25 @@ Player.prototype.getPosition = function(){
 Player.prototype.setX = function(x){
 	this.position.x = x;
 	this.sprite.setX(x);
+	this.sword.setX(x + getSwordOffset(this.sprite.getOrientation).x);
 };
 
 Player.prototype.setY = function(y){
 	this.position.y = y;
 	this.sprite.setY(y);
+	this.sword.setY(y + getSwordOffset(this.sprite.getOrientation).y);
+};
+
+Player.prototype.getCenter = function(){
+	return {x: this.position.x + 64, y: this.position.y + 64};
+};
+
+Player.prototype.getRight = function(){
+	return {x: this.getCenter().x + 32, y: this.getCenter().y};
+};
+
+Player.prototype.getLeft = function(){
+	return {x: this.getCenter().x - 32, y: this.getCenter().y};
 };
 
 Player.prototype.setKeys = function(array){
@@ -127,8 +148,36 @@ Player.prototype.getSprite = function(){
 	return this.sprite;
 };
 
-Player.prototype.attack = function(mouse, true_center, off_center, off_mouse){
-	var orientation = getOrientation(true_center, mouse);
+Player.prototype.addText = function(text){
+	if(!this.blocktext){
+		if(text.getOptions().block){
+			this.flyingtexts = new Array();
+			this.blocktext = true;
+		}else{
+			if(this.flyingtexts.length >= 3){
+				this.flyingtexts.splice(0, 1);
+			}
+		}
+		this.flyingtexts.push(text);
+	}
+};
+
+Player.prototype.say = function(msg){
+	var color = TextColor.MESSAGE;
+	if(this.name == "joeythelemon"){
+		color = TextColor.ADMIN_MESSAGE;
+	}
+	this.message = new Message(msg, color);
+};
+
+Player.prototype.canAttack = function(){
+	return (Date.now() - this.lastAttack > Settings.attack_speed);
+};
+
+Player.prototype.attack = function(){
+	var orientation = this.sprite.getOrientation();
+	this.lastAttack = Date.now();
+	
 	if(orientation == Orientations.UP){
 		this.sprite.startAnimation(Animations.ATTACK_UP);
 		this.sprite.setIdleAnimation(Animations.IDLE_UP);
@@ -142,13 +191,31 @@ Player.prototype.attack = function(mouse, true_center, off_center, off_mouse){
 		this.sprite.startAnimation(Animations.ATTACK_RIGHT);
 		this.sprite.setIdleAnimation(Animations.IDLE_RIGHT);
 	}
-	var proj = new Projectile(off_center, off_mouse, Projectiles.LIGHTNING);
+	
+	var hit;
+	for(var i = 0; i < npcs.length; i++){
+		var npc = npcs[i];
+		if(distance(me().getCenter(), npc.getCenter()) <= 80){
+			var orientation = getOrientation(me().getCenter(), npc.getCenter());
+			var angle = getAngle(me().getCenter(), npc.getCenter());
+			if(orientation == me().getSprite().getOrientation() || orientation == Orientations.RIGHT && angle <= 21 && angle >= 54){
+				hit = npc;
+				break;
+			}
+		}
+	}
+	if(hit){
+		console.log("hit!");
+		console.log(getAngle(me().getCenter(), npc.getCenter()));
+		npc.hurt(10);
+		this.addXP(15);
+	}
 };
 
 Player.prototype.draw = function(){
 	if(!this.sprite.isDoingAnimation()){
 		var idle = this.sprite.getIdleAnimation();
-		if(Date.now() > this.lastIdleChange + 800){
+		if(Date.now() > this.lastIdleChange + Settings.player_idle_change){
 			this.idleStep += 1;
 			if(this.idleStep > idle.length){
 				this.idleStep = 1;
@@ -156,12 +223,35 @@ Player.prototype.draw = function(){
 			this.lastIdleChange = Date.now();
 		}
 		this.sprite.draw(this.idleStep, idle.row);
+		this.sword.draw(this.idleStep, idle.row);
 	}else{
 		var anim = this.sprite.getNextAnimation();
 		this.sprite.draw(anim.col, anim.row);
+		this.sword.draw(anim.col, anim.row);
 	}
 
 	var color = getLevelColor(this.level.level);
 	drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 6, "#fff");
 	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level.level, 15, "#000", 3, "rgb(" + color.r + "," + color.g + "," + color.b + ")");
+
+	for(var i = 0; i < this.flyingtexts.length; i++){
+		var text = this.flyingtexts[i];
+		text.draw(this.getPosition());
+		if(text.isDead()){
+			this.flyingtexts.splice(i, 1);
+			if(text.getOptions().block){
+				this.blocktext = false;
+			}
+		}
+	}
+
+	if(this.message && !this.message.isDead()){
+		var pos = $.extend(true, {}, this.getPosition());
+		if(this.inventory.armor == "clotharmor"){
+			pos.y += 10;
+		}
+		this.message.draw(pos);
+	}else{
+		this.message = undefined;
+	}
 };

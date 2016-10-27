@@ -1,7 +1,7 @@
 {
-	"id": "clotharmor",
-	"width": 128,
-	"height": 128,
+	"id": "sword",
+	"width": 180,
+	"height": 180,
 	"animations": {
 		"atk_right": {
 			"length": 5,
@@ -52,6 +52,6 @@
 			"row": 8
 		}
 	},
-	"offset_x": -8,
-	"offset_y": -12
+	"offset_x": -16,
+	"offset_y": -20
 }

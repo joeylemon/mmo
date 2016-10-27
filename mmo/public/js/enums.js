@@ -21,21 +21,44 @@ var socket = io();
 
 var myIndex;
 
-var offsetX = 0;
-var offsetY = 0;
+var offset = {
+	x: 0,
+	y: 0
+}
 var mouse = {
 	x: 0,
 	y: 0
 };
 
-var textBlocked = false;
+var then;
+var elapsed;
+var fps = 500;
+var drawing = true;
+var lastKeysID = -1;
+var fpsInterval = 1000 / fps;
 
+var keys = new Array();
+var npcs = new Array();
 var players = new Array();
+var projectiles = new Array();
+var flyingtexts = new Array();
+
+var noblur = false;
 
 /* Initialize enums */
 var Settings = {
 	idle_camera_speed: {x: -0.10, y: -0.175},
-	player_speed: 3.25
+	player_speed: 3.25,
+	attack_speed: 425,
+	player_idle_change: 800,
+	npc_idle_change: 400
+};
+
+var SwordOffsets = {
+	UP: {x: -20, y: -35},
+	DOWN: {x: -30, y: -40},
+	LEFT: {x: -20, y: -35},
+	RIGHT: {x: -30, y: -25}
 };
 
 var Key = {
@@ -48,7 +71,9 @@ var Key = {
 var Sprites = {
 	OGRE: "ogre",
 	CLOTH_ARMOR: "clotharmor",
-	GOLDEN_ARMOR: "goldenarmor"
+	GOLDEN_ARMOR: "goldenarmor",
+	SWORD: "sword",
+	BAT: "bat"
 };
 
 var Orientations = {
@@ -57,6 +82,17 @@ var Orientations = {
 	LEFT: 2,
 	RIGHT: 3
 };
+
+var Compass = {
+	NORTH: 0,
+	NORTH_EAST: 1,
+	EAST: 2,
+	SOUTH_EAST: 3,
+	SOUTH: 4,
+	SOUTH_WEST: 5,
+	WEST: 6,
+	NORTH_WEST: 7
+}
 
 var Animations = {
 	ATTACK_RIGHT: {name: "atk_right", orientation: 3, type: "attack"},
@@ -73,13 +109,11 @@ var Animations = {
 	IDLE_DOWN: {name: "idle_down", orientation: 1, type: "idle"}
 };
 
-var Projectiles = {
-	LIGHTNING: {name: "lightning_bolt", color: "#fff", stroke: "rgba(0, 0, 0, 0.2)", size: 8, speed: 10, amount: 2, space: 0.9}
-};
-
 var TextColor = {
 	XP: "rgba(0, 223, 0, 0.75)",
-	LEVEL_UP: "rgba(254, 154, 46, 0.75)"
+	LEVEL_UP: "rgba(254, 154, 46, 0.75)",
+	MESSAGE: "#fff",
+	ADMIN_MESSAGE: "#FF4646"
 };
 
 /* Initialize functions */
@@ -90,6 +124,20 @@ function broadcast(type, data){
 
 function me(){
 	return players[myIndex];
+}
+
+function removeNpc(uid){
+	for(var i = 0; i < npcs.length; i++){
+		var npc = npcs[i];
+		if(npc.getUID() == uid){
+			npcs.splice(i, 1);
+			break;
+		}
+	}
+}
+
+function getMapMouse(){
+	return {x: mouse.x - offset.x, y: mouse.y - offset.y};
 }
 
 function getNextLevel(current){
@@ -107,20 +155,20 @@ function getNewUUID(){
 }
 
 function getCenter(){
-	var x = (canvas.width / 2) - offsetX - 64;
-	var y = (canvas.height / 2) - offsetY - 64;
+	var x = (canvas.width / 2) - offset.x - 64;
+	var y = (canvas.height / 2) - offset.y - 64;
 	return {x: x, y: y};
 }
 
 function getCharacterCenter(){
-	var x = (canvas.width / 2) - offsetX;
-	var y = (canvas.height / 2) - offsetY;
+	var x = (canvas.width / 2) - offset.x;
+	var y = (canvas.height / 2) - offset.y;
 	return {x: x, y: y};
 }
 
 function getMouse(){
-	var x = mouse.x - offsetX;
-	var y = mouse.y - offsetY;
+	var x = mouse.x - offset.x;
+	var y = mouse.y - offset.y;
 	return {x: x, y: y};
 }
 
@@ -148,6 +196,10 @@ function getOrientation(pos, mouse){
 	return orientation;
 }
 
+function getAngle(p1, p2){
+	return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+}
+
 function getRandom(num){
 	return Math.floor(Math.random() * num);
 }
@@ -170,26 +222,53 @@ function getLevelColor(level){
 	return {r: r, g: g, b: b};
 }
 
+function getSwordOffset(orientation){
+	if(orientation == Orientations.UP){
+		return SwordOffsets.UP;
+	}else if(orientation == Orientations.DOWN){
+		return SwordOffsets.DOWN;
+	}else if(orientation == Orientations.LEFT){
+		return SwordOffsets.LEFT;
+	}else{
+		return SwordOffsets.RIGHT;
+	}
+}
+
+function isVisible(x, y){
+	if((x < (canvas.width - offset.x) && x > offset.x) && (y < (canvas.height - offset.y) && y > offset.y)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
 function distance(p1, p2){
 	return Math.sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y));
-}
-
-function isTextBlocked(){
-	return textBlocked;
-}
-
-function setTextBlocked(set){
-	textBlocked = set;
 }
 
 function removeLoginScreen(){
 	fadeSoundtrackOut();
 
 	$("#existing-user").fadeOut(250);
-	$("#borders").fadeOut(250);
+	$("#borders").fadeOut(1000);
+	fadeBlurOut();
 
 	$("body").css("cursor", "url(styles/cursor.png), auto");
 	$("#xp-container").fadeIn(250);
+}
+
+function fadeBlurOut(){
+	var blur = 5.0;
+	var task = setInterval(function(){
+		blur -= 0.1;
+		if(blur >= 0){
+			$("#game").css("filter", "blur(" + blur + "px)");
+		}else{
+			$("#game").css("filter", "blur(0px)");
+			clearInterval(task);
+			noblur = true;
+		}
+	}, 5);
 }
 
 function drawText(x, y, text, size, stroke, width, fill){
@@ -202,4 +281,9 @@ function drawText(x, y, text, size, stroke, width, fill){
 	}
 	ctx.fillStyle = fill;
 	ctx.fillText(text, x, y);
+}
+
+function drawRect(x, y, width, height, fill){
+	ctx.fillStyle = fill;
+	ctx.fillRect(x, y, width, height);
 }

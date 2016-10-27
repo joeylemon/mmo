@@ -4,6 +4,13 @@
 		<link rel="icon" type="img/ico" href="http://jlemon.org/images/favicon.ico">
 		<link rel='stylesheet' type='text/css' href='styling.css' />
 		<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' />
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+			<defs>
+				<filter id="blur">
+					<feGaussianBlur stdDeviation="5" />
+				</filter>
+			</defs>
+		</svg>
 	</head>
 
 	<body style="background-color: #2D2D2D;">
@@ -15,6 +22,10 @@
 			<div id="xp-bar" class="xp-bar">
 				<span id="xp-bar-level" class="xp-bar-level"></span>
 			</div>
+		</div>
+
+		<div id="chatbox" class="chatbox">
+			<input id="message" type="text" placeholder="Type your message" name="msg" maxlength="35"></input>
 		</div>
 
 		<div class="center-container">
@@ -77,23 +88,17 @@
 				</div>
 			</div>
 			<!-- End new hero display -->
+		</div>
 
-			<!-- Begin inventory -->
-			<div class="inventory" id="inventory">
-				<div class="info">
-					<div class="icon">
-						<img src="styles/player.png"></img>
-					</div>
-					<div class="stats">
-						Hero: <span class="stat" id="inv-username"></span>
-						<br>
-						Level: <span class="stat" id="inv-level"></span>
-					</div>
-				</div>
-			</div>
-			<!-- End inventory -->
+		<!--
+		<div id="menu" class="menu">
+			<span class="link" id="inv-link">Inventory</span>
+		</div>
+
+		<div id="inventory" class="inventory">
 
 		</div>
+		-->
 	</body>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -102,10 +107,11 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/enums.js"></script>
 	<script src="js/flyingtext.js"></script>
-	<script src="js/player.js"></script>
+	<script src="js/message.js"></script>
 	<script src="js/map.js"></script>
 	<script src="js/sprite.js"></script>
+	<script src="js/player.js"></script>
+	<script src="js/npc.js"></script>
 	<script src="script.js"></script>
 	<script src="client.js"></script>
-	<script src="js/projectile.js"></script>
 </html>

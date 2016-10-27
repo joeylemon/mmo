@@ -1,12 +1,14 @@
 /* Initialize variables */
 var map;
 var set;
+var set_width;
 var tilesetImg;
 
 var maxX = 0;
 var maxY = 0;
 
 var front = new Array();
+var collisions = new Array();
 var map_layers = new Array();
 
 /* Initialize map functions */
@@ -15,12 +17,16 @@ function drawMap(drawTop){
 		if(drawTop){
 			for(var i = 0; i < map_layers[1].length; i++){
 				var cell = map_layers[1][i];
-				renderCell(cell);
+				if(isVisible(cell.true_x, cell.true_y)){
+					renderCell(cell);
+				}
 			}
 		}else{
 			for(var i = 0; i < map_layers[0].length; i++){
 				var cell = map_layers[0][i];
-				renderCell(cell);
+				if(isVisible(cell.true_x, cell.true_y)){
+					renderCell(cell);
+				}
 			}
 		}
 	}
@@ -35,9 +41,9 @@ function loadWorld(){
 function renderCell(cell){
 	if(cell.id != 0){
 		ctx.drawImage(
-			tilesetImg, cell.true_x, cell.true_y,
+			tilesetImg, cell.set_x, cell.set_y,
 			set.tilewidth, set.tileheight,
-			cell.x * set.tilewidth, cell.y * set.tileheight,
+			cell.true_x, cell.true_y,
 			set.tilewidth, set.tileheight
 		);
 	}
@@ -62,26 +68,46 @@ function loadJSONMap(url, callback){
 				}
 			}
 		}
+		
+		for(var i = 0; i < map.collisions.length; i++){
+			var collision = map.collisions[i];
+
+			var start = collision.s + 1;
+			var width = collision.w - 1;
+			var height = collision.h;
+
+			for(var h = 0; h < height; h++){
+				var first = start + (h * set.columns);
+				for(var x = first; x <= first + width; x++){
+					collisions.push(x);
+				}
+			}
+		}
 
 		/* Initialize layers */
 		var map_bottom = new Array();
 		var map_top = new Array();
 
-		var set_width = set.imagewidth / set.tilewidth;
+		set_width = set.imagewidth / set.tilewidth;
 		for(var layer = 0; layer < map.layers.length; ++layer){
 			for (var cell = 0; cell < map.layers[layer].data.length; ++cell){
 				var id = map.layers[layer].data[cell];
 				var x = cell % map.layers[layer].width;
 				var y = Math.floor((cell - x) / map.layers[layer].height);
+
 				var tile_id = id - set.firstgid;
 				var tile_x = tile_id % set_width;
 				var tile_y = Math.floor(tile_id / set_width);
-				var true_x = tile_x * set.tilewidth;
-				var true_y = tile_y * set.tileheight;
+
+				var set_x = tile_x * set.tilewidth;
+				var set_y = tile_y * set.tileheight;
+
+				var true_x = x * set.tilewidth;
+				var true_y = y * set.tileheight;
 
 				var index = front.indexOf(id);
 
-				var obj = {x: x, y: y, id: id, tile_id: tile_id, tile_x: tile_x, tile_y: tile_y, true_x: true_x, true_y: true_y};
+				var obj = {x: x, y: y, id: id, tile_id: tile_id, set_x: set_x, set_y: set_y, true_x: true_x, true_y: true_y};
 
 				if(index >= 0){
 					map_top.push(obj);
@@ -115,14 +141,13 @@ function getMaxY(){
 }
 
 function getTileAt(x, y){
-	var tile;
 	for(var x = 0; x < map_layers.length; x++){
 		for(var i = 0; i < map_layers[x].length; i++){
 			var cell = map_layers[x][i];
-			if(distance({x: x, y: y}, {x: cell.true_x, y: cell.true_y}) <= set.tilewidth){
-				tile = cell;
+			if(distance({x: x, y: y}, {x: cell.true_x, y: cell.true_y}) <= 32){
+				return cell;
 			}
 		}
 	}
-	return tile;
+	return undefined;
 }

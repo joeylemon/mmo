@@ -2,27 +2,9 @@
 
 TODO:
 - getCamera() checks for world borders
-- player name text smaller
-- attacking should shoot a projectile
 - UI (chat box, current players, inventory screen)
 
 */
-
-
-
-
-/* Initialize game variables */
-var then;
-var elapsed;
-var fps = 500;
-var drawing = true;
-var lastKeysID = -1;
-var fpsInterval = 1000 / fps;
-
-var keys = new Array();
-var projectiles = new Array();
-var flyingtexts = new Array();
-
 
 loadWorld();
 
@@ -39,20 +21,20 @@ function draw(){
 		ctx.clearRect(0, 0, width, height);
 		ctx.save();
 
-		ctx.translate(offsetX, offsetY);
+		ctx.translate(offset.x, offset.y);
 
 		var camera = getCamera(myIndex);
-		var nextcamera = isOffWorld(offsetX + camera.x, offsetY + camera.y);
+		var nextcamera = isOffWorld(offset.x + camera.x, offset.y + camera.y);
 		if(!nextcamera.x && !nextcamera.y){
-			offsetX += camera.x;
-			offsetY += camera.y;
+			offset.x += camera.x;
+			offset.y += camera.y;
 		}else if(!nextcamera.x && nextcamera.y){
-			offsetX += camera.x;
+			offset.x += camera.x;
 		}else if(nextcamera.x && !nextcamera.y){
-			offsetY += camera.y;
+			offset.y += camera.y;
 		}else if(myIndex == undefined){
-			offsetX = 0;
-			offsetY = 0;
+			offset.x = 0;
+			offset.y = 0;
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 		}
 
@@ -80,12 +62,12 @@ function draw(){
 			me().draw();
 		}
 		
-		drawMap(true);
-		
-		for(var i = 0; i < flyingtexts.length; i++){
-			var text = flyingtexts[i];
-			text.draw();
+		for(var i = 0; i < npcs.length; i++){
+			var npc = npcs[i];
+			npc.draw();
 		}
+
+		drawMap(true);
 
 		ctx.restore();
 	}
@@ -203,6 +185,10 @@ function getKeysID(){
 	return id;
 }
 
+function clearKeys(){
+	keys = new Array();
+}
+
 function getPlayerByUUID(uuid){
 	var index = -1;
 	for(var i = 0; i < players.length; i++){
@@ -238,7 +224,18 @@ socket.on('msg', function(data){
 		}
 		myIndex = players.length;
 		players.push(myplayer);
+		
+		for(var i = 0; i < data.npcs.length; i++){
+			var npc = new Npc(data.npcs[i].id, data.npcs[i].uid, data.npcs[i].x, data.npcs[i].y, data.npcs[i].hp);
+			npcs.push(npc);
+		}
+		
 		removeLoginScreen();
+	}
+	
+	if(data.type == "add_npc"){
+		var npc = new Npc(data.npc.id, data.npc.uid, data.npc.x, data.npc.y, data.npc.hp);
+		npcs.push(npc);
 	}
 
 	if(me() == undefined || data.uuid == undefined || data.uuid == me().uuid){
@@ -266,9 +263,12 @@ socket.on('msg', function(data){
 		player.setY(data.y);
 		player.clearKeys();
 	}else if(data.type == "attack"){
-		players[data.index].attack(data.mouse, data.true_center, data.off_center, data.off_mouse);
+		players[data.index].attack();
 	}else if(data.type == "level_up"){
 		players[data.index].setLevel(data.newlevel);
+		players[data.index].addText(new Text("Level Up!", {size: 30, block: true, color: TextColor.LEVEL_UP}));
+	}else if(data.type == "chat"){
+		players[data.index].say(data.msg);
 	}
 });
 
@@ -281,7 +281,34 @@ document.onkeydown = function(event) {
 		code = event.charCode;
 	}
 
-	if(myIndex == undefined){
+	if(code == 13){
+		if(myplayer){
+			if(!isChatBoxOpen()){
+				showChatBox();
+				clearKeys();
+			}else{
+				var chat = document.getElementById("message").value;
+				if(chat.length > 0){
+					me().say(chat);
+
+					var msg = {
+						index: myIndex,
+						uuid: me().getUUID(),
+						msg: chat
+					};
+					broadcast("chat", msg);
+				}
+
+				hideChatBox();
+				document.getElementById("message").value = "";
+			}
+		}
+	}else if(code == 27){
+		hideChatBox();
+		document.getElementById("message").value = "";
+	}
+
+	if(myIndex == undefined || isChatBoxOpen() || !noblur){
 		return;
 	}
 
@@ -293,10 +320,6 @@ document.onkeydown = function(event) {
 		addKey(Key.LEFT);
 	}else if(code == 39 || code == 68){
 		addKey(Key.RIGHT);
-	}else if(code == 69){
-		showInventory();
-	}else if(code == 27){
-		hideInventory();
 	}
 };
 
@@ -309,7 +332,7 @@ document.onkeyup = function(event) {
 		code = event.charCode;
 	}
 
-	if(myIndex == undefined){
+	if(myIndex == undefined || isChatBoxOpen() || !noblur){
 		return;
 	}
 
@@ -338,16 +361,24 @@ document.onmousedown = function(event) {
 	}
 
 	if(code == 0){
-		me().attack(mouse, getTrueCenter(), getCharacterCenter(), getMouse());
-		me().addXP(50);
-		broadcast("attack", {index: myIndex, uuid: me().uuid, mouse: mouse, true_center: getTrueCenter(), off_center: getCharacterCenter(), off_mouse: getMouse()});
-		var cell = getTileAt(me().getX(), me().getY());
-		if(cell){
+		if(me().canAttack()){
+			me().attack();
+			var msg = {
+				index: myIndex, 
+				uuid: me().uuid
+			};
+			broadcast("attack", msg);
+			
+			/*
 			console.log(me().getX() + ", " + me().getY());
-			console.log(cell.true_x + ", " + cell.true_y + " (" + cell.id + ")");
+			var cell = getTileAt(me().getX() + 32, me().getY());
+			if(cell){
+				console.log(cell.true_x + ", " + cell.true_y + " (" + cell.id + ")");
+			}
+			*/
 		}
 	}else if(code == 2){
-		keys = new Array();
+		clearKeys();
 	}
 };
 
@@ -355,10 +386,14 @@ document.onmouseup = function(event) {
 	var code = event.button;
 
 	if(code == 2){
-		keys = new Array();
+		clearKeys();
 	}
 };
 
 $(window).blur(function(e){
-	keys = new Array();
+	clearKeys();
+	if(isChatBoxOpen()){
+		hideChatBox();
+		document.getElementById("message").value = "";
+	}
 });

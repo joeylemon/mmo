@@ -1,4 +1,5 @@
 var existing = true;
+var chatbox = false;
 var loggingIn = false;
 
 var myplayer;
@@ -15,6 +16,16 @@ soundtrack.volume = 0.25;
 //soundtrack.play();
 
 $("#existing-username").focus();
+
+
+$("#inv-link").hover(function(){
+	$("#inv-link").fadeOut(50);
+	$("#inventory").fadeIn(50);
+});
+$("#inventory").mouseout(function(){
+	$("#inv-link").fadeIn(50);
+	$("#inventory").fadeOut(50);
+});
 
 
 function showLogin(type){
@@ -82,9 +93,8 @@ function login(){
 					broadcast("join", player.getObject());
 					broadcast("get_players", {uuid: player.uuid});
 					myplayer = player;
-
-					document.getElementById("inv-username").innerHTML = object.username;
-					document.getElementById("inv-level").innerHTML = levelObject.level;
+					offset.x = 0;
+					offset.y = 0;
 				}else{
 					if(result == "bad username"){
 						alertBadInput("username", "Username does not exist.");
@@ -169,10 +179,20 @@ function fadeSoundtrackOut(){
 	}, 100);
 }
 
-function showInventory(){
-	$("#inventory").fadeIn(250);
+function showChatBox(){
+	$("#chatbox").fadeIn(100);
+	$("#xp-container").fadeOut(0);
+	$("#message").focus();
+	chatbox = true;
 }
 
-function hideInventory(){
-	$("#inventory").fadeOut(250);
+function hideChatBox(){
+	$("#chatbox").fadeOut(100);
+	$("#xp-container").fadeIn(100);
+	$("#message").blur();
+	chatbox = false;
+}
+
+function isChatBoxOpen(){
+	return chatbox;
 }
