@@ -49,9 +49,11 @@ var noblur = false;
 var Settings = {
 	idle_camera_speed: {x: -0.10, y: -0.175},
 	player_speed: 3.25,
-	attack_speed: 425,
+	attack_speed: 300,
 	player_idle_change: 800,
-	npc_idle_change: 400
+	npc_idle_change: 400,
+	health_bar_width: 45,
+	health_bar_height: 5
 };
 
 var SwordOffsets = {
@@ -110,10 +112,15 @@ var Animations = {
 };
 
 var TextColor = {
-	XP: "rgba(0, 223, 0, 0.75)",
-	LEVEL_UP: "rgba(254, 154, 46, 0.75)",
-	MESSAGE: "#fff",
-	ADMIN_MESSAGE: "#FF4646"
+	XP: "#00DF00",
+	LEVEL_UP: "#FF9B2E",
+	HURT: "#EB0000",
+	KILL_XP: "#DD9B00",
+	MESSAGE: "#FFFFFF",
+	ADMIN_MESSAGE: "#FF4646",
+	HIGH_HEALTH: "rgba(22, 132, 0, 0.8)",
+	MEDIUM_HEALTH: "rgba(235, 224, 0, 0.8)",
+	LOW_HEALTH: "rgba(214, 0, 0, 0.8)"
 };
 
 /* Initialize functions */
@@ -126,6 +133,21 @@ function me(){
 	return players[myIndex];
 }
 
+function getNpc(uid){
+	for(var i = 0; i < npcs.length; i++){
+		var npc = npcs[i];
+		if(npc.getUID() == uid){
+			return npc;
+		}
+	}
+}
+
+function addNpc(npc){
+	if(!getNpc(npc.getUID())){
+		npcs.push(npc);
+	}
+}
+
 function removeNpc(uid){
 	for(var i = 0; i < npcs.length; i++){
 		var npc = npcs[i];
@@ -134,6 +156,18 @@ function removeNpc(uid){
 			break;
 		}
 	}
+}
+
+function getHealthColor(percent){
+	var color = TextColor.HIGH_HEALTH;
+	
+	if(percent <= 0.6 && percent >= 0.3){
+		color = TextColor.MEDIUM_HEALTH;
+	}else if(percent < 0.3){
+		color = TextColor.LOW_HEALTH;
+	}
+	
+	return color;
 }
 
 function getMapMouse(){
@@ -251,6 +285,7 @@ function removeLoginScreen(){
 
 	$("#existing-user").fadeOut(250);
 	$("#borders").fadeOut(1000);
+	$("#logo").fadeOut(0);
 	fadeBlurOut();
 
 	$("body").css("cursor", "url(styles/cursor.png), auto");

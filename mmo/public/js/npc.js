@@ -4,6 +4,7 @@ var Npc = function(id, uid, x, y, hp){
 	this.x = x;
 	this.y = y;
 	this.hp = hp;
+	this.maxhp = hp;
 	this.sprite = new Sprite(id, x, y);
 	this.flyingtexts = new Array();
 	this.idleStep = 1;
@@ -12,6 +13,10 @@ var Npc = function(id, uid, x, y, hp){
 
 Npc.prototype.getUID = function(){
 	return this.uid;
+};
+
+Npc.prototype.getHP = function(){
+	return this.hp;
 };
 
 Npc.prototype.setX = function(x){
@@ -48,6 +53,13 @@ Npc.prototype.getTopLeft = function(){
 	return this.topleft;
 };
 
+Npc.prototype.getBottomCenter = function(){
+	if(!this.bottomcenter){
+		this.bottomcenter = {x: this.getX() + (this.sprite.getWidth() / 2) - (Settings.health_bar_width / 2), y: this.getY() + this.sprite.getWidth() + 5};
+	}
+	return this.bottomcenter;
+};
+
 Npc.prototype.addText = function(text){
 	if(!this.blocktext){
 		if(this.flyingtexts.length >= 3){
@@ -60,13 +72,8 @@ Npc.prototype.addText = function(text){
 Npc.prototype.hurt = function(amount){
 	this.hp -= amount;
 	
-	if(this.hp > 0){
-		var text = new Text("-" + amount + " hp", {size: 17, color: TextColor.ADMIN_MESSAGE});
-		this.addText(text);
-	}else{
-		removeNpc(this.uid);
-		broadcast("kill_npc", {uid: this.uid});
-	}
+	var text = new Text("-" + amount + " hp", {size: 17, color: TextColor.HURT});
+	this.addText(text);
 };
 
 Npc.prototype.attack = function(orientation){
@@ -108,5 +115,13 @@ Npc.prototype.draw = function(){
 		if(text.isDead()){
 			this.flyingtexts.splice(i, 1);
 		}
+	}
+	
+	if(this.sprite.isDataSet() && this.hp < this.maxhp){
+		var bottom = this.getBottomCenter();
+		var percent = (this.hp / this.maxhp);
+		var color = getHealthColor(percent);
+		
+		drawRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, color);
 	}
 };

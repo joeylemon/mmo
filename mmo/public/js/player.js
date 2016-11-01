@@ -54,14 +54,14 @@ Player.prototype.setXP = function(newxp){
 	this.level.xp = newxp;
 };
 
-Player.prototype.addXP = function(xp){
+Player.prototype.addXP = function(xp, color = TextColor.XP){
 	this.level.xp += xp;
-	var text = new Text("+" + xp + " xp", {size: 25, color: TextColor.XP});
+	var text = new Text("+" + xp + " xp", {size: 25, color: color});
 	this.addText(text);
 	if(this.canLevelUp()){
 		this.levelUp();
 	}else{
-		broadcast("update_xp", {newxp: this.level.xp});
+		broadcast(Messages.UPDATE_XP, {newxp: this.level.xp});
 		this.setXPBar();
 	}
 };
@@ -85,7 +85,7 @@ Player.prototype.levelUp = function(){
 	$("#xp-bar").css("width", "0%");
 	this.addLevel();
 	this.setXP(0);
-	broadcast("level_up", {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
+	broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
 
 	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP});
 	this.addText(text);
@@ -176,7 +176,6 @@ Player.prototype.canAttack = function(){
 
 Player.prototype.attack = function(){
 	var orientation = this.sprite.getOrientation();
-	this.lastAttack = Date.now();
 	
 	if(orientation == Orientations.UP){
 		this.sprite.startAnimation(Animations.ATTACK_UP);
@@ -192,23 +191,30 @@ Player.prototype.attack = function(){
 		this.sprite.setIdleAnimation(Animations.IDLE_RIGHT);
 	}
 	
-	var hit;
-	for(var i = 0; i < npcs.length; i++){
-		var npc = npcs[i];
-		if(distance(me().getCenter(), npc.getCenter()) <= 80){
-			var orientation = getOrientation(me().getCenter(), npc.getCenter());
-			var angle = getAngle(me().getCenter(), npc.getCenter());
-			if(orientation == me().getSprite().getOrientation() || orientation == Orientations.RIGHT && angle <= 21 && angle >= 54){
-				hit = npc;
-				break;
+	if(this.uuid == me().getUUID()){
+		this.lastAttack = Date.now();
+		var hit;
+		for(var i = 0; i < npcs.length; i++){
+			var npc = npcs[i];
+			if(distance(me().getCenter(), npc.getCenter()) <= 80){
+				var orientation = getOrientation(me().getCenter(), npc.getCenter());
+				var angle = getAngle(me().getCenter(), npc.getCenter());
+				if(orientation == me().getSprite().getOrientation() || orientation == Orientations.RIGHT && angle <= 21 && angle >= 54){
+					hit = npc;
+					break;
+				}
 			}
 		}
-	}
-	if(hit){
-		console.log("hit!");
-		console.log(getAngle(me().getCenter(), npc.getCenter()));
-		npc.hurt(10);
-		this.addXP(15);
+		if(hit){
+			var amount = 10;
+			if(hit.getHP() - amount > 0){
+				broadcast("attack_npc", {uid: npc.getUID(), amount: amount});
+				this.addXP(15);
+			}else{
+				broadcast("kill_npc", {uid: npc.getUID()});
+				this.addXP(30, TextColor.KILL_XP);
+			}
+		}
 	}
 };
 
@@ -231,7 +237,7 @@ Player.prototype.draw = function(){
 	}
 
 	var color = getLevelColor(this.level.level);
-	drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 6, "#fff");
+	drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 5, "#fff");
 	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level.level, 15, "#000", 3, "rgb(" + color.r + "," + color.g + "," + color.b + ")");
 
 	for(var i = 0; i < this.flyingtexts.length; i++){

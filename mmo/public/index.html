@@ -1,20 +1,13 @@
 <html>
 	<head>
-		<title>Binary Heroes | Joey Lemon</title>
+		<title>Heroes of Binaria | Joey Lemon</title>
 		<link rel="icon" type="img/ico" href="http://jlemon.org/images/favicon.ico">
 		<link rel='stylesheet' type='text/css' href='styling.css' />
 		<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' />
-		<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<defs>
-				<filter id="blur">
-					<feGaussianBlur stdDeviation="5" />
-				</filter>
-			</defs>
-		</svg>
 	</head>
 
-	<body style="background-color: #2D2D2D;">
-		<canvas id="game" class="game"></canvas>
+	<body style="background-color: #2D2D2D;" onresize="setLogoWidth()">
+		<canvas id="game" class="game" draggable="false"></canvas>
 
 		<div id="borders" class="borders"></div>
 
@@ -29,65 +22,70 @@
 		</div>
 
 		<div class="center-container">
+			<div style="overflow:visible">
+				<img src="styles/logo.png" class="logo" id="logo"></img>
+				<br>
 
-			<!-- Begin existing user login -->
-			<div id="existing-user" class="login">
-				<span class="title">Existing User</span>
-				<hr>
-				<form id="existing-login" onsubmit="login()" action="javascript:void(0);" autocomplete="off">
-					<span id="username-title-existing" class="input-title">Username</span>
-					<br>
-					<input class="always-white" id="existing-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
-					<br>
-					<span id="password-title-existing" class="input-title">Password</span>
-					<br>
-					<input class="always-white" id="existing-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+				<!-- Begin existing user login -->
+				<div id="existing-user" class="login">
+					<span class="title">Existing User</span>
+					<hr>
+					<form id="existing-login" onsubmit="login()" action="javascript:void(0);" autocomplete="off">
+						<span id="username-title-existing" class="input-title">Username</span>
+						<br>
+						<input class="always-white" id="existing-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+						<br>
+						<span id="password-title-existing" class="input-title">Password</span>
+						<br>
+						<input class="always-white" id="existing-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
 
-					<input class="button" type="submit" value="log in"></input>
-				</form>
+						<input class="button" type="submit" value="log in"></input>
+					</form>
 
-				<div class="break"></div>
-				<span class="change-login"><a href="#" onclick="showLogin('new')">Need to create an account? Click here.</a></span>
-			</div>
-			<!-- End existing user login -->
-
-			<!-- Begin new user creation -->
-			<div id="new-user" class="login" style="display: none;">
-				<span class="title">Create Your Hero</span>
-				<hr>
-				<form id="new-login" onsubmit="login()" action="javascript:void(0);" autocomplete="off">
-					<span id="username-title-new" class="input-title">Hero Name</span>
-					<br>
-					<input class="always-white" id="new-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
-					<br>
-					<span id="password-title-new" class="input-title">Account Password</span>
-					<br>
-					<input class="always-white" id="new-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
-
-					<input class="button new" type="submit" value="create hero"></input>
-				</form>
-
-				<div class="break"></div>
-				<span class="change-login"><a href="#" onclick="showLogin('existing')">Already have an account? Click here.</a></span>
-			</div>
-			<!-- End new user creation -->
-
-			<!-- Begin new hero display -->
-			<div id="new-hero" class="login new-hero">
-				<span class="title">New Hero</span>
-				<hr>
-				<div class="player">
-					<img src="styles/player.png"></img>
+					<div class="break"></div>
+					<span class="change-login"><a href="#" onclick="showLogin('new')">Need to create an account? Click here.</a></span>
 				</div>
-				<div class="stats">
-					Name: <span id="new-hero-name"></span>
-					<br>
-					Level: 1
-					<br>
-					Armor: cloth
+				<!-- End existing user login -->
+
+				<!-- Begin new user creation -->
+				<div id="new-user" class="login" style="display: none;">
+					<span class="title">Create Your Hero</span>
+					<hr>
+					<form id="new-login" onsubmit="login()" action="javascript:void(0);" autocomplete="off">
+						<span id="username-title-new" class="input-title">Hero Name</span>
+						<br>
+						<input class="always-white" id="new-username" type="text" placeholder="username" name="user" maxlength="16" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+						<br>
+						<span id="password-title-new" class="input-title">Account Password</span>
+						<br>
+						<input class="always-white" id="new-password" type="password" placeholder="password" name="pass" maxlength="30" data-toggle="tooltip" data-placement="right" data-trigger="manual"></input>
+
+						<input class="button new" type="submit" value="create hero"></input>
+					</form>
+
+					<div class="break"></div>
+					<span class="change-login"><a href="#" onclick="showLogin('existing')">Already have an account? Click here.</a></span>
 				</div>
+				<!-- End new user creation -->
+
+				<!-- Begin new hero display -->
+				<div id="new-hero" class="login new-hero">
+					<span class="title">New Hero</span>
+					<hr>
+					<div class="player">
+						<img src="styles/player.png"></img>
+					</div>
+					<div class="stats">
+						Name: <span id="new-hero-name"></span>
+						<br>
+						Level: 1
+						<br>
+						Armor: cloth
+					</div>
+				</div>
+				<!-- End new hero display -->
+			
 			</div>
-			<!-- End new hero display -->
 		</div>
 
 		<!--
@@ -105,6 +103,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/messages.js"></script>
 	<script src="js/enums.js"></script>
 	<script src="js/flyingtext.js"></script>
 	<script src="js/message.js"></script>
@@ -112,6 +111,8 @@
 	<script src="js/sprite.js"></script>
 	<script src="js/player.js"></script>
 	<script src="js/npc.js"></script>
-	<script src="script.js"></script>
-	<script src="client.js"></script>
+	<script src="js/script.js"></script>
+	<script src="js/client.js"></script>
+	<script src="js/inputs.js"></script>
+	<script src="js/network.js"></script>
 </html>

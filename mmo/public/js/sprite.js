@@ -21,6 +21,10 @@ Sprite.prototype.setData = function(){
 	});
 };
 
+Sprite.prototype.isDataSet = function(){
+	return (this.data != undefined);
+};
+
 Sprite.prototype.getImage = function(){
 	return this.image;
 };

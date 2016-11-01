@@ -8,6 +8,15 @@
     src: url(styles/Pro-Font.ttf);
 }
 
+.logo {
+	display: none;
+	width: 500px;
+	height: auto;
+	margin-top: -100px;
+	margin-bottom: 40px;
+	position: relative;
+}
+
 .game {
 	position: fixed;
 	top: 0px;
@@ -121,6 +130,8 @@
 	right: 0px;
 	bottom: 0px;
 	left: 0px;
+	
+	text-align: center;
 
 	display: -ms-flexbox;
 	display: -webkit-flex;
@@ -135,27 +146,29 @@
 }
 
 .login {
-     /*
-     padding-top: 10px;
-     width: 500px;
-     background-color: #DCDCDC;
-     -moz-box-shadow: inset 0 0 5px #2D2D2D;
-     -webkit-box-shadow: inset 0 0 5px #2D2D2D;
-     box-shadow: inset 0 0 5px #2D2D2D;
-     border-radius: 2px;
-     */
+	/*
+	padding-top: 10px;
+	width: 500px;
+	background-color: #DCDCDC;
+	-moz-box-shadow: inset 0 0 5px #2D2D2D;
+	-webkit-box-shadow: inset 0 0 5px #2D2D2D;
+	box-shadow: inset 0 0 5px #2D2D2D;
+	border-radius: 2px;
+	*/
 
-     width: 500px;
-     height: 487px;
+	width: 500px;
+	height: 487px;
 	background-image: url(styles/login-bg.png);
-     background-size: cover;
-     padding-top: 47px;
+	background-size: cover;
+	padding-top: 47px;
 
 	text-align: center;
 	font-family: profont;
 	color: #000;
 
 	opacity: 0.95;
+	
+	display: inline-block;
 }
 
 .new-hero {
