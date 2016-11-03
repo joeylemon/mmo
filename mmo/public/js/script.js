@@ -1,6 +1,7 @@
 var existing = true;
 var chatbox = false;
 var loggingIn = false;
+var showDebug = false;
 
 var myplayer;
 
@@ -205,4 +206,14 @@ function setLogoWidth(){
 	var margin = $(window).height() / 15;
 	$("#logo").css("width", width + "px");
 	$("#logo").css("margin-bottom", margin + "px");
+}
+
+function enableDebug(){
+	$("#debug").fadeIn(0);
+	showDebug = true;
+}
+
+function disableDebug(){
+	$("#debug").fadeOut(0);
+	showDebug = false;
 }

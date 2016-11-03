@@ -32,15 +32,14 @@ var mouse = {
 
 var then;
 var elapsed;
-var fps = 500;
+var fps = 50;
 var drawing = true;
 var lastKeysID = -1;
 var fpsInterval = 1000 / fps;
 
 var keys = new Array();
-var npcs = new Array();
 var players = new Array();
-var projectiles = new Array();
+var entities = new Array();
 var flyingtexts = new Array();
 
 var noblur = false;
@@ -51,9 +50,14 @@ var Settings = {
 	player_speed: 3.25,
 	attack_speed: 300,
 	player_idle_change: 800,
-	npc_idle_change: 400,
+	entity_idle_change: 800,
 	health_bar_width: 45,
 	health_bar_height: 5
+};
+
+var IdleChanges = {
+	"bat": 400,
+	"skeleton": 2500
 };
 
 var SwordOffsets = {
@@ -68,14 +72,6 @@ var Key = {
 	DOWN: "down",
 	LEFT: "left",
 	RIGHT: "right"
-};
-
-var Sprites = {
-	OGRE: "ogre",
-	CLOTH_ARMOR: "clotharmor",
-	GOLDEN_ARMOR: "goldenarmor",
-	SWORD: "sword",
-	BAT: "bat"
 };
 
 var Orientations = {
@@ -119,8 +115,8 @@ var TextColor = {
 	MESSAGE: "#FFFFFF",
 	ADMIN_MESSAGE: "#FF4646",
 	HIGH_HEALTH: "rgba(22, 132, 0, 0.8)",
-	MEDIUM_HEALTH: "rgba(235, 224, 0, 0.8)",
-	LOW_HEALTH: "rgba(214, 0, 0, 0.8)"
+	MEDIUM_HEALTH: "rgba(255, 162, 0, 0.8)",
+	LOW_HEALTH: "rgba(146, 0, 0, 0.8)"
 };
 
 /* Initialize functions */
@@ -133,26 +129,26 @@ function me(){
 	return players[myIndex];
 }
 
-function getNpc(uid){
-	for(var i = 0; i < npcs.length; i++){
-		var npc = npcs[i];
-		if(npc.getUID() == uid){
-			return npc;
+function getEntity(uid){
+	for(var i = 0; i < entities.length; i++){
+		var entity = entities[i];
+		if(entity.getUID() == uid){
+			return entity;
 		}
 	}
 }
 
-function addNpc(npc){
-	if(!getNpc(npc.getUID())){
-		npcs.push(npc);
+function addEntity(entity){
+	if(!getEntity(entity.getUID())){
+		entities.push(entity);
 	}
 }
 
-function removeNpc(uid){
-	for(var i = 0; i < npcs.length; i++){
-		var npc = npcs[i];
-		if(npc.getUID() == uid){
-			npcs.splice(i, 1);
+function removeEntity(uid){
+	for(var i = 0; i < entities.length; i++){
+		var entity = entities[i];
+		if(entity.getUID() == uid){
+			entities.splice(i, 1);
 			break;
 		}
 	}
@@ -269,7 +265,11 @@ function getSwordOffset(orientation){
 }
 
 function isVisible(x, y){
-	if((x < (canvas.width - offset.x) && x > offset.x) && (y < (canvas.height - offset.y) && y > offset.y)){
+	var newOffset = {
+		x: offset.x + 32,
+		y: offset.y + 32
+	};
+	if((x < (canvas.width - newOffset.x + 64) && x > -newOffset.x) && (y < (canvas.height - newOffset.y + 64) && y > -newOffset.y - 45)){
 		return true;
 	}else{
 		return false;
@@ -321,4 +321,9 @@ function drawText(x, y, text, size, stroke, width, fill){
 function drawRect(x, y, width, height, fill){
 	ctx.fillStyle = fill;
 	ctx.fillRect(x, y, width, height);
+}
+
+function strokeRect(x, y, width, height, fill){
+	ctx.strokeStyle = fill;
+	ctx.strokeRect(x, y, width, height);
 }

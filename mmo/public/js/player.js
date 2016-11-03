@@ -123,12 +123,8 @@ Player.prototype.getCenter = function(){
 	return {x: this.position.x + 64, y: this.position.y + 64};
 };
 
-Player.prototype.getRight = function(){
-	return {x: this.getCenter().x + 32, y: this.getCenter().y};
-};
-
-Player.prototype.getLeft = function(){
-	return {x: this.getCenter().x - 32, y: this.getCenter().y};
+Player.prototype.getTop = function(){
+	return {x: this.getCenter().x, y: this.getCenter().y - 40};
 };
 
 Player.prototype.setKeys = function(array){
@@ -194,24 +190,24 @@ Player.prototype.attack = function(){
 	if(this.uuid == me().getUUID()){
 		this.lastAttack = Date.now();
 		var hit;
-		for(var i = 0; i < npcs.length; i++){
-			var npc = npcs[i];
-			if(distance(me().getCenter(), npc.getCenter()) <= 80){
-				var orientation = getOrientation(me().getCenter(), npc.getCenter());
-				var angle = getAngle(me().getCenter(), npc.getCenter());
+		for(var i = 0; i < entities.length; i++){
+			var entity = entities[i];
+			if(distance(me().getCenter(), entity.getCenter()) <= 80){
+				var orientation = getOrientation(me().getCenter(), entity.getCenter());
+				var angle = getAngle(me().getCenter(), entity.getCenter());
 				if(orientation == me().getSprite().getOrientation() || orientation == Orientations.RIGHT && angle <= 21 && angle >= 54){
-					hit = npc;
+					hit = entity;
 					break;
 				}
 			}
 		}
-		if(hit){
+		if(hit && !hit.isDead()){
 			var amount = 10;
 			if(hit.getHP() - amount > 0){
-				broadcast("attack_npc", {uid: npc.getUID(), amount: amount});
+				broadcast(Messages.ATTACK_ENTITY, {uid: entity.getUID(), amount: amount});
 				this.addXP(15);
 			}else{
-				broadcast("kill_npc", {uid: npc.getUID()});
+				broadcast(Messages.KILL_ENTITY, {uid: entity.getUID()});
 				this.addXP(30, TextColor.KILL_XP);
 			}
 		}
@@ -242,7 +238,7 @@ Player.prototype.draw = function(){
 
 	for(var i = 0; i < this.flyingtexts.length; i++){
 		var text = this.flyingtexts[i];
-		text.draw(this.getPosition());
+		text.draw(this.getTop());
 		if(text.isDead()){
 			this.flyingtexts.splice(i, 1);
 			if(text.getOptions().block){

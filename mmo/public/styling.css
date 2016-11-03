@@ -67,6 +67,31 @@
      border: 1px solid #666666;
 }
 
+.debug .debug-prop {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	padding: 5px;
+	font-family: profont;
+	font-size: 25px;
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.6);
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.debug .right {
+	left: auto;
+	right: 10px;
+}
+
+.debug .small {
+	font-size: 20px;
+}
+
 .menu {
      position: fixed;
      top: 0px;

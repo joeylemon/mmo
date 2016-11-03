@@ -15,6 +15,8 @@ document.onkeydown = function(event) {
 	if(event.charCode && code == 0){
 		code = event.charCode;
 	}
+	
+	//console.log(code);
 
 	if(code == 13){
 		if(myplayer){
@@ -41,6 +43,12 @@ document.onkeydown = function(event) {
 	}else if(code == 27){
 		hideChatBox();
 		document.getElementById("message").value = "";
+	}else if(code == 192){
+		if(!showDebug){
+			enableDebug();
+		}else{
+			disableDebug();
+		}
 	}
 
 	if(myIndex == undefined || isChatBoxOpen() || !noblur){

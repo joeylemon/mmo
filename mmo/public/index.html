@@ -20,6 +20,17 @@
 		<div id="chatbox" class="chatbox">
 			<input id="message" type="text" placeholder="Type your message" name="msg" maxlength="35"></input>
 		</div>
+		
+		<span class="debug" id="debug" style="display: none;">
+			<div id="coords" class="debug-prop">
+				0, 0
+			</div>
+			<div id="stats" class="debug-prop right small">
+				Entities on screen: <span id="entities">0</span>
+				<br>
+				Players on screen: <span id="players">0</span>
+			</div>
+		</span>
 
 		<div class="center-container">
 			<div style="overflow:visible">
@@ -103,14 +114,14 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<script src="/socket.io/socket.io.js"></script>
-	<script src="js/messages.js"></script>
+	<script src="js/universal.js"></script>
 	<script src="js/enums.js"></script>
 	<script src="js/flyingtext.js"></script>
 	<script src="js/message.js"></script>
 	<script src="js/map.js"></script>
 	<script src="js/sprite.js"></script>
 	<script src="js/player.js"></script>
-	<script src="js/npc.js"></script>
+	<script src="js/entity.js"></script>
 	<script src="js/script.js"></script>
 	<script src="js/client.js"></script>
 	<script src="js/inputs.js"></script>

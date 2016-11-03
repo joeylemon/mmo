@@ -12,20 +12,20 @@ socket.on('msg', function(data){
 		myIndex = players.length;
 		players.push(myplayer);
 		
-		for(var i = 0; i < data.npcs.length; i++){
-			var npc = new Npc(data.npcs[i].id, data.npcs[i].uid, data.npcs[i].x, data.npcs[i].y, data.npcs[i].hp);
-			addNpc(npc);
+		for(var i = 0; i < data.entities.length; i++){
+			var entity = new Entity(data.entities[i].id, data.entities[i].uid, data.entities[i].x, data.entities[i].y, data.entities[i].hp);
+			addEntity(entity);
 		}
 		
 		removeLoginScreen();
-	}else if(data.type == Messages.ADD_NPC){
-		var npc = new Npc(data.npc.id, data.npc.uid, data.npc.x, data.npc.y, data.npc.hp);
-		addNpc(npc);
-	}else if(data.type == Messages.KILL_NPC){
-		removeNpc(data.uid);
-	}else if(data.type == Messages.ATTACK_NPC){
-		if(npcs.length > 0){
-			getNpc(data.uid).hurt(data.amount);
+	}else if(data.type == Messages.ADD_ENTITY){
+		var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp);
+		addEntity(entity);
+	}else if(data.type == Messages.KILL_ENTITY){
+		getEntity(data.uid).setDead();
+	}else if(data.type == Messages.ATTACK_ENTITY){
+		if(entities.length > 0){
+			getEntity(data.uid).hurt(data.amount);
 		}
 	}
 
@@ -52,7 +52,9 @@ socket.on('msg', function(data){
 		var player = players[data.index];
 		player.setX(data.x);
 		player.setY(data.y);
-		player.clearKeys();
+		if(data.clear){
+			player.clearKeys();
+		}
 	}else if(data.type == Messages.ATTACK){
 		players[data.index].attack();
 	}else if(data.type == Messages.LEVEL_UP){
