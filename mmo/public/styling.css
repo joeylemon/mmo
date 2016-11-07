@@ -28,7 +28,7 @@
      -moz-user-select: none;
      user-select: none;
 
-     filter: blur(5px);
+     filter: blur(3px);
 }
 
 .borders {
@@ -43,34 +43,77 @@
 }
 
 .chatbox {
-     display: none;
-     position: fixed;
-     bottom: 0px;
-     left: 0px;
-     right: 0px;
-     height: 30px;
-     background-color: rgba(0, 0, 0, 0.7);
-     line-height: 30px;
-     font-size: 20px;
-     font-family: profont;
-     color: #fff;
+	display: none;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	height: 30px;
+	background-color: rgba(0, 0, 0, 0.7);
+	line-height: 30px;
+	font-size: 20px;
+	font-family: profont;
+	color: #fff;
 }
 
 .chatbox input {
-     width: 100%;
+	width: 100%;
 	height: 30px;
 	padding-left: 10px;
 	font-size: 20px;
 	color: rgba(255, 255, 255, 1);
 	margin-bottom: 10px;
-     background-color: rgba(255, 255, 255, 0.0);
-     border: 1px solid #666666;
+	background-color: rgba(255, 255, 255, 0.0);
+	border: 1px solid #666666;
+}
+
+.skills {
+	display: none;
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	width: 225px;
+	padding-left: 20px;
+	background-color: rgba(0, 0, 0, 0.6);
+	
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.skills .skill {
+	display: inline-block;
+	width: 225px;
+	height: 90px;
+	margin-top: 30px;
+	margin-left: -10px;
+	text-align: center;
+	font-family: profont;
+}
+
+.skills .image {
+	float: left;
+	width: 55px;
+	height: auto;
+}
+
+.skills .title {
+	font-size: 25px;
+	color: #fff;
+}
+
+.skills .desc {
+	font-size: 17px;
+	color: #47CB00;
+	margin-left: -10px;
 }
 
 .debug .debug-prop {
 	position: fixed;
 	top: 10px;
-	left: 10px;
 	padding: 5px;
 	font-family: profont;
 	font-size: 25px;
@@ -83,8 +126,11 @@
 	user-select: none;
 }
 
+.debug .left {
+	left: 10px;
+}
+
 .debug .right {
-	left: auto;
 	right: 10px;
 }
 
@@ -120,13 +166,13 @@
 .xp-container {
      display: none;
      position: fixed;
-     bottom: 0px;
+     bottom: -5px;
      left: 0px;
      right: 0px;
-     height: 10px;
-     background-color: #555555;
-     opacity: 0.75;
+     height: 15px;
+     background-color: #1F1F1F;
      text-align: center;
+	 opacity: 0.8;
 }
 
 .xp-container .xp-bar {
@@ -135,18 +181,7 @@
      bottom: 0px;
      height: 10px;
      width: 50%;
-     background-color: #148900;
-     line-height: 10px;
-     padding-left: 15px;
-     padding-right: 15px;
-     text-align: center;
-}
-
-.xp-container .xp-bar-level {
-     position: relative;
-     font-family: profont;
-     font-size: 25px;
-     color: #fff;
+     background-color: #DA9500;
 }
 
 .center-container {
@@ -183,7 +218,7 @@
 
 	width: 500px;
 	height: 487px;
-	background-image: url(styles/login-bg.png);
+	background-image: url(styles/images/login-bg.png);
 	background-size: cover;
 	padding-top: 47px;
 
@@ -267,12 +302,6 @@
 
 .login .break {
 	margin-top: 50px;
-}
-
-.login .checkbox {
-	display: inline-block;
-	width: 20px;
-	height: 20px;
 }
 
 .login .change-login a {

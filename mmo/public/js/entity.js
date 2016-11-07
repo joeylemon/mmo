@@ -7,6 +7,7 @@ var Entity = function(id, uid, x, y, hp){
 	this.maxhp = hp;
 	this.sprite = new Sprite(id, x, y);
 	this.shadow = new Sprite(Sprites.SHADOW, x, y);
+	this.death_sprite = new Sprite(Sprites.DEATH, x, y);
 	this.flyingtexts = new Array();
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
@@ -109,6 +110,7 @@ Entity.prototype.attack = function(orientation){
 Entity.prototype.setDead = function(){
 	this.dead = true;
 	this.death = Date.now();
+	this.death_sprite.startAnimation(Animations.DEATH);
 };
 
 Entity.prototype.isDead = function(){
@@ -116,41 +118,51 @@ Entity.prototype.isDead = function(){
 };
 
 Entity.prototype.draw = function(){
-	if(!this.dead){
-		if(this.shadow.isDataSet()){
-			this.shadow.setX(this.x + (this.sprite.getWidth() / 2) - (this.shadow.getWidth() / 2));
-			this.shadow.setY(this.y + (this.sprite.getHeight() / 2) + 6);
-		}
-		this.shadow.draw(1, 0);
-	
-		if(!this.sprite.isDoingAnimation()){
-			var idle = this.sprite.getIdleAnimation();
-			var time = this.lastIdleChange + IdleChanges[this.id] + (Math.random() * 1000);
-			if(Date.now() > time){
-				this.idleStep += 1;
-				if(this.idleStep > idle.length){
-					this.idleStep = 1;
-				}
-				this.lastIdleChange = Date.now();
-			}
-			this.sprite.draw(this.idleStep, idle.row);
-		}else{
-			var anim = this.sprite.getNextAnimation();
-			this.sprite.draw(anim.col, anim.row);
+	if(this.dead){
+		this.death_sprite.setX(this.getCenter().x - 24);
+		this.death_sprite.setY(this.getCenter().y - 15);
+		
+		var anim = this.death_sprite.getNextAnimation();
+		if(anim){
+			this.death_sprite.draw(anim.col, anim.row);
 		}
 		
-		if(this.sprite.isDataSet() && this.hp < this.maxhp){
-			var bottom = this.getBottomCenter();
-			var percent = (this.hp / this.maxhp);
-			var color = getHealthColor(percent);
-			
-			strokeRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, "rgba(0, 0, 0, 0.8)");
-			drawRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, color);
-		}
-	}else{
-		if(Date.now() > this.death + 3000){
+		if(Date.now() > this.death + 1000){
 			removeEntity(this.uid);
 		}
+		
+		return;
+	}
+
+	if(this.shadow.isDataSet()){
+		this.shadow.setX(this.x + (this.sprite.getWidth() / 2) - (this.shadow.getWidth() / 2));
+		this.shadow.setY(this.y + (this.sprite.getHeight() / 2) + 6);
+	}
+	this.shadow.draw(1, 0);
+
+	if(!this.sprite.isDoingAnimation()){
+		var idle = this.sprite.getIdleAnimation();
+		var time = this.lastIdleChange + IdleChanges[this.id] + (Math.random() * 1000);
+		if(Date.now() > time){
+			this.idleStep += 1;
+			if(this.idleStep > idle.length){
+				this.idleStep = 1;
+			}
+			this.lastIdleChange = Date.now();
+		}
+		this.sprite.draw(this.idleStep, idle.row);
+	}else{
+		var anim = this.sprite.getNextAnimation();
+		this.sprite.draw(anim.col, anim.row);
+	}
+	
+	if(this.sprite.isDataSet() && this.hp < this.maxhp){
+		var bottom = this.getBottomCenter();
+		var percent = (this.hp / this.maxhp);
+		var color = getHealthColor(percent);
+		
+		strokeRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, "rgba(0, 0, 0, 0.8)");
+		drawRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, color);
 	}
 	
 	for(var i = 0; i < this.flyingtexts.length; i++){

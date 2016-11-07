@@ -17,6 +17,8 @@ socket.on('msg', function(data){
 			addEntity(entity);
 		}
 		
+		document.getElementById("online").innerHTML = getPlayersOnline();
+		
 		removeLoginScreen();
 	}else if(data.type == Messages.ADD_ENTITY){
 		var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp);
@@ -36,11 +38,13 @@ socket.on('msg', function(data){
 	if(data.type == Messages.JOIN){
 		var p = new Player(data.uuid, data.username, data.level, data.inv, data.pos);
 		players.push(p);
+		document.getElementById("online").innerHTML = getPlayersOnline();
 	}else if(data.type == Messages.LEAVE){
 		var index = getPlayerByUUID(data.uuid);
 		if(index > -1){
 			players[index] = null;
 		}
+		document.getElementById("online").innerHTML = getPlayersOnline();
 	}else if(data.type == Messages.KEYS){
 		var array = data.keys;
 		if(array.length > 0){

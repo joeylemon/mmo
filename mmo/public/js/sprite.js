@@ -12,12 +12,7 @@ Sprite.prototype.setData = function(){
 	$.getJSON("js/sprites/" + this.id + ".json", function(value){
 		sprite.data = value;
 		sprite.offset = {x: value.offset_x, y: value.offset_y};
-
-		var img = new Image();
-		img.onload = function(){
-			sprite.image = img;
-		}
-		img.src = "js/sprites/images/" + sprite.data.id + ".png";
+		sprite.image = images[sprite.id];
 	});
 };
 
@@ -128,7 +123,7 @@ Sprite.prototype.isDoingAnimation = function(){
 Sprite.prototype.getNextAnimation = function(){
 	var next = this.nextAnim;
 	var current = Date.now();
-	if((current - next.time) > 75){
+	if(next && (current - next.time) > 75){
 		if(next.col + 1 <= next.length){
 			this.nextAnim = {col: next.col + 1, row: next.row, length: next.length, time: current, anim: next.anim};
 		}else{

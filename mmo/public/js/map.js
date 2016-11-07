@@ -34,8 +34,8 @@ function drawMap(drawTop){
 
 function loadWorld(){
 	tilesetImg = new Image();
-	tilesetImg.src = "js/tilesheet.png";
-	loadJSONMap("js/world.json", drawMap);
+	tilesetImg.src = "js/world/tilesheet.png";
+	loadJSONMap("js/world/world.json", drawMap);
 }
 
 function renderCell(cell){

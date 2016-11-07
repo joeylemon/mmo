@@ -23,15 +23,16 @@ function draw(){
 
 		ctx.translate(offset.x, offset.y);
 
-		var camera = getNextCamera(myIndex);
-		var nextcamera = isOffWorld(offset.x + camera.x, offset.y + camera.y);
-		if(!nextcamera.x && !nextcamera.y){
-			offset.x += camera.x;
-			offset.y += camera.y;
-		}else if(!nextcamera.x && nextcamera.y){
-			offset.x += camera.x;
-		}else if(nextcamera.x && !nextcamera.y){
-			offset.y += camera.y;
+		var nextpos = getMovement(myIndex);
+		var nextcam = isOffWorld(offset.x + nextpos.x, offset.y + nextpos.y);
+		
+		if(!nextcam.x && !nextcam.y){
+			offset.x += nextpos.x;
+			offset.y += nextpos.y;
+		}else if(!nextcam.x && nextcam.y){
+			offset.x += nextpos.x;
+		}else if(nextcam.x && !nextcam.y){
+			offset.y += nextpos.y;
 		}else if(myIndex == undefined){
 			offset.x = 0;
 			offset.y = 0;
@@ -45,9 +46,9 @@ function draw(){
 			var p = players[i];
 			if(i != myIndex && p != null){
 				if(p.getSprite().isDataSet() && isVisible(p.getCenter().x, p.getCenter().y)){
-					var cam = getNextCamera(i);
-					p.setX(p.getX() - cam.x);
-					p.setY(p.getY() - cam.y);
+					var pos = getMovement(i);
+					p.setX(p.getX() - pos.x);
+					p.setY(p.getY() - pos.y);
 					p.draw();
 					players_onscreen++;
 				}
@@ -56,9 +57,8 @@ function draw(){
 		document.getElementById("players").innerHTML = players_onscreen;
 
 		if(myIndex != undefined){
-			var center = getCenter();
-			me().setX(center.x);
-			me().setY(center.y);
+			me().setX(getCenter().x);
+			me().setY(getCenter().y);
 			me().draw();
 		}
 		
@@ -83,7 +83,7 @@ function draw(){
 	}
 }
 
-function getNextCamera(index){
+function getMovement(index){
 	var x = 0;
 	var y = 0;
 	if(index != undefined && players[index] != null){
@@ -93,23 +93,19 @@ function getNextCamera(index){
 		}
 		if(isPressingKey(Key.LEFT, array)){
 			x += Settings.player_speed;
-			players[index].getSprite().startAnimation(Animations.WALK_LEFT);
-			players[index].getSprite().setIdleAnimation(Animations.IDLE_LEFT);
+			players[index].move(Key.LEFT);
 		}
 		if(isPressingKey(Key.RIGHT, array)){
 			x += -Settings.player_speed;
-			players[index].getSprite().startAnimation(Animations.WALK_RIGHT);
-			players[index].getSprite().setIdleAnimation(Animations.IDLE_RIGHT);
+			players[index].move(Key.RIGHT);
 		}
 		if(isPressingKey(Key.UP, array)){
 			y += Settings.player_speed;
-			players[index].getSprite().startAnimation(Animations.WALK_UP);
-			players[index].getSprite().setIdleAnimation(Animations.IDLE_UP);
+			players[index].move(Key.UP);
 		}
 		if(isPressingKey(Key.DOWN, array)){
 			y += -Settings.player_speed;
-			players[index].getSprite().startAnimation(Animations.WALK_DOWN);
-			players[index].getSprite().setIdleAnimation(Animations.IDLE_DOWN);
+			players[index].move(Key.DOWN);
 		}
 
 		if(index == myIndex){
@@ -130,8 +126,8 @@ function getNextCamera(index){
 				lastKeysID = id;
 			}
 			
-			if(showDebug){
-				document.getElementById("coords").innerHTML = Math.floor(me().getX()) + ", " + Math.floor(me().getY());
+			if(screen.showingDebug()){
+				document.getElementById("coords").innerHTML = Math.floor(me().getCenter().x) + ", " + Math.floor(me().getCenter().y);
 			}
 		}
 	}else{

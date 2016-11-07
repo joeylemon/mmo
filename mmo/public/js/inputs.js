@@ -43,12 +43,6 @@ document.onkeydown = function(event) {
 	}else if(code == 27){
 		hideChatBox();
 		document.getElementById("message").value = "";
-	}else if(code == 192){
-		if(!showDebug){
-			enableDebug();
-		}else{
-			disableDebug();
-		}
 	}
 
 	if(myIndex == undefined || isChatBoxOpen() || !noblur){
@@ -71,6 +65,10 @@ document.onkeydown = function(event) {
 		if(!timings.enabled || Date.now() - timings.last_right > timings.delay){
 			addKey(Key.RIGHT);
 		}
+	}else if(code == 81){
+		screen.toggleSkills();
+	}else if(code == 192){
+		screen.toggleDebug();
 	}
 };
 

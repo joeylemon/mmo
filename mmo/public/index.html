@@ -12,9 +12,7 @@
 		<div id="borders" class="borders"></div>
 
 		<div id="xp-container" class="xp-container">
-			<div id="xp-bar" class="xp-bar">
-				<span id="xp-bar-level" class="xp-bar-level"></span>
-			</div>
+			<div id="xp-bar" class="xp-bar"></div>
 		</div>
 
 		<div id="chatbox" class="chatbox">
@@ -22,19 +20,55 @@
 		</div>
 		
 		<span class="debug" id="debug" style="display: none;">
-			<div id="coords" class="debug-prop">
+			<div id="coords" class="debug-prop left">
 				0, 0
 			</div>
 			<div id="stats" class="debug-prop right small">
+				Players on screen: <span id="players">0</span>
+				<br>
 				Entities on screen: <span id="entities">0</span>
 				<br>
-				Players on screen: <span id="players">0</span>
+				Players online: <span id="online">0</span>
+				<br>
+				Entities alive: <span id="alive">0</span>
 			</div>
 		</span>
+		
+		<div id="skills" class="skills">
+			<div class="skill">
+				<span class="title">Combat Level</span>
+				<br>
+				<span class="desc" style="font-size: 22px;color: #960000;">Lvl. 114</span>
+			</div>
+			<div class="skill">
+				<img src="styles/images/attack.png" class="image"></img>
+				<span class="title">Attack</span>
+				<br>
+				<span class="desc">Lvl. 13</span>
+			</div>
+			<div class="skill">
+				<img src="styles/images/defense.png" class="image"></img>
+				<span class="title">Defense</span>
+				<br>
+				<span class="desc">Lvl. 5</span>
+			</div>
+			<div class="skill">
+				<img src="styles/images/health.png" class="image"></img>
+				<span class="title">Health</span>
+				<br>
+				<span class="desc">Lvl. 20</span>
+			</div>
+			<div class="skill">
+				<img src="styles/images/agility.png" class="image"></img>
+				<span class="title">Agility</span>
+				<br>
+				<span class="desc">Lvl. 10</span>
+			</div>
+		</div>
 
 		<div class="center-container">
 			<div style="overflow:visible">
-				<img src="styles/logo.png" class="logo" id="logo"></img>
+				<img src="styles/images/logo.png" class="logo" id="logo"></img>
 				<br>
 
 				<!-- Begin existing user login -->
@@ -84,7 +118,7 @@
 					<span class="title">New Hero</span>
 					<hr>
 					<div class="player">
-						<img src="styles/player.png"></img>
+						<img src="styles/images/player.png"></img>
 					</div>
 					<div class="stats">
 						Name: <span id="new-hero-name"></span>
@@ -115,10 +149,11 @@
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/universal.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/screen.js"></script>
 	<script src="js/enums.js"></script>
 	<script src="js/flyingtext.js"></script>
 	<script src="js/message.js"></script>
-	<script src="js/map.js"></script>
 	<script src="js/sprite.js"></script>
 	<script src="js/player.js"></script>
 	<script src="js/entity.js"></script>

@@ -19,6 +19,8 @@ ctx.setTransform(scale, 0, 0, scale, left, top);
 /* Initialize game variables */
 var socket = io();
 
+var screen = new PlayerScreen();
+
 var myIndex;
 
 var offset = {
@@ -37,18 +39,28 @@ var drawing = true;
 var lastKeysID = -1;
 var fpsInterval = 1000 / fps;
 
+var noblur = false;
+
 var keys = new Array();
 var players = new Array();
 var entities = new Array();
 var flyingtexts = new Array();
 
-var noblur = false;
+var images = {};
+for(var key in Sprites){
+	var sprite = Sprites[key];
+	
+	var img = new Image();
+	img.src = "js/sprites/images/" + sprite + ".png";
+	
+	images[sprite] = img;
+}
 
 /* Initialize enums */
 var Settings = {
 	idle_camera_speed: {x: -0.10, y: -0.175},
-	player_speed: 3.25,
-	attack_speed: 300,
+	player_speed: 4.8,
+	attack_speed: 200,
 	player_idle_change: 800,
 	entity_idle_change: 800,
 	health_bar_width: 45,
@@ -56,8 +68,8 @@ var Settings = {
 };
 
 var IdleChanges = {
-	"bat": 400,
-	"skeleton": 2500
+	bat: 400,
+	skeleton: 2500
 };
 
 var SwordOffsets = {
@@ -65,6 +77,10 @@ var SwordOffsets = {
 	DOWN: {x: -30, y: -40},
 	LEFT: {x: -20, y: -35},
 	RIGHT: {x: -30, y: -25}
+};
+
+var Damages = {
+	IRON: 10
 };
 
 var Key = {
@@ -81,17 +97,6 @@ var Orientations = {
 	RIGHT: 3
 };
 
-var Compass = {
-	NORTH: 0,
-	NORTH_EAST: 1,
-	EAST: 2,
-	SOUTH_EAST: 3,
-	SOUTH: 4,
-	SOUTH_WEST: 5,
-	WEST: 6,
-	NORTH_WEST: 7
-}
-
 var Animations = {
 	ATTACK_RIGHT: {name: "atk_right", orientation: 3, type: "attack"},
 	WALK_RIGHT: {name: "walk_right", orientation: 3, type: "walk"},
@@ -104,7 +109,8 @@ var Animations = {
 	IDLE_UP: {name: "idle_up", orientation: 0, type: "idle"},
 	ATTACK_DOWN: {name: "atk_down", orientation: 1, type: "attack"},
 	WALK_DOWN: {name: "walk_down", orientation: 1, type: "walk"},
-	IDLE_DOWN: {name: "idle_down", orientation: 1, type: "idle"}
+	IDLE_DOWN: {name: "idle_down", orientation: 1, type: "idle"},
+	DEATH: {name: "death", orientation: 1, type: "death"}
 };
 
 var TextColor = {
@@ -142,6 +148,7 @@ function addEntity(entity){
 	if(!getEntity(entity.getUID())){
 		entities.push(entity);
 	}
+	document.getElementById("alive").innerHTML = entities.length;
 }
 
 function removeEntity(uid){
@@ -152,6 +159,42 @@ function removeEntity(uid){
 			break;
 		}
 	}
+	document.getElementById("alive").innerHTML = entities.length;
+}
+
+function getHitEntity(center, playerOrientation){
+	for(var i = 0; i < entities.length; i++){
+		var entity = entities[i];
+		if(!entity.isDead() && distance(center, entity.getCenter()) <= 80){
+			var orientation = getOrientation(center, entity.getCenter());
+			if(orientation == playerOrientation){
+				return entity;
+			}
+		}
+	}
+	return undefined;
+}
+
+function getPlayer(name){
+	for(var i = 0; i < players.length; i++){
+		var p = players[i];
+		if(p != null && p.getName() == name){
+			return players[i];
+			break;
+		}
+	}
+	return undefined;
+}
+
+function getPlayersOnline(){
+	var online = 0;
+	for(var i = 0; i < players.length; i++){
+		var player = players[i];
+		if(player && player != null){
+			online++;
+		}
+	}
+	return online;
 }
 
 function getHealthColor(percent){
@@ -235,21 +278,19 @@ function getRandom(num){
 }
 
 function getLevelColor(level){
-	var r = 23 + level;
-	var g = 175 - level;
-	var b = 0;
-
-	if(g < 0){
-		g = 0;
-	}else if(r > 150){
-		g = 175 - level;
+	var r = 23 + (level * 4);
+	var g = 175;
+	if(r > 175){
+		r = 175;
+		g -= (level * 4);
+		if(g < 0){
+			g = 0;
+		}
 	}
 
-	if(r > 255){
-		r = 255;
-	}
+	
 
-	return {r: r, g: g, b: b};
+	return {r: r, g: g, b: 0};
 }
 
 function getSwordOffset(orientation){
@@ -264,12 +305,36 @@ function getSwordOffset(orientation){
 	}
 }
 
+function isOffWorld(x, y){
+	var offWorld = {x: false, y: false};
+
+	if((x - canvas.width) < -getMaxX() || x > 0){
+		offWorld.x = true;
+	}
+	if((y - canvas.height) < -getMaxY() || y > 0){
+		offWorld.y = true;
+	}
+
+	return offWorld;
+}
+
 function isVisible(x, y){
 	var newOffset = {
 		x: offset.x + 32,
 		y: offset.y + 32
 	};
 	if((x < (canvas.width - newOffset.x + 64) && x > -newOffset.x) && (y < (canvas.height - newOffset.y + 64) && y > -newOffset.y - 45)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function isCameraAtEdge(){
+	if(Math.ceil(-offset.x + canvas.width) == getMaxX() || 
+			Math.ceil(-offset.y + canvas.height) == getMaxY() || 
+			Math.floor(-offset.x) == 2 || 
+			Math.floor(-offset.y) == 2){
 		return true;
 	}else{
 		return false;
@@ -288,12 +353,12 @@ function removeLoginScreen(){
 	$("#logo").fadeOut(0);
 	fadeBlurOut();
 
-	$("body").css("cursor", "url(styles/cursor.png), auto");
+	$("body").css("cursor", "url(styles/images/cursor.png), auto");
 	$("#xp-container").fadeIn(250);
 }
 
 function fadeBlurOut(){
-	var blur = 5.0;
+	var blur = 3.0;
 	var task = setInterval(function(){
 		blur -= 0.1;
 		if(blur >= 0){

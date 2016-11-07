@@ -14,8 +14,9 @@ var Player = function(uuid, name, level, inventory, position){
 	
 	this.lastAttack = 0;
 	
-	this.sprite = new Sprite(this.inventory.armor, this.position.x, this.position.y);
-	this.sword = new Sprite(Sprites.SWORD, this.position.x + SwordOffsets.DOWN, this.position.y + SwordOffsets.DOWN);
+	this.sprite = new Sprite(inventory.armor, position.x, position.y);
+	this.shadow = new Sprite(Sprites.SHADOW, position.x, position.y);
+	this.sword = new Sprite(Sprites.SWORD, position.x + SwordOffsets.DOWN, position.y + SwordOffsets.DOWN);
 };
 
 Player.prototype.getObject = function(){
@@ -166,6 +167,22 @@ Player.prototype.say = function(msg){
 	this.message = new Message(msg, color);
 };
 
+Player.prototype.move = function(dir){
+	if(dir == "up"){
+		this.getSprite().startAnimation(Animations.WALK_UP);
+		this.getSprite().setIdleAnimation(Animations.IDLE_UP);
+	}else if(dir == "down"){
+		this.getSprite().startAnimation(Animations.WALK_DOWN);
+		this.getSprite().setIdleAnimation(Animations.IDLE_DOWN);
+	}else if(dir == "left"){
+		this.getSprite().startAnimation(Animations.WALK_LEFT);
+		this.getSprite().setIdleAnimation(Animations.IDLE_LEFT);
+	}else if(dir == "right"){
+		this.getSprite().startAnimation(Animations.WALK_RIGHT);
+		this.getSprite().setIdleAnimation(Animations.IDLE_RIGHT);
+	}
+};
+
 Player.prototype.canAttack = function(){
 	return (Date.now() - this.lastAttack > Settings.attack_speed);
 };
@@ -189,25 +206,14 @@ Player.prototype.attack = function(){
 	
 	if(this.uuid == me().getUUID()){
 		this.lastAttack = Date.now();
-		var hit;
-		for(var i = 0; i < entities.length; i++){
-			var entity = entities[i];
-			if(distance(me().getCenter(), entity.getCenter()) <= 80){
-				var orientation = getOrientation(me().getCenter(), entity.getCenter());
-				var angle = getAngle(me().getCenter(), entity.getCenter());
-				if(orientation == me().getSprite().getOrientation() || orientation == Orientations.RIGHT && angle <= 21 && angle >= 54){
-					hit = entity;
-					break;
-				}
-			}
-		}
-		if(hit && !hit.isDead()){
-			var amount = 10;
+		var hit = getHitEntity(this.getCenter(), this.getSprite().getOrientation());
+		if(hit){
+			var amount = Damages["IRON"];
 			if(hit.getHP() - amount > 0){
-				broadcast(Messages.ATTACK_ENTITY, {uid: entity.getUID(), amount: amount});
+				broadcast(Messages.ATTACK_ENTITY, {uid: hit.getUID(), amount: amount});
 				this.addXP(15);
 			}else{
-				broadcast(Messages.KILL_ENTITY, {uid: entity.getUID()});
+				broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
 				this.addXP(30, TextColor.KILL_XP);
 			}
 		}
@@ -215,6 +221,12 @@ Player.prototype.attack = function(){
 };
 
 Player.prototype.draw = function(){
+	if(this.shadow.isDataSet()){
+		this.shadow.setX(this.position.x + 38);
+		this.shadow.setY(this.position.y + 64 + 6);
+		this.shadow.draw(1, 0);
+	}
+	
 	if(!this.sprite.isDoingAnimation()){
 		var idle = this.sprite.getIdleAnimation();
 		if(Date.now() > this.lastIdleChange + Settings.player_idle_change){

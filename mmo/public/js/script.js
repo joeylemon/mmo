@@ -1,7 +1,6 @@
 var existing = true;
 var chatbox = false;
 var loggingIn = false;
-var showDebug = false;
 
 var myplayer;
 
@@ -93,12 +92,17 @@ function login(){
 					var levelObject = $.parseJSON(object.level);
 					var player = new Player(object.uuid, object.username, levelObject, $.parseJSON(object.inv), $.parseJSON(object.pos));
 					player.setXPBar();
+					player.setX(getCenter().x);
+					player.setY(getCenter().y);
+					
 					broadcast("user_info", player.getObject());
 					broadcast("join", player.getObject());
 					broadcast("get_players", {uuid: player.uuid});
+					
 					myplayer = player;
-					offset.x = 0;
-					offset.y = 0;
+					
+					offset.x = (-getMaxX() / 2) + (canvas.width / 2) - 150;
+					offset.y = (-getMaxY() / 2) + (canvas.height / 2);
 				}else{
 					if(result == "bad username"){
 						alertBadInput("username", "Username does not exist.");
@@ -206,14 +210,12 @@ function setLogoWidth(){
 	var margin = $(window).height() / 15;
 	$("#logo").css("width", width + "px");
 	$("#logo").css("margin-bottom", margin + "px");
-}
-
-function enableDebug(){
-	$("#debug").fadeIn(0);
-	showDebug = true;
-}
-
-function disableDebug(){
-	$("#debug").fadeOut(0);
-	showDebug = false;
+	
+	if(!myplayer){
+		if($(window).height() <= 700){
+			$("#logo").fadeOut(0);
+		}else{
+			$("#logo").fadeIn(0);
+		}
+	}
 }
