@@ -19,7 +19,8 @@ ctx.setTransform(scale, 0, 0, scale, left, top);
 /* Initialize game variables */
 var socket = io();
 
-var screen = new PlayerScreen();
+var screen;
+var camera;
 
 var myIndex;
 
@@ -49,10 +50,10 @@ var flyingtexts = new Array();
 var images = {};
 for(var key in Sprites){
 	var sprite = Sprites[key];
-	
+
 	var img = new Image();
 	img.src = "js/sprites/images/" + sprite + ".png";
-	
+
 	images[sprite] = img;
 }
 
@@ -135,6 +136,14 @@ function me(){
 	return players[myIndex];
 }
 
+function getMyPosition(){
+	if(me()){
+		return me().getPosition();
+	}else{
+		return getCenter();
+	}
+}
+
 function getEntity(uid){
 	for(var i = 0; i < entities.length; i++){
 		var entity = entities[i];
@@ -199,13 +208,13 @@ function getPlayersOnline(){
 
 function getHealthColor(percent){
 	var color = TextColor.HIGH_HEALTH;
-	
+
 	if(percent <= 0.6 && percent >= 0.3){
 		color = TextColor.MEDIUM_HEALTH;
 	}else if(percent < 0.3){
 		color = TextColor.LOW_HEALTH;
 	}
-	
+
 	return color;
 }
 
@@ -288,8 +297,6 @@ function getLevelColor(level){
 		}
 	}
 
-	
-
 	return {r: r, g: g, b: 0};
 }
 
@@ -306,14 +313,10 @@ function getSwordOffset(orientation){
 }
 
 function isOffWorld(x, y){
-	var offWorld = {x: false, y: false};
-
-	if((x - canvas.width) < -getMaxX() || x > 0){
-		offWorld.x = true;
-	}
-	if((y - canvas.height) < -getMaxY() || y > 0){
-		offWorld.y = true;
-	}
+	var offWorld = {
+		x: (x - canvas.width) < -getMaxX() || x > 0,
+		y: (y - canvas.height) < -getMaxY() || y > 0
+	};
 
 	return offWorld;
 }
@@ -323,26 +326,12 @@ function isVisible(x, y){
 		x: offset.x + 32,
 		y: offset.y + 32
 	};
-	if((x < (canvas.width - newOffset.x + 64) && x > -newOffset.x) && (y < (canvas.height - newOffset.y + 64) && y > -newOffset.y - 45)){
-		return true;
-	}else{
-		return false;
-	}
-}
 
-function isCameraAtEdge(){
-	if(Math.ceil(-offset.x + canvas.width) == getMaxX() || 
-			Math.ceil(-offset.y + canvas.height) == getMaxY() || 
-			Math.floor(-offset.x) == 2 || 
-			Math.floor(-offset.y) == 2){
-		return true;
-	}else{
-		return false;
-	}
+	return (x < (canvas.width - newOffset.x + 64) && x > -newOffset.x) && (y < (canvas.height - newOffset.y + 64) && y > -newOffset.y - 45);
 }
 
 function distance(p1, p2){
-	return Math.sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y));
+	return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
 }
 
 function removeLoginScreen(){

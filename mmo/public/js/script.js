@@ -30,6 +30,9 @@ $("#inventory").mouseout(function(){
 	$("#inventory").fadeOut(50);
 });
 
+screen = new PlayerScreen();
+camera = new Camera();
+
 
 function showLogin(type){
 	if(type == "new"){
@@ -92,15 +95,13 @@ function login(){
 					var levelObject = $.parseJSON(object.level);
 					var player = new Player(object.uuid, object.username, levelObject, $.parseJSON(object.inv), $.parseJSON(object.pos));
 					player.setXPBar();
-					player.setX(getCenter().x);
-					player.setY(getCenter().y);
-					
+
 					broadcast("user_info", player.getObject());
 					broadcast("join", player.getObject());
 					broadcast("get_players", {uuid: player.uuid});
-					
+
 					myplayer = player;
-					
+
 					offset.x = (-getMaxX() / 2) + (canvas.width / 2) - 150;
 					offset.y = (-getMaxY() / 2) + (canvas.height / 2);
 				}else{
@@ -210,7 +211,7 @@ function setLogoWidth(){
 	var margin = $(window).height() / 15;
 	$("#logo").css("width", width + "px");
 	$("#logo").css("margin-bottom", margin + "px");
-	
+
 	if(!myplayer){
 		if($(window).height() <= 700){
 			$("#logo").fadeOut(0);

@@ -11,14 +11,16 @@ socket.on('msg', function(data){
 		}
 		myIndex = players.length;
 		players.push(myplayer);
-		
+		me().setX(getCenter().x);
+		me().setY(getCenter().y);
+
 		for(var i = 0; i < data.entities.length; i++){
 			var entity = new Entity(data.entities[i].id, data.entities[i].uid, data.entities[i].x, data.entities[i].y, data.entities[i].hp);
 			addEntity(entity);
 		}
-		
+
 		document.getElementById("online").innerHTML = getPlayersOnline();
-		
+
 		removeLoginScreen();
 	}else if(data.type == Messages.ADD_ENTITY){
 		var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp);

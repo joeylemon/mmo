@@ -15,11 +15,11 @@ document.onkeydown = function(event) {
 	if(event.charCode && code == 0){
 		code = event.charCode;
 	}
-	
+
 	//console.log(code);
 
 	if(code == 13){
-		if(myplayer){
+		if(me()){
 			if(!isChatBoxOpen()){
 				showChatBox();
 				clearKeys();
@@ -88,28 +88,28 @@ document.onkeyup = function(event) {
 	if(code == 38 || code == 87){
 		removeKey(Key.UP);
 		me().getSprite().stopAnimation(Animations.WALK_UP);
-		
+
 		if(timings.enabled){
 			timings.last_up = Date.now();
 		}
 	}else if(code == 40 || code == 83){
 		removeKey(Key.DOWN);
 		me().getSprite().stopAnimation(Animations.WALK_DOWN);
-		
+
 		if(timings.enabled){
 			timings.last_down = Date.now();
 		}
 	}else if(code == 37 || code == 65){
 		removeKey(Key.LEFT);
 		me().getSprite().stopAnimation(Animations.WALK_LEFT);
-		
+
 		if(timings.enabled){
 			timings.last_left = Date.now();
 		}
 	}else if(code == 39 || code == 68){
 		removeKey(Key.RIGHT);
 		me().getSprite().stopAnimation(Animations.WALK_RIGHT);
-		
+
 		if(timings.enabled){
 			timings.last_right = Date.now();
 		}
@@ -129,11 +129,11 @@ document.onmousedown = function(event) {
 		if(me().canAttack()){
 			me().attack();
 			var msg = {
-				index: myIndex, 
+				index: myIndex,
 				uuid: me().uuid
 			};
 			broadcast("attack", msg);
-			
+
 			/*
 			console.log(me().getX() + ", " + me().getY());
 			var cell = getTileAt(me().getX() + 32, me().getY());

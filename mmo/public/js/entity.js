@@ -5,17 +5,23 @@ var Entity = function(id, uid, x, y, hp){
 	this.y = y;
 	this.hp = hp;
 	this.maxhp = hp;
-	this.sprite = new Sprite(id, x, y);
-	this.shadow = new Sprite(Sprites.SHADOW, x, y);
-	this.death_sprite = new Sprite(Sprites.DEATH, x, y);
+
 	this.flyingtexts = new Array();
+
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
+
 	this.dead = false;
+
+	this.sprites = {
+		entity: new Sprite(id, x, y),
+		shadow: new Sprite(Sprites.SHADOW, x, y),
+		death: new Sprite(Sprites.DEATH, x, y)
+	};
 };
 
 Entity.prototype.getSprite = function(){
-	return this.sprite;
+	return this.sprites.entity;
 };
 
 Entity.prototype.getUID = function(){
@@ -48,28 +54,28 @@ Entity.prototype.getPosition = function(){
 
 Entity.prototype.getCenter = function(){
 	if(!this.center){
-		this.center = {x: this.getX() + (this.sprite.getWidth() / 2), y: this.getY() + (this.sprite.getWidth() / 2)};
+		this.center = {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 2)};
 	}
 	return this.center;
 };
 
 Entity.prototype.getTopLeft = function(){
 	if(!this.topleft){
-		this.topleft = {x: this.getX() - (this.sprite.getWidth() / 2), y: this.getY() + (this.sprite.getWidth() / 3)};
+		this.topleft = {x: this.getX() - (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 3)};
 	}
 	return this.topleft;
 };
 
 Entity.prototype.getTop = function(){
 	if(!this.top){
-		this.top = {x: this.getX() + (this.sprite.getWidth() / 2), y: this.getY() + (this.sprite.getHeight() / 5)};
+		this.top = {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getHeight() / 5)};
 	}
 	return this.top;
 };
 
 Entity.prototype.getBottomCenter = function(){
 	if(!this.bottomcenter){
-		this.bottomcenter = {x: this.getX() + (this.sprite.getWidth() / 2) - (Settings.health_bar_width / 2), y: this.getY() + this.sprite.getHeight() - 20};
+		this.bottomcenter = {x: this.getX() + (this.sprites.entity.getWidth() / 2) - (Settings.health_bar_width / 2), y: this.getY() + this.sprites.entity.getHeight() - 20};
 	}
 	return this.bottomcenter;
 };
@@ -85,32 +91,32 @@ Entity.prototype.addText = function(text){
 
 Entity.prototype.hurt = function(amount){
 	this.hp -= amount;
-	
+
 	var text = new Text("-" + amount + " hp", {size: 17, color: TextColor.HURT});
 	this.addText(text);
 };
 
 Entity.prototype.attack = function(orientation){
-	this.sprite.setOrientation(orientation);
+	this.sprites.entity.setOrientation(orientation);
 	if(orientation == Orientations.UP){
-		this.sprite.startAnimation(Animations.ATTACK_UP);
-		this.sprite.setIdleAnimation(Animations.IDLE_UP);
+		this.sprites.entity.startAnimation(Animations.ATTACK_UP);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_UP);
 	}else if(orientation == Orientations.DOWN){
-		this.sprite.startAnimation(Animations.ATTACK_DOWN);
-		this.sprite.setIdleAnimation(Animations.IDLE_DOWN);
+		this.sprites.entity.startAnimation(Animations.ATTACK_DOWN);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_DOWN);
 	}else if(orientation == Orientations.LEFT){
-		this.sprite.startAnimation(Animations.ATTACK_LEFT);
-		this.sprite.setIdleAnimation(Animations.IDLE_LEFT);
+		this.sprites.entity.startAnimation(Animations.ATTACK_LEFT);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_LEFT);
 	}else if(orientation == Orientations.RIGHT){
-		this.sprite.startAnimation(Animations.ATTACK_RIGHT);
-		this.sprite.setIdleAnimation(Animations.IDLE_RIGHT);
+		this.sprites.entity.startAnimation(Animations.ATTACK_RIGHT);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_RIGHT);
 	}
 };
 
 Entity.prototype.setDead = function(){
 	this.dead = true;
 	this.death = Date.now();
-	this.death_sprite.startAnimation(Animations.DEATH);
+	this.sprites.death.startAnimation(Animations.DEATH);
 };
 
 Entity.prototype.isDead = function(){
@@ -119,29 +125,29 @@ Entity.prototype.isDead = function(){
 
 Entity.prototype.draw = function(){
 	if(this.dead){
-		this.death_sprite.setX(this.getCenter().x - 24);
-		this.death_sprite.setY(this.getCenter().y - 15);
-		
-		var anim = this.death_sprite.getNextAnimation();
+		this.sprites.death.setX(this.getCenter().x - 24);
+		this.sprites.death.setY(this.getCenter().y - 15);
+
+		var anim = this.sprites.death.getNextAnimation();
 		if(anim){
-			this.death_sprite.draw(anim.col, anim.row);
+			this.sprites.death.draw(anim.col, anim.row);
 		}
-		
+
 		if(Date.now() > this.death + 1000){
 			removeEntity(this.uid);
 		}
-		
+
 		return;
 	}
 
-	if(this.shadow.isDataSet()){
-		this.shadow.setX(this.x + (this.sprite.getWidth() / 2) - (this.shadow.getWidth() / 2));
-		this.shadow.setY(this.y + (this.sprite.getHeight() / 2) + 6);
+	if(this.sprites.shadow.isDataSet()){
+		this.sprites.shadow.setX(this.x + (this.sprites.entity.getWidth() / 2) - (this.sprites.shadow.getWidth() / 2));
+		this.sprites.shadow.setY(this.y + (this.sprites.entity.getHeight() / 2) + 6);
 	}
-	this.shadow.draw(1, 0);
+	this.sprites.shadow.draw(1, 0);
 
-	if(!this.sprite.isDoingAnimation()){
-		var idle = this.sprite.getIdleAnimation();
+	if(!this.sprites.entity.isDoingAnimation()){
+		var idle = this.sprites.entity.getIdleAnimation();
 		var time = this.lastIdleChange + IdleChanges[this.id] + (Math.random() * 1000);
 		if(Date.now() > time){
 			this.idleStep += 1;
@@ -150,21 +156,21 @@ Entity.prototype.draw = function(){
 			}
 			this.lastIdleChange = Date.now();
 		}
-		this.sprite.draw(this.idleStep, idle.row);
+		this.sprites.entity.draw(this.idleStep, idle.row);
 	}else{
-		var anim = this.sprite.getNextAnimation();
-		this.sprite.draw(anim.col, anim.row);
+		var anim = this.sprites.entity.getNextAnimation();
+		this.sprites.entity.draw(anim.col, anim.row);
 	}
-	
-	if(this.sprite.isDataSet() && this.hp < this.maxhp){
+
+	if(this.sprites.entity.isDataSet() && this.hp < this.maxhp){
 		var bottom = this.getBottomCenter();
 		var percent = (this.hp / this.maxhp);
 		var color = getHealthColor(percent);
-		
+
 		strokeRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, "rgba(0, 0, 0, 0.8)");
 		drawRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, color);
 	}
-	
+
 	for(var i = 0; i < this.flyingtexts.length; i++){
 		var text = this.flyingtexts[i];
 		text.draw(this.getTop());

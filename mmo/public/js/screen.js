@@ -7,7 +7,7 @@ PlayerScreen.prototype.toggleDebug = function(){
 	this.debug = !this.debug;
 	if(this.debug){
 		$("#debug").fadeIn(0);
-		Settings.player_speed = 10;
+		//Settings.player_speed = 10;
 		Settings.attack_speed = 1;
 	}else{
 		$("#debug").fadeOut(0);

@@ -23,21 +23,11 @@ function draw(){
 
 		ctx.translate(offset.x, offset.y);
 
+		var player_pos = getMyPosition();
 		var nextpos = getMovement(myIndex);
-		var nextcam = isOffWorld(offset.x + nextpos.x, offset.y + nextpos.y);
-		
-		if(!nextcam.x && !nextcam.y){
-			offset.x += nextpos.x;
-			offset.y += nextpos.y;
-		}else if(!nextcam.x && nextcam.y){
-			offset.x += nextpos.x;
-		}else if(nextcam.x && !nextcam.y){
-			offset.y += nextpos.y;
-		}else if(myIndex == undefined){
-			offset.x = 0;
-			offset.y = 0;
-			ctx.setTransform(1, 0, 0, 1, 0, 0);
-		}
+		player_pos.x += -nextpos.x;
+		player_pos.y += -nextpos.y;
+		camera.update(player_pos, nextpos);
 
 		drawMap(false);
 
@@ -57,11 +47,11 @@ function draw(){
 		document.getElementById("players").innerHTML = players_onscreen;
 
 		if(myIndex != undefined){
-			me().setX(getCenter().x);
-			me().setY(getCenter().y);
+			me().setX(player_pos.x);
+			me().setY(player_pos.y);
 			me().draw();
 		}
-		
+
 		var entities_onscreen = 0;
 		for(var i = 0; i < entities.length; i++){
 			var entity = entities[i];
@@ -110,7 +100,7 @@ function getMovement(index){
 
 		if(index == myIndex){
 			sendLocation(false);
-			
+
 			var id = getKeysID();
 			if(lastKeysID != id){
 				if(id > 1){
@@ -125,7 +115,7 @@ function getMovement(index){
 				}
 				lastKeysID = id;
 			}
-			
+
 			if(screen.showingDebug()){
 				document.getElementById("coords").innerHTML = Math.floor(me().getCenter().x) + ", " + Math.floor(me().getCenter().y);
 			}
@@ -137,19 +127,6 @@ function getMovement(index){
 		}
 	}
 	return {x: x, y: y};
-}
-
-function isOffWorld(x, y){
-	var offWorld = {x: false, y: false};
-
-	if((x - canvas.width) < getMaxX() * -1 || x > 0){
-		offWorld.x = true;
-	}
-	if((y - canvas.height) < getMaxY() * -1 || y > 0){
-		offWorld.y = true;
-	}
-
-	return offWorld;
 }
 
 function isPressingKey(key, array){

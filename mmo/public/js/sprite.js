@@ -8,10 +8,9 @@ var Sprite = function(id, x, y){
 
 Sprite.prototype.setData = function(){
 	var sprite = this;
-	
+
 	$.getJSON("js/sprites/" + this.id + ".json", function(value){
 		sprite.data = value;
-		sprite.offset = {x: value.offset_x, y: value.offset_y};
 		sprite.image = images[sprite.id];
 	});
 };
@@ -30,10 +29,6 @@ Sprite.prototype.getWidth = function(){
 
 Sprite.prototype.getHeight = function(){
 	return this.data.height;
-};
-
-Sprite.prototype.getOffset = function(){
-	return this.offset;
 };
 
 Sprite.prototype.setX = function(x){

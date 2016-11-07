@@ -68,7 +68,7 @@ function loadJSONMap(url, callback){
 				}
 			}
 		}
-		
+
 		for(var i = 0; i < map.collisions.length; i++){
 			var collision = map.collisions[i];
 

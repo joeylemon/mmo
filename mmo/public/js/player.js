@@ -5,18 +5,20 @@ var Player = function(uuid, name, level, inventory, position){
 	this.inventory = inventory;
 	this.position = position;
 	this.keys = new Array();
-	
+
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
-	
+
 	this.flyingtexts = new Array();
 	this.blocktext = false;
-	
+
 	this.lastAttack = 0;
-	
-	this.sprite = new Sprite(inventory.armor, position.x, position.y);
-	this.shadow = new Sprite(Sprites.SHADOW, position.x, position.y);
-	this.sword = new Sprite(Sprites.SWORD, position.x + SwordOffsets.DOWN, position.y + SwordOffsets.DOWN);
+
+	this.sprites = {
+		player: new Sprite(inventory.armor, position.x, position.y),
+		shadow: new Sprite(Sprites.SHADOW, position.x, position.y),
+		sword: new Sprite(Sprites.SWORD, position.x + SwordOffsets.DOWN, position.y + SwordOffsets.DOWN)
+	};
 };
 
 Player.prototype.getObject = function(){
@@ -29,6 +31,59 @@ Player.prototype.getUUID = function(){
 
 Player.prototype.getName = function(){
 	return this.name;
+};
+
+Player.prototype.getArmor = function(){
+	return this.inventory.armor;
+};
+
+Player.prototype.getX = function(){
+	return this.position.x;
+};
+
+Player.prototype.getY = function(){
+	return this.position.y;
+};
+
+Player.prototype.getPosition = function(){
+	return this.position;
+};
+
+Player.prototype.setX = function(x){
+	this.position.x = x;
+	this.sprites.player.setX(x);
+	this.sprites.sword.setX(x + getSwordOffset(this.sprites.player.getOrientation).x);
+};
+
+Player.prototype.setY = function(y){
+	this.position.y = y;
+	this.sprites.player.setY(y);
+	this.sprites.sword.setY(y + getSwordOffset(this.sprites.player.getOrientation).y);
+};
+
+Player.prototype.getCenter = function(){
+	return {x: this.position.x + 64, y: this.position.y + 64};
+};
+
+Player.prototype.getTop = function(){
+	return {x: this.getCenter().x, y: this.getCenter().y - 40};
+};
+
+Player.prototype.setKeys = function(array){
+	this.keys = array;
+};
+
+Player.prototype.getKeys = function(){
+	return this.keys;
+};
+
+Player.prototype.clearKeys = function(){
+	this.keys = new Array();
+	this.sprites.player.stopAllAnimations();
+};
+
+Player.prototype.getSprite = function(){
+	return this.sprites.player;
 };
 
 Player.prototype.getLevelObject = function(){
@@ -92,59 +147,6 @@ Player.prototype.levelUp = function(){
 	this.addText(text);
 };
 
-Player.prototype.getArmor = function(){
-	return this.inventory.armor;
-};
-
-Player.prototype.getX = function(){
-	return this.position.x;
-};
-
-Player.prototype.getY = function(){
-	return this.position.y;
-};
-
-Player.prototype.getPosition = function(){
-	return this.position;
-};
-
-Player.prototype.setX = function(x){
-	this.position.x = x;
-	this.sprite.setX(x);
-	this.sword.setX(x + getSwordOffset(this.sprite.getOrientation).x);
-};
-
-Player.prototype.setY = function(y){
-	this.position.y = y;
-	this.sprite.setY(y);
-	this.sword.setY(y + getSwordOffset(this.sprite.getOrientation).y);
-};
-
-Player.prototype.getCenter = function(){
-	return {x: this.position.x + 64, y: this.position.y + 64};
-};
-
-Player.prototype.getTop = function(){
-	return {x: this.getCenter().x, y: this.getCenter().y - 40};
-};
-
-Player.prototype.setKeys = function(array){
-	this.keys = array;
-};
-
-Player.prototype.getKeys = function(){
-	return this.keys;
-};
-
-Player.prototype.clearKeys = function(){
-	this.keys = new Array();
-	this.sprite.stopAllAnimations();
-};
-
-Player.prototype.getSprite = function(){
-	return this.sprite;
-};
-
 Player.prototype.addText = function(text){
 	if(!this.blocktext){
 		if(text.getOptions().block){
@@ -188,22 +190,22 @@ Player.prototype.canAttack = function(){
 };
 
 Player.prototype.attack = function(){
-	var orientation = this.sprite.getOrientation();
-	
+	var orientation = this.sprites.player.getOrientation();
+
 	if(orientation == Orientations.UP){
-		this.sprite.startAnimation(Animations.ATTACK_UP);
-		this.sprite.setIdleAnimation(Animations.IDLE_UP);
+		this.sprites.player.startAnimation(Animations.ATTACK_UP);
+		this.sprites.player.setIdleAnimation(Animations.IDLE_UP);
 	}else if(orientation == Orientations.DOWN){
-		this.sprite.startAnimation(Animations.ATTACK_DOWN);
-		this.sprite.setIdleAnimation(Animations.IDLE_DOWN);
+		this.sprites.player.startAnimation(Animations.ATTACK_DOWN);
+		this.sprites.player.setIdleAnimation(Animations.IDLE_DOWN);
 	}else if(orientation == Orientations.LEFT){
-		this.sprite.startAnimation(Animations.ATTACK_LEFT);
-		this.sprite.setIdleAnimation(Animations.IDLE_LEFT);
+		this.sprites.player.startAnimation(Animations.ATTACK_LEFT);
+		this.sprites.player.setIdleAnimation(Animations.IDLE_LEFT);
 	}else if(orientation == Orientations.RIGHT){
-		this.sprite.startAnimation(Animations.ATTACK_RIGHT);
-		this.sprite.setIdleAnimation(Animations.IDLE_RIGHT);
+		this.sprites.player.startAnimation(Animations.ATTACK_RIGHT);
+		this.sprites.player.setIdleAnimation(Animations.IDLE_RIGHT);
 	}
-	
+
 	if(this.uuid == me().getUUID()){
 		this.lastAttack = Date.now();
 		var hit = getHitEntity(this.getCenter(), this.getSprite().getOrientation());
@@ -221,14 +223,14 @@ Player.prototype.attack = function(){
 };
 
 Player.prototype.draw = function(){
-	if(this.shadow.isDataSet()){
-		this.shadow.setX(this.position.x + 38);
-		this.shadow.setY(this.position.y + 64 + 6);
-		this.shadow.draw(1, 0);
+	if(this.sprites.shadow.isDataSet()){
+		this.sprites.shadow.setX(this.position.x + 38);
+		this.sprites.shadow.setY(this.position.y + 64 + 6);
+		this.sprites.shadow.draw(1, 0);
 	}
-	
-	if(!this.sprite.isDoingAnimation()){
-		var idle = this.sprite.getIdleAnimation();
+
+	if(!this.sprites.player.isDoingAnimation()){
+		var idle = this.sprites.player.getIdleAnimation();
 		if(Date.now() > this.lastIdleChange + Settings.player_idle_change){
 			this.idleStep += 1;
 			if(this.idleStep > idle.length){
@@ -236,12 +238,12 @@ Player.prototype.draw = function(){
 			}
 			this.lastIdleChange = Date.now();
 		}
-		this.sprite.draw(this.idleStep, idle.row);
-		this.sword.draw(this.idleStep, idle.row);
+		this.sprites.player.draw(this.idleStep, idle.row);
+		this.sprites.sword.draw(this.idleStep, idle.row);
 	}else{
-		var anim = this.sprite.getNextAnimation();
-		this.sprite.draw(anim.col, anim.row);
-		this.sword.draw(anim.col, anim.row);
+		var anim = this.sprites.player.getNextAnimation();
+		this.sprites.player.draw(anim.col, anim.row);
+		this.sprites.sword.draw(anim.col, anim.row);
 	}
 
 	var color = getLevelColor(this.level.level);
