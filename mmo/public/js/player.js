@@ -1,10 +1,25 @@
-var Player = function(uuid, name, level, inventory, position){
+var Player = function(uuid, name, level, inventory, position, my_quests){
 	this.uuid = uuid;
 	this.name = name;
 	this.level = level;
 	this.inventory = inventory;
 	this.position = position;
 	this.keys = new Array();
+
+	this.quests = my_quests;
+
+	this.progress = {
+		quest: undefined,
+		step: 0,
+		data: undefined
+	};
+
+	if(this.quests.current >= 0){
+		this.progress.quest = quests[this.quests.current];
+		this.progress.data = this.quests.data;
+		this.progress.step = this.quests.step;
+		flashMessage("<span style='color:#FF9B2E'>Current objective:</span> " + this.getCurrentObjective().getAlert());
+	}
 
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
@@ -17,12 +32,12 @@ var Player = function(uuid, name, level, inventory, position){
 	this.sprites = {
 		player: new Sprite(inventory.armor, position.x, position.y),
 		shadow: new Sprite(Sprites.SHADOW, position.x, position.y),
-		sword: new Sprite(Sprites.SWORD, position.x + SwordOffsets.DOWN, position.y + SwordOffsets.DOWN)
+		sword: new Sprite(Sprites.SWORD, position.x + SwordOffset.DOWN, position.y + SwordOffset.DOWN)
 	};
 };
 
 Player.prototype.getObject = function(){
-	return {uuid: this.uuid, username: this.name, level: this.level, inv: this.inventory, pos: this.position};
+	return {uuid: this.uuid, username: this.name, level: this.level, inv: this.inventory, pos: this.position, quests: this.quests};
 };
 
 Player.prototype.getUUID = function(){
@@ -50,15 +65,19 @@ Player.prototype.getPosition = function(){
 };
 
 Player.prototype.setX = function(x){
-	this.position.x = x;
-	this.sprites.player.setX(x);
-	this.sprites.sword.setX(x + getSwordOffset(this.sprites.player.getOrientation).x);
+	if(x + 45 > 0 && x + 90 < getMaxX()){
+		this.position.x = x;
+		this.sprites.player.setX(x);
+		this.sprites.sword.setX(x + getSwordOffset(this.sprites.player.getOrientation).x);
+	}
 };
 
 Player.prototype.setY = function(y){
-	this.position.y = y;
-	this.sprites.player.setY(y);
-	this.sprites.sword.setY(y + getSwordOffset(this.sprites.player.getOrientation).y);
+	if(y + 45 > 0 && y + 90 < getMaxY()){
+		this.position.y = y;
+		this.sprites.player.setY(y);
+		this.sprites.sword.setY(y + getSwordOffset(this.sprites.player.getOrientation).y);
+	}
 };
 
 Player.prototype.getCenter = function(){
@@ -66,7 +85,7 @@ Player.prototype.getCenter = function(){
 };
 
 Player.prototype.getTop = function(){
-	return {x: this.getCenter().x, y: this.getCenter().y - 40};
+	return {x: this.getCenter().x, y: this.position.y + 20};
 };
 
 Player.prototype.setKeys = function(array){
@@ -112,8 +131,11 @@ Player.prototype.setXP = function(newxp){
 
 Player.prototype.addXP = function(xp, color = TextColor.XP){
 	this.level.xp += xp;
+
 	var text = new Text("+" + xp + " xp", {size: 25, color: color});
 	this.addText(text);
+
+
 	if(this.canLevelUp()){
 		this.levelUp();
 	}else{
@@ -128,23 +150,96 @@ Player.prototype.setXPBar = function(){
 };
 
 Player.prototype.canLevelUp = function(){
-	var xp = this.getXP();
-	var nextlevel = getNextLevel(this.getLevel());
-	if(xp > nextlevel){
-		return true;
+	return this.getXP() > getNextLevel(this.getLevel());
+};
+
+Player.prototype.levelUp = function(){
+	this.addLevel();
+	this.setXP(0);
+
+	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
+	this.addText(text);
+
+	$("#xp-bar").css("width", "0%");
+	broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
+};
+
+Player.prototype.isDoingObjective = function(objective){
+	if(this.progress.quest){
+		return this.progress.quest.getObjective(this.progress.step).constructor.name == objective;
 	}else{
 		return false;
 	}
 };
 
-Player.prototype.levelUp = function(){
-	$("#xp-bar").css("width", "0%");
-	this.addLevel();
-	this.setXP(0);
-	broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
+Player.prototype.getQuest = function(){
+	return this.progress.quest;
+};
 
-	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP});
+Player.prototype.getQuestStep = function(){
+	return this.progress.step;
+};
+
+Player.prototype.getQuestData = function(){
+	return this.progress.data;
+};
+
+Player.prototype.increaseQuestData = function(property){
+	this.progress.data[property]++;
+	this.quests.data[property]++;
+	this.sendQuestUpdate();
+};
+
+Player.prototype.getCurrentObjective = function(){
+	return this.progress.quest.getObjective(this.progress.step);
+};
+
+Player.prototype.startQuest = function(id){
+	this.progress.quest = quests[id];
+	this.progress.step = 0;
+
+	this.quests.current = id;
+
+	this.advanceQuest();
+};
+
+Player.prototype.advanceQuest = function(){
+	this.progress.step++;
+	if(this.getCurrentObjective()){
+		this.progress.data = this.getCurrentObjective().getDefaultData();
+		this.quests.data = this.getCurrentObjective().getDefaultData();
+		this.quests.step = this.progress.step;
+		flashMessage("<span style='color:#FF9B2E'>New objective:</span> " + this.getCurrentObjective().getAlert());
+	}else{
+		this.completeQuest();
+	}
+	this.sendQuestUpdate();
+};
+
+Player.prototype.completeQuest = function(){
+	this.addXP(this.getQuest().getXPReward());
+
+	var text = new Text("Quest Complete!", {size: 30, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
 	this.addText(text);
+	flashMessage("<span style='color:#FF9B2E'>Completed:</span> \"" + this.getQuest().getTitle() + "\"");
+
+	this.quests.completed.push(getQuestID(this.getQuest().getTitle()));
+	this.quests.current = -1;
+	this.quests.step = -1;
+	this.quests.data = {};
+	this.sendQuestUpdate();
+
+	this.progress.quest = undefined;
+	this.progress.step = 1;
+	this.progress.data = undefined;
+};
+
+Player.prototype.hasCompletedQuest = function(id){
+	return this.quests.completed.indexOf(id) >= 0;
+};
+
+Player.prototype.sendQuestUpdate = function(id){
+	broadcast(Messages.UPDATE_QUESTS, {quests: clone(this.quests)});
 };
 
 Player.prototype.addText = function(text){
@@ -185,6 +280,10 @@ Player.prototype.move = function(dir){
 	}
 };
 
+Player.prototype.getDamage = function(){
+	return Math.floor(Damage["IRON"] + (this.getLevel() / 5));
+};
+
 Player.prototype.canAttack = function(){
 	return (Date.now() - this.lastAttack > Settings.attack_speed);
 };
@@ -192,16 +291,16 @@ Player.prototype.canAttack = function(){
 Player.prototype.attack = function(){
 	var orientation = this.sprites.player.getOrientation();
 
-	if(orientation == Orientations.UP){
+	if(orientation == Orientation.UP){
 		this.sprites.player.startAnimation(Animations.ATTACK_UP);
 		this.sprites.player.setIdleAnimation(Animations.IDLE_UP);
-	}else if(orientation == Orientations.DOWN){
+	}else if(orientation == Orientation.DOWN){
 		this.sprites.player.startAnimation(Animations.ATTACK_DOWN);
 		this.sprites.player.setIdleAnimation(Animations.IDLE_DOWN);
-	}else if(orientation == Orientations.LEFT){
+	}else if(orientation == Orientation.LEFT){
 		this.sprites.player.startAnimation(Animations.ATTACK_LEFT);
 		this.sprites.player.setIdleAnimation(Animations.IDLE_LEFT);
-	}else if(orientation == Orientations.RIGHT){
+	}else if(orientation == Orientation.RIGHT){
 		this.sprites.player.startAnimation(Animations.ATTACK_RIGHT);
 		this.sprites.player.setIdleAnimation(Animations.IDLE_RIGHT);
 	}
@@ -210,13 +309,22 @@ Player.prototype.attack = function(){
 		this.lastAttack = Date.now();
 		var hit = getHitEntity(this.getCenter(), this.getSprite().getOrientation());
 		if(hit){
-			var amount = Damages["IRON"];
+			var amount = this.getDamage();
 			if(hit.getHP() - amount > 0){
 				broadcast(Messages.ATTACK_ENTITY, {uid: hit.getUID(), amount: amount});
 				this.addXP(15);
 			}else{
 				broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
-				this.addXP(30, TextColor.KILL_XP);
+				this.addXP(DeathExperience[hit.getID()], TextColor.KILL_XP);
+
+				if(this.isDoingObjective(Objective.KILL_ENTITY)){
+					if(hit.getID() == this.getCurrentObjective().getEntity()){
+						this.increaseQuestData("kills");
+						if(this.getQuestData().kills >= this.getCurrentObjective().getAmount()){
+							this.advanceQuest();
+						}
+					}
+				}
 			}
 		}
 	}
@@ -262,7 +370,7 @@ Player.prototype.draw = function(){
 	}
 
 	if(this.message && !this.message.isDead()){
-		var pos = $.extend(true, {}, this.getPosition());
+		var pos = clone(this.getPosition());
 		if(this.inventory.armor == "clotharmor"){
 			pos.y += 10;
 		}

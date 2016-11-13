@@ -1,7 +1,8 @@
-var Sprite = function(id, x, y){
+var Sprite = function(id, x, y, idle){
 	this.x = x;
 	this.y = y;
 	this.id = id;
+	this.idle = idle;
 	this.animating = false;
 	this.setData();
 };
@@ -84,7 +85,11 @@ Sprite.prototype.getIdleAnimation = function(){
 	if(this.idleAnim != undefined){
 		return this.idleAnim;
 	}else{
-		return {length: 2, row: 8};
+		if(!this.idle){
+			return {length: 2, row: 8};
+		}else{
+			return {length: 2, row: 0};
+		}
 	}
 };
 

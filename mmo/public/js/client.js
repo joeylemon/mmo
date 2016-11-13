@@ -23,13 +23,13 @@ function draw(){
 
 		ctx.translate(offset.x, offset.y);
 
-		var player_pos = getMyPosition();
+		var player_pos = clone(getMyPosition());
 		var nextpos = getMovement(myIndex);
 		player_pos.x += -nextpos.x;
 		player_pos.y += -nextpos.y;
 		camera.update(player_pos, nextpos);
 
-		drawMap(false);
+		drawMap(MapLayer.BOTTOM);
 
 		var players_onscreen = 0;
 		for(var i = 0; i < players.length; i++){
@@ -60,9 +60,17 @@ function draw(){
 				entities_onscreen++;
 			}
 		}
-		document.getElementById("entities").innerHTML = entities_onscreen;
 
-		drawMap(true);
+		drawMap(MapLayer.TOP);
+
+		for(var i = 0; i < npcs.length; i++){
+			var npc = npcs[i];
+			if(npc.getSprite().isDataSet() && isVisible(npc.getCenter().x, npc.getCenter().y)){
+				npc.draw();
+				entities_onscreen++;
+			}
+		}
+		document.getElementById("entities").innerHTML = entities_onscreen;
 
 		ctx.restore();
 	}

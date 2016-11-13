@@ -126,7 +126,10 @@ document.onmousedown = function(event) {
 	}
 
 	if(code == 0){
-		if(me().canAttack()){
+		var npc = getClickedNPC();
+		if(npc){
+			npc.talk();
+		}else if(me().canAttack()){
 			me().attack();
 			var msg = {
 				index: myIndex,
@@ -136,7 +139,7 @@ document.onmousedown = function(event) {
 
 			/*
 			console.log(me().getX() + ", " + me().getY());
-			var cell = getTileAt(me().getX() + 32, me().getY());
+			var cell = getTileAt(me().getX(), me().getY());
 			if(cell){
 				console.log(cell.true_x + ", " + cell.true_y + " (" + cell.id + ")");
 			}

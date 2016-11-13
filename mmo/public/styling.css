@@ -42,6 +42,26 @@
 	box-shadow: inset 0 0 350px #000;
 }
 
+.msg-container {
+     position: fixed;
+     top: 10px;
+     left: 0px;
+     right: 0px;
+     height: 50px;
+
+     text-align: center;
+     font-size: 40px;
+     font-family: profont;
+     color: #fff;
+     text-shadow: 2px 2px 3px #000;
+
+     -moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 .chatbox {
 	display: none;
 	position: fixed;
@@ -76,7 +96,7 @@
 	width: 225px;
 	padding-left: 20px;
 	background-color: rgba(0, 0, 0, 0.6);
-	
+
 	-moz-user-select: -moz-none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
@@ -190,7 +210,7 @@
 	right: 0px;
 	bottom: 0px;
 	left: 0px;
-	
+
 	text-align: center;
 
 	display: -ms-flexbox;
@@ -227,7 +247,7 @@
 	color: #000;
 
 	opacity: 0.95;
-	
+
 	display: inline-block;
 }
 

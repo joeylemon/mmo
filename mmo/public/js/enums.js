@@ -4,10 +4,6 @@ var ctx = canvas.getContext("2d");
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
-$("#game").mousedown(function(event){
-	event.preventDefault();
-});
-
 var width = 1920;
 var height = 1080;
 
@@ -15,6 +11,10 @@ var scale = Math.min(canvas.width / width, canvas.height / height);
 var top = canvas.height / 2  - (height * scale) / 2;
 var left = canvas.width / 2 - (width * scale) / 2;
 ctx.setTransform(scale, 0, 0, scale, left, top);
+
+$("#game").mousedown(function(event){
+	event.preventDefault();
+});
 
 /* Initialize game variables */
 var socket = io();
@@ -41,6 +41,7 @@ var lastKeysID = -1;
 var fpsInterval = 1000 / fps;
 
 var noblur = false;
+var flashid = 0;
 
 var keys = new Array();
 var players = new Array();
@@ -59,28 +60,45 @@ for(var key in Sprites){
 
 /* Initialize enums */
 var Settings = {
+	tilewidth: 32,
 	idle_camera_speed: {x: -0.10, y: -0.175},
 	player_speed: 4.8,
 	attack_speed: 200,
 	player_idle_change: 800,
 	entity_idle_change: 800,
+	entity_speed: 4.8,
 	health_bar_width: 45,
 	health_bar_height: 5
 };
 
-var IdleChanges = {
+var IdleChange = {
 	bat: 400,
 	skeleton: 2500
 };
 
-var SwordOffsets = {
+var DeathExperience = {
+	bat: 20,
+	skeleton: 40
+};
+
+var Entity = {
+	SKELETON: "skeleton",
+	BAT: "bat"
+};
+
+var Objective = {
+	KILL_ENTITY: "KillEntityObjective",
+	TALK_TO_NPC: "TalkToNPCObjective"
+};
+
+var SwordOffset = {
 	UP: {x: -20, y: -35},
 	DOWN: {x: -30, y: -40},
 	LEFT: {x: -20, y: -35},
 	RIGHT: {x: -30, y: -25}
 };
 
-var Damages = {
+var Damage = {
 	IRON: 10
 };
 
@@ -91,7 +109,7 @@ var Key = {
 	RIGHT: "right"
 };
 
-var Orientations = {
+var Orientation = {
 	UP: 0,
 	DOWN: 1,
 	LEFT: 2,
@@ -123,7 +141,13 @@ var TextColor = {
 	ADMIN_MESSAGE: "#FF4646",
 	HIGH_HEALTH: "rgba(22, 132, 0, 0.8)",
 	MEDIUM_HEALTH: "rgba(255, 162, 0, 0.8)",
-	LOW_HEALTH: "rgba(146, 0, 0, 0.8)"
+	LOW_HEALTH: "rgba(146, 0, 0, 0.8)",
+	NPC_TALK: "#FF9B2E",
+};
+
+var MapLayer = {
+	TOP: true,
+	BOTTOM: false
 };
 
 /* Initialize functions */
@@ -134,6 +158,45 @@ function broadcast(type, data){
 
 function me(){
 	return players[myIndex];
+}
+
+function clone(object){
+	return jQuery.extend({}, object);
+}
+
+function flashMessage(message){
+	document.getElementById("msg").innerHTML = message;
+
+	flashid++;
+	var id = flashid;
+
+	var vis = true;
+	var diff = 100;
+	var delay = 0;
+	for(var i = 0; i < 5; i++){
+		if(vis){
+			setTimeout(function(){
+				if(id == flashid){
+					$("#msg").fadeIn(diff);
+				}
+			}, delay);
+		}else{
+			setTimeout(function(){
+				if(id == flashid){
+					$("#msg").fadeOut(diff);
+				}
+			}, delay);
+		}
+
+		vis = !vis;
+		delay += diff;
+	}
+
+	setTimeout(function(){
+		if(id == flashid){
+			$("#msg").fadeOut(750);
+		}
+	}, 5000);
 }
 
 function getMyPosition(){
@@ -184,6 +247,18 @@ function getHitEntity(center, playerOrientation){
 	return undefined;
 }
 
+function getClickedNPC(){
+	var npc;
+	for(var i = 0; i < npcs.length; i++){
+		var n = npcs[i];
+		if(distance(n.getCenter(), getMapMouse()) <= 50){
+			npc = n;
+			break;
+		}
+	}
+	return npc;
+}
+
 function getPlayer(name){
 	for(var i = 0; i < players.length; i++){
 		var p = players[i];
@@ -216,6 +291,14 @@ function getHealthColor(percent){
 	}
 
 	return color;
+}
+
+function getIdleChange(id){
+	if(IdleChange[id]){
+		return IdleChange[id];
+	}else{
+		return Settings.player_idle_change;
+	}
 }
 
 function getMapMouse(){
@@ -258,21 +341,21 @@ function getTrueCenter(){
 	return {x: canvas.width / 2, y: canvas.height / 2};
 }
 
-function getOrientation(pos, mouse){
+function getOrientation(pos1, pos2){
 	var orientation;
-	var diff_x = pos.x - mouse.x;
-	var diff_y = pos.y - mouse.y;
+	var diff_x = pos1.x - pos2.x;
+	var diff_y = pos1.y - pos2.y;
 	if(Math.abs(diff_x) > Math.abs(diff_y)){
 		if(diff_x < 0){
-			orientation = Orientations.RIGHT;
+			orientation = Orientation.RIGHT;
 		}else{
-			orientation = Orientations.LEFT;
+			orientation = Orientation.LEFT;
 		}
 	}else{
 		if(diff_y < 0){
-			orientation = Orientations.DOWN;
+			orientation = Orientation.DOWN;
 		}else{
-			orientation = Orientations.UP;
+			orientation = Orientation.UP;
 		}
 	}
 	return orientation;
@@ -301,14 +384,14 @@ function getLevelColor(level){
 }
 
 function getSwordOffset(orientation){
-	if(orientation == Orientations.UP){
-		return SwordOffsets.UP;
-	}else if(orientation == Orientations.DOWN){
-		return SwordOffsets.DOWN;
-	}else if(orientation == Orientations.LEFT){
-		return SwordOffsets.LEFT;
+	if(orientation == Orientation.UP){
+		return SwordOffset.UP;
+	}else if(orientation == Orientation.DOWN){
+		return SwordOffset.DOWN;
+	}else if(orientation == Orientation.LEFT){
+		return SwordOffset.LEFT;
 	}else{
-		return SwordOffsets.RIGHT;
+		return SwordOffset.RIGHT;
 	}
 }
 
@@ -323,8 +406,8 @@ function isOffWorld(x, y){
 
 function isVisible(x, y){
 	var newOffset = {
-		x: offset.x + 32,
-		y: offset.y + 32
+		x: offset.x + Settings.tilewidth,
+		y: offset.y + Settings.tilewidth
 	};
 
 	return (x < (canvas.width - newOffset.x + 64) && x > -newOffset.x) && (y < (canvas.height - newOffset.y + 64) && y > -newOffset.y - 45);

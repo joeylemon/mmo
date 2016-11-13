@@ -17,8 +17,7 @@ soundtrack.volume = 0.25;
 
 $("#existing-username").focus();
 
-setLogoWidth();
-$("#logo").css("display", "inline-block");
+resize();
 
 
 $("#inv-link").hover(function(){
@@ -76,6 +75,9 @@ function login(){
 	if(username.length < 3 || username.length > 16){
 		alertBadInput("username", "Username must be 3-16 characters.");
 		return;
+	}else if(username.includes("\\") || username.includes("'") || username.includes("\"")){
+		alertBadInput("username", "Username contains illegal characters.");
+		return;
 	}
 
 	if(password.length < 3 || password.length > 30){
@@ -92,8 +94,7 @@ function login(){
 			success: function (result){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
-					var levelObject = $.parseJSON(object.level);
-					var player = new Player(object.uuid, object.username, levelObject, $.parseJSON(object.inv), $.parseJSON(object.pos));
+					var player = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos), $.parseJSON(object.quests));
 					player.setXPBar();
 
 					broadcast("user_info", player.getObject());
@@ -206,17 +207,22 @@ function isChatBoxOpen(){
 	return chatbox;
 }
 
-function setLogoWidth(){
+function resize(){
 	var width = $(window).height() / 1.2;
 	var margin = $(window).height() / 15;
 	$("#logo").css("width", width + "px");
 	$("#logo").css("margin-bottom", margin + "px");
 
 	if(!myplayer){
-		if($(window).height() <= 700){
+		if($(window).height() <= 705){
 			$("#logo").fadeOut(0);
 		}else{
+			$("#logo").css("display", "inline-block");
 			$("#logo").fadeIn(0);
 		}
+	}
+
+	if(me()){
+		clearKeys();
 	}
 }

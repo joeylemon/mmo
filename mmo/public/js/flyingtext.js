@@ -2,8 +2,17 @@ var Text = function(text, options){
      this.y = 0;
      this.text = text;
      this.options = options;
-     this.id = getRandom(1000);
-     this.death = Date.now() + 2300;
+     this.id = getRandom(10000);
+	 
+     this.death = Date.now() + 1500;
+	 if(options.death){
+		 this.death += options.death;
+	 }
+	 
+	 this.speed = 0.7;
+	 if(options.speed){
+		 this.speed = options.speed;
+	 }
 };
 
 Text.prototype.getID = function(){
@@ -19,7 +28,7 @@ Text.prototype.isDead = function(){
 };
 
 Text.prototype.draw = function(pos){
-     this.y -= 0.4;
+     this.y -= this.speed;
      var y = pos.y + this.y;
      drawText(pos.x, y, this.text, this.options.size, "rgba(0, 0, 0, 0.75)", 4, this.options.color);
 };

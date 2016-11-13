@@ -89,6 +89,7 @@ function loadJSONMap(url, callback){
 		var map_top = new Array();
 
 		set_width = set.imagewidth / set.tilewidth;
+		Settings.tilewidth = set.tilewidth;
 		for(var layer = 0; layer < map.layers.length; ++layer){
 			for (var cell = 0; cell < map.layers[layer].data.length; ++cell){
 				var id = map.layers[layer].data[cell];
@@ -107,7 +108,15 @@ function loadJSONMap(url, callback){
 
 				var index = front.indexOf(id);
 
-				var obj = {x: x, y: y, id: id, tile_id: tile_id, set_x: set_x, set_y: set_y, true_x: true_x, true_y: true_y};
+				var obj = {
+					x: x,
+					y: y,
+					id: id,
+					set_x: set_x,
+					set_y: set_y,
+					true_x: true_x,
+					true_y: true_y
+				};
 
 				if(index >= 0){
 					map_top.push(obj);
@@ -144,7 +153,7 @@ function getTileAt(x, y){
 	for(var x = 0; x < map_layers.length; x++){
 		for(var i = 0; i < map_layers[x].length; i++){
 			var cell = map_layers[x][i];
-			if(distance({x: x, y: y}, {x: cell.true_x, y: cell.true_y}) <= 32){
+			if(distance({x: x, y: y}, {x: cell.true_x, y: cell.true_y}) <= Settings.tilewidth){
 				return cell;
 			}
 		}

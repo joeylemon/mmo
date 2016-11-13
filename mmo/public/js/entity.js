@@ -24,6 +24,10 @@ Entity.prototype.getSprite = function(){
 	return this.sprites.entity;
 };
 
+Entity.prototype.getID = function(){
+	return this.id;
+};
+
 Entity.prototype.getUID = function(){
 	return this.uid;
 };
@@ -34,10 +38,12 @@ Entity.prototype.getHP = function(){
 
 Entity.prototype.setX = function(x){
 	this.x = x;
+	this.sprites.entity.setX(x);
 };
 
 Entity.prototype.setY = function(y){
 	this.y = y;
+	this.sprites.entity.setY(y);
 };
 
 Entity.prototype.getX = function(){
@@ -53,31 +59,19 @@ Entity.prototype.getPosition = function(){
 };
 
 Entity.prototype.getCenter = function(){
-	if(!this.center){
-		this.center = {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 2)};
-	}
-	return this.center;
+	return {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 2)};
 };
 
 Entity.prototype.getTopLeft = function(){
-	if(!this.topleft){
-		this.topleft = {x: this.getX() - (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 3)};
-	}
-	return this.topleft;
+	return {x: this.getX() - (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 3)};
 };
 
 Entity.prototype.getTop = function(){
-	if(!this.top){
-		this.top = {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getHeight() / 5)};
-	}
-	return this.top;
+	return {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getHeight() / 5)};
 };
 
 Entity.prototype.getBottomCenter = function(){
-	if(!this.bottomcenter){
-		this.bottomcenter = {x: this.getX() + (this.sprites.entity.getWidth() / 2) - (Settings.health_bar_width / 2), y: this.getY() + this.sprites.entity.getHeight() - 20};
-	}
-	return this.bottomcenter;
+	return {x: this.getX() + (this.sprites.entity.getWidth() / 2) - (Settings.health_bar_width / 2), y: this.getY() + this.sprites.entity.getHeight() - 20};
 };
 
 Entity.prototype.addText = function(text){
@@ -98,16 +92,16 @@ Entity.prototype.hurt = function(amount){
 
 Entity.prototype.attack = function(orientation){
 	this.sprites.entity.setOrientation(orientation);
-	if(orientation == Orientations.UP){
+	if(orientation == Orientation.UP){
 		this.sprites.entity.startAnimation(Animations.ATTACK_UP);
 		this.sprites.entity.setIdleAnimation(Animations.IDLE_UP);
-	}else if(orientation == Orientations.DOWN){
+	}else if(orientation == Orientation.DOWN){
 		this.sprites.entity.startAnimation(Animations.ATTACK_DOWN);
 		this.sprites.entity.setIdleAnimation(Animations.IDLE_DOWN);
-	}else if(orientation == Orientations.LEFT){
+	}else if(orientation == Orientation.LEFT){
 		this.sprites.entity.startAnimation(Animations.ATTACK_LEFT);
 		this.sprites.entity.setIdleAnimation(Animations.IDLE_LEFT);
-	}else if(orientation == Orientations.RIGHT){
+	}else if(orientation == Orientation.RIGHT){
 		this.sprites.entity.startAnimation(Animations.ATTACK_RIGHT);
 		this.sprites.entity.setIdleAnimation(Animations.IDLE_RIGHT);
 	}
@@ -121,6 +115,26 @@ Entity.prototype.setDead = function(){
 
 Entity.prototype.isDead = function(){
 	return this.dead;
+};
+
+Entity.prototype.startMoveAnimation = function(orientation){
+	if(orientation == Orientation.UP){
+		this.sprites.entity.startAnimation(Animations.WALK_UP);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_UP);
+	}else if(orientation == Orientation.DOWN){
+		this.sprites.entity.startAnimation(Animations.WALK_DOWN);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_DOWN);
+	}else if(orientation == Orientation.LEFT){
+		this.sprites.entity.startAnimation(Animations.WALK_LEFT);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_LEFT);
+	}else if(orientation == Orientation.RIGHT){
+		this.sprites.entity.startAnimation(Animations.WALK_RIGHT);
+		this.sprites.entity.setIdleAnimation(Animations.IDLE_RIGHT);
+	}
+};
+
+Entity.prototype.atDestination = function(){
+	return Math.floor(this.getX()) == Math.floor(this.dest.x) && Math.floor(this.getY()) == Math.floor(this.dest.y);
 };
 
 Entity.prototype.draw = function(){
@@ -148,7 +162,7 @@ Entity.prototype.draw = function(){
 
 	if(!this.sprites.entity.isDoingAnimation()){
 		var idle = this.sprites.entity.getIdleAnimation();
-		var time = this.lastIdleChange + IdleChanges[this.id] + (Math.random() * 1000);
+		var time = this.lastIdleChange + getIdleChange(this.id) + (Math.random() * 1000);
 		if(Date.now() > time){
 			this.idleStep += 1;
 			if(this.idleStep > idle.length){

@@ -5,8 +5,8 @@ var Camera = function(){
 Camera.prototype.update = function(position, nextpos){
 	var nextcam = isOffWorld(offset.x + nextpos.x, offset.y + nextpos.y);
 
-	var x_at_center = Math.abs(position.x - getCenter().x) <= 5;
-	var y_at_center = Math.abs(position.y - getCenter().y) <= 5
+	var x_at_center = Math.abs(position.x - getCenter().x) <= Settings.player_speed;
+	var y_at_center = Math.abs(position.y - getCenter().y) <= Settings.player_speed;
 
 	if(!nextcam.x && !nextcam.y){
 		if(x_at_center){

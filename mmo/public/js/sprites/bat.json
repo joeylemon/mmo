@@ -15,6 +15,18 @@
 			"length": 5,
 			"row": 2
 		},
+		"atk_left": {
+			"length": 5,
+			"row": 9
+		},
+		"walk_left": {
+			"length": 5,
+			"row": 10
+		},
+		"idle_left": {
+			"length": 5,
+			"row": 11
+		},
 		"atk_up": {
 			"length": 5,
 			"row": 3

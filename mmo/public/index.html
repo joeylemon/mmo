@@ -6,10 +6,14 @@
 		<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' />
 	</head>
 
-	<body style="background-color: #2D2D2D;" onresize="setLogoWidth()">
+	<body style="background-color: #2D2D2D;" onresize="resize()">
 		<canvas id="game" class="game" draggable="false"></canvas>
 
 		<div id="borders" class="borders"></div>
+
+		<div class="msg-container">
+			<span id="msg" style="display: none;"></span>
+		</div>
 
 		<div id="xp-container" class="xp-container">
 			<div id="xp-bar" class="xp-bar"></div>
@@ -155,6 +159,14 @@
 	<script src="js/flyingtext.js"></script>
 	<script src="js/message.js"></script>
 	<script src="js/sprite.js"></script>
+
+	<script src="js/quests/killentityobjective.js"></script>
+	<script src="js/quests/talktonpcobjective.js"></script>
+	<script src="js/quests/quest.js"></script>
+	<script src="js/quests/quests.js"></script>
+	<script src="js/quests/npc.js"></script>
+	<script src="js/quests/npcs.js"></script>
+
 	<script src="js/player.js"></script>
 	<script src="js/entity.js"></script>
 	<script src="js/camera.js"></script>
