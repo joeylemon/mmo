@@ -145,7 +145,8 @@ Player.prototype.addXP = function(xp, color = TextColor.XP){
 };
 
 Player.prototype.setXPBar = function(){
-	var percent = (this.level.xp / getNextLevel(this.level.level)) * 100;
+	var prev_xp = getNextLevel(this.level.level - 1);
+	var percent = ((this.level.xp - prev_xp) / (getNextLevel(this.level.level) - prev_xp)) * 100;
 	$("#xp-bar").css("width", percent.toString() + "%");
 };
 
@@ -154,13 +155,12 @@ Player.prototype.canLevelUp = function(){
 };
 
 Player.prototype.levelUp = function(){
-	this.addLevel();
-	this.setXP(0);
+	this.setLevel(getLevelFromXP(this.getXP()));
 
 	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
 	this.addText(text);
 
-	$("#xp-bar").css("width", "0%");
+	this.setXPBar();
 	broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
 };
 

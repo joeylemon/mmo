@@ -306,7 +306,19 @@ function getMapMouse(){
 }
 
 function getNextLevel(current){
-	return current * 100;
+	return Math.floor(25 * (Math.pow(current + 1, 2)));
+}
+
+function getLevelFromXP(xp){
+	var level = 1;
+	for(var i = 1; i <= 1000; i++){
+		if(getNextLevel(i) > xp){
+			break;
+		}else{
+			level++;
+		}
+	}
+	return level;
 }
 
 function getNewUUID(){
