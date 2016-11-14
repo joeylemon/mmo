@@ -95,8 +95,9 @@ function login(){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
 
-					var player = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos), $.parseJSON(object.quests));
-					player.setXPBar();
+					var player = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos), $.parseJSON(object.quests), object.gp);
+					player.updateXPBar();
+					player.updateGPValue();
 
 					broadcast(Messages.USER_INFO, player.getObject());
 					broadcast(Messages.JOIN, player.getObject());

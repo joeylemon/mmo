@@ -1,9 +1,10 @@
-var Quest = function(title, minlevel, required_quests, objectives, xp){
+var Quest = function(title, minlevel, required_quests, objectives, xp, gp){
      this.title = title;
      this.minlevel = minlevel;
      this.required_quests = required_quests;
      this.objectives = objectives;
      this.xp = xp;
+     this.gp = gp;
 };
 
 Quest.prototype.getTitle = function(){
@@ -28,4 +29,8 @@ Quest.prototype.getObjective = function(step){
 
 Quest.prototype.getXPReward = function(){
 	return this.xp;
+};
+
+Quest.prototype.getGPReward = function(){
+	return this.gp;
 };

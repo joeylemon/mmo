@@ -16,5 +16,5 @@ KillEntityObjective.prototype.getDefaultData = function(){
 };
 
 KillEntityObjective.prototype.getAlert = function(){
-	return "kill " + this.amount + " " + this.entity + "s";
+	return "kill " + this.amount + " " + this.entity + (this.amount != 1 ? "s" : "");
 };

@@ -8,7 +8,8 @@ var quests = [
                new KillEntityObjective(Entity.BAT, 5),
                new TalkToNPCObjective("Shirtless Steve")
           ],
-          1000
+          1000,
+          100
      )
 ];
 

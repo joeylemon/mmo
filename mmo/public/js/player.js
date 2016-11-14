@@ -1,9 +1,10 @@
-var Player = function(uuid, name, level, inventory, position, my_quests){
+var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.uuid = uuid;
 	this.name = name;
 	this.level = level;
 	this.inventory = inventory;
 	this.position = position;
+	this.gp = gp;
 	this.keys = new Array();
 
 	this.quests = my_quests;
@@ -37,7 +38,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests){
 };
 
 Player.prototype.getObject = function(){
-	return {uuid: this.uuid, username: this.name, level: this.level, inv: this.inventory, pos: this.position, quests: this.quests};
+	return {uuid: this.uuid, username: this.name, level: this.level, inv: this.inventory, pos: this.position, quests: this.quests, gp: this.gp};
 };
 
 Player.prototype.getUUID = function(){
@@ -105,6 +106,16 @@ Player.prototype.getSprite = function(){
 	return this.sprites.player;
 };
 
+Player.prototype.addGP = function(gp){
+	this.gp += gp;
+	broadcast(Messages.UPDATE_GP, {newgp: this.gp});
+	this.updateGPValue();
+};
+
+Player.prototype.updateGPValue = function(gp){
+	$("#gp").html(this.gp.toString());
+};
+
 Player.prototype.getLevelObject = function(){
 	return this.level;
 };
@@ -139,13 +150,18 @@ Player.prototype.addXP = function(xp, color = TextColor.XP){
 	if(this.canLevelUp()){
 		this.levelUp();
 	}
-	this.setXPBar();
+	this.updateXPBar();
 };
 
-Player.prototype.setXPBar = function(){
+Player.prototype.updateXPBar = function(){
 	var prev_xp = getNextLevel(this.level.level - 1);
-	var percent = ((this.level.xp - prev_xp) / (getNextLevel(this.level.level) - prev_xp)) * 100;
+	var new_xp = (this.level.xp - prev_xp);
+	if(new_xp < 0){
+		new_xp = 0;
+	}
+	var percent = (new_xp / (getNextLevel(this.level.level) - prev_xp)) * 100;
 	$("#xp-bar").css("width", percent.toString() + "%");
+	$("#xp-bar-value").html(new_xp.toString());
 };
 
 Player.prototype.canLevelUp = function(){
@@ -215,6 +231,7 @@ Player.prototype.advanceQuest = function(){
 
 Player.prototype.completeQuest = function(){
 	this.addXP(this.getQuest().getXPReward());
+	this.addGP(this.getQuest().getGPReward());
 
 	var text = new Text("Quest Complete!", {size: 30, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
 	this.addText(text);
