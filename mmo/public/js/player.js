@@ -258,7 +258,7 @@ Player.prototype.addText = function(text){
 
 Player.prototype.say = function(msg){
 	var color = TextColor.MESSAGE;
-	if(this.name == "joeythelemon"){
+	if(this.name == "admin"){
 		color = TextColor.ADMIN_MESSAGE;
 	}
 	this.message = new Message(msg, color);

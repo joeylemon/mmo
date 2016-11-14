@@ -42,6 +42,45 @@
 	box-shadow: inset 0 0 350px #000;
 }
 
+.info-container {
+     position: fixed;
+     bottom: 10px;
+     right: 10px;
+     width: 300px;
+     margin: 0px;
+     padding: 0px;
+}
+
+.info-container .info-bar-container {
+     display: inline-block;
+     height: 47px;
+     line-height: 50px;
+     width: 100%;
+     margin-bottom: 3px;
+     padding-right: 7px;
+     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.info-bar-container .info-bar-icon {
+     float: left;
+     font-size: 35px;
+     font-family: profont;
+     color: #fff;
+     padding-left: 7px;
+}
+
+.info-bar-container .info-bar-width {
+     float: right;
+     width: 243px;
+     height: 33px;
+     margin-top: 7px;
+}
+
+.info-bar-container .info-bar {
+     width: 100%;
+     height: 100%;
+}
+
 .msg-container {
      position: fixed;
      top: 10px;
@@ -85,50 +124,6 @@
 	margin-bottom: 10px;
 	background-color: rgba(255, 255, 255, 0.0);
 	border: 1px solid #666666;
-}
-
-.skills {
-	display: none;
-	position: fixed;
-	top: 0px;
-	right: 0px;
-	bottom: 0px;
-	width: 225px;
-	padding-left: 20px;
-	background-color: rgba(0, 0, 0, 0.6);
-
-	-moz-user-select: -moz-none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
-.skills .skill {
-	display: inline-block;
-	width: 225px;
-	height: 90px;
-	margin-top: 30px;
-	margin-left: -10px;
-	text-align: center;
-	font-family: profont;
-}
-
-.skills .image {
-	float: left;
-	width: 55px;
-	height: auto;
-}
-
-.skills .title {
-	font-size: 25px;
-	color: #fff;
-}
-
-.skills .desc {
-	font-size: 17px;
-	color: #47CB00;
-	margin-left: -10px;
 }
 
 .debug .debug-prop {
@@ -183,27 +178,6 @@
      background-color: rgba(0, 0, 0, 0.8);
 }
 
-.xp-container {
-     display: none;
-     position: fixed;
-     bottom: -5px;
-     left: 0px;
-     right: 0px;
-     height: 15px;
-     background-color: #1F1F1F;
-     text-align: center;
-	 opacity: 0.8;
-}
-
-.xp-container .xp-bar {
-     position: relative;
-     left: 0px;
-     bottom: 0px;
-     height: 10px;
-     width: 50%;
-     background-color: #DA9500;
-}
-
 .center-container {
 	position: fixed;
 	top: 0px;
@@ -251,8 +225,12 @@
 	display: inline-block;
 }
 
+.new-hero-container {
+     display: none;
+}
+
 .new-hero {
-	display: none;
+	display: inline-block;
 	width: 500px;
 }
 

@@ -191,14 +191,14 @@ function fadeSoundtrackOut(){
 
 function showChatBox(){
 	$("#chatbox").fadeIn(100);
-	$("#xp-container").fadeOut(0);
+	$("#info-container").fadeOut(0);
 	$("#message").focus();
 	chatbox = true;
 }
 
 function hideChatBox(){
 	$("#chatbox").fadeOut(100);
-	$("#xp-container").fadeIn(100);
+	$("#info-container").fadeIn(100);
 	$("#message").blur();
 	chatbox = false;
 }

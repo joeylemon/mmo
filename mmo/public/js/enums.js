@@ -438,7 +438,7 @@ function removeLoginScreen(){
 	fadeBlurOut();
 
 	$("body").css("cursor", "url(styles/images/cursor.png), auto");
-	$("#xp-container").fadeIn(250);
+	$("#info-container").fadeIn(250);
 }
 
 function fadeBlurOut(){

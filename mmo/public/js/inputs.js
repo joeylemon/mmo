@@ -65,8 +65,6 @@ document.onkeydown = function(event) {
 		if(!timings.enabled || Date.now() - timings.last_right > timings.delay){
 			addKey(Key.RIGHT);
 		}
-	}else if(code == 81){
-		screen.toggleSkills();
 	}else if(code == 192){
 		screen.toggleDebug();
 	}

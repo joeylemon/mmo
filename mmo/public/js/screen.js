@@ -1,6 +1,5 @@
 var PlayerScreen = function(){
 	this.debug = false;
-	this.skills = false;
 };
 
 PlayerScreen.prototype.toggleDebug = function(){
@@ -18,13 +17,4 @@ PlayerScreen.prototype.toggleDebug = function(){
 
 PlayerScreen.prototype.showingDebug = function(){
 	return this.debug;
-};
-
-PlayerScreen.prototype.toggleSkills = function(){
-	this.skills = !this.skills;
-	if(this.skills){
-		$("#skills").fadeIn(250);
-	}else{
-		$("#skills").fadeOut(250);
-	}
 };

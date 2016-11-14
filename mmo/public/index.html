@@ -15,12 +15,23 @@
 			<span id="msg" style="display: none;"></span>
 		</div>
 
-		<div id="xp-container" class="xp-container">
-			<div id="xp-bar" class="xp-bar"></div>
-		</div>
-
 		<div id="chatbox" class="chatbox">
 			<input id="message" type="text" placeholder="Type your message" name="msg" maxlength="35"></input>
+		</div>
+
+		<div id="info-container" class="info-container">
+			<div class="info-bar-container">
+				<div class="info-bar-icon">HP</div>
+				<div class="info-bar-width">
+					<div class="info-bar" style="background-color: green;"></div>
+				</div>
+			</div>
+			<div class="info-bar-container" style="margin-bottom: 0px;">
+				<div class="info-bar-icon">XP</div>
+				<div class="info-bar-width">
+					<div id="xp-bar" class="info-bar" style="background-color: #FF9B2E;"></div>
+				</div>
+			</div>
 		</div>
 
 		<span class="debug" id="debug" style="display: none;">
@@ -37,38 +48,6 @@
 				Entities alive: <span id="alive">0</span>
 			</div>
 		</span>
-
-		<div id="skills" class="skills">
-			<div class="skill">
-				<span class="title">Combat Level</span>
-				<br>
-				<span class="desc" style="font-size: 22px;color: #960000;">Lvl. 114</span>
-			</div>
-			<div class="skill">
-				<img src="styles/images/attack.png" class="image"></img>
-				<span class="title">Attack</span>
-				<br>
-				<span class="desc">Lvl. 13</span>
-			</div>
-			<div class="skill">
-				<img src="styles/images/defense.png" class="image"></img>
-				<span class="title">Defense</span>
-				<br>
-				<span class="desc">Lvl. 5</span>
-			</div>
-			<div class="skill">
-				<img src="styles/images/health.png" class="image"></img>
-				<span class="title">Health</span>
-				<br>
-				<span class="desc">Lvl. 20</span>
-			</div>
-			<div class="skill">
-				<img src="styles/images/agility.png" class="image"></img>
-				<span class="title">Agility</span>
-				<br>
-				<span class="desc">Lvl. 10</span>
-			</div>
-		</div>
 
 		<div class="center-container">
 			<div style="overflow:visible">
@@ -118,18 +97,20 @@
 				<!-- End new user creation -->
 
 				<!-- Begin new hero display -->
-				<div id="new-hero" class="login new-hero">
-					<span class="title">New Hero</span>
-					<hr>
-					<div class="player">
-						<img src="styles/images/player.png"></img>
-					</div>
-					<div class="stats">
-						Name: <span id="new-hero-name"></span>
-						<br>
-						Level: 1
-						<br>
-						Armor: cloth
+				<div id="new-hero" class="new-hero-container">
+					<div class="login new-hero">
+						<span class="title">New Hero</span>
+						<hr>
+						<div class="player">
+							<img src="styles/images/player.png"></img>
+						</div>
+						<div class="stats">
+							Name: <span id="new-hero-name"></span>
+							<br>
+							Level: 1
+							<br>
+							Armor: cloth
+						</div>
 					</div>
 				</div>
 				<!-- End new hero display -->
