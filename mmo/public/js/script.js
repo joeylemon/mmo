@@ -94,12 +94,13 @@ function login(){
 			success: function (result){
 				if(result.length > 30){
 					var object = $.parseJSON(result);
+
 					var player = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos), $.parseJSON(object.quests));
 					player.setXPBar();
 
-					broadcast("user_info", player.getObject());
-					broadcast("join", player.getObject());
-					broadcast("get_players", {uuid: player.uuid});
+					broadcast(Messages.USER_INFO, player.getObject());
+					broadcast(Messages.JOIN, player.getObject());
+					broadcast(Messages.GET_PLAYERS, {uuid: player.uuid});
 
 					myplayer = player;
 

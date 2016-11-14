@@ -4,7 +4,7 @@ socket.on('msg', function(data){
 		for(var i = 0; i < data.players.length; i++){
 			var object = data.players[i];
 			if(object != null){
-				var p = new Player(object.uuid, object.username, object.level, object.inv, object.pos);
+				var p = new Player(object.uuid, object.username, object.level, object.inv, object.pos, object.quests);
 				players.push(p);
 			}else{
 				players.push(null);
@@ -50,7 +50,7 @@ socket.on('msg', function(data){
 	}
 
 	if(data.type == Messages.JOIN){
-		var p = new Player(data.uuid, data.username, data.level, data.inv, data.pos);
+		var p = new Player(data.uuid, data.username, data.level, data.inv, data.pos, data.quests);
 		players.push(p);
 		document.getElementById("online").innerHTML = getPlayersOnline();
 	}else if(data.type == Messages.LEAVE){

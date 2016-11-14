@@ -14,7 +14,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests){
 		data: undefined
 	};
 
-	if(this.quests.current >= 0){
+	if(this.quests.current >= 0 && !me()){
 		this.progress.quest = quests[this.quests.current];
 		this.progress.data = this.quests.data;
 		this.progress.step = this.quests.step;
@@ -73,7 +73,7 @@ Player.prototype.setX = function(x){
 };
 
 Player.prototype.setY = function(y){
-	if(y + 45 > 0 && y + 90 < getMaxY()){
+	if(y - 60 > 0 && y + 90 < getMaxY()){
 		this.position.y = y;
 		this.sprites.player.setY(y);
 		this.sprites.sword.setY(y + getSwordOffset(this.sprites.player.getOrientation).y);
@@ -135,13 +135,11 @@ Player.prototype.addXP = function(xp, color = TextColor.XP){
 	var text = new Text("+" + xp + " xp", {size: 25, color: color});
 	this.addText(text);
 
-
+	broadcast(Messages.UPDATE_XP, {newxp: this.level.xp});
 	if(this.canLevelUp()){
 		this.levelUp();
-	}else{
-		broadcast(Messages.UPDATE_XP, {newxp: this.level.xp});
-		this.setXPBar();
 	}
+	this.setXPBar();
 };
 
 Player.prototype.setXPBar = function(){
@@ -160,7 +158,6 @@ Player.prototype.levelUp = function(){
 	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
 	this.addText(text);
 
-	this.setXPBar();
 	broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
 };
 
@@ -356,7 +353,7 @@ Player.prototype.draw = function(){
 
 	var color = getLevelColor(this.level.level);
 	drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 5, "#fff");
-	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level.level, 15, "#000", 3, "rgb(" + color.r + "," + color.g + "," + color.b + ")");
+	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level.level, 15, "#000", 3, color);
 
 	for(var i = 0; i < this.flyingtexts.length; i++){
 		var text = this.flyingtexts[i];

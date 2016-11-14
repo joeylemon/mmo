@@ -306,7 +306,7 @@ function getMapMouse(){
 }
 
 function getNextLevel(current){
-	return Math.floor(25 * (Math.pow(current + 1, 2)));
+	return Math.floor(50 * (Math.pow(current + 1, 2)));
 }
 
 function getLevelFromXP(xp){
@@ -382,17 +382,19 @@ function getRandom(num){
 }
 
 function getLevelColor(level){
-	var r = 23 + (level * 4);
-	var g = 175;
-	if(r > 175){
-		r = 175;
-		g -= (level * 4);
-		if(g < 0){
-			g = 0;
-		}
+	if(level <= 10){
+		return "#00BA19";
+	}else if(level > 10 && level <= 20){
+		return "#008E13";
+	}else if(level > 20 && level <= 30){
+		return "#CBA900";
+	}else if(level > 30 && level <= 40){
+		return "#B36900";
+	}else if(level > 40 && level <= 50){
+		return "#AF2F00";
+	}else if(level > 50){
+		return "#812200";
 	}
-
-	return {r: r, g: g, b: 0};
 }
 
 function getSwordOffset(orientation){
