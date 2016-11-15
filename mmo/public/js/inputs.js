@@ -26,14 +26,24 @@ document.onkeydown = function(event) {
 			}else{
 				var chat = document.getElementById("message").value;
 				if(chat.length > 0){
-					me().say(chat);
+					var send = true;
+					if(me().isDoingObjective(Objective.TALK_IN_CHAT)){
+						if(chat.includes(me().getCurrentObjective().getExpectedMessage())){
+							me().advanceQuest();
+							send = false;
+						}
+					}
 
-					var msg = {
-						index: myIndex,
-						uuid: me().getUUID(),
-						msg: chat
-					};
-					broadcast("chat", msg);
+					if(send){
+						me().say(chat);
+
+						var msg = {
+							index: myIndex,
+							uuid: me().getUUID(),
+							msg: chat
+						};
+						broadcast("chat", msg);
+					}
 				}
 
 				hideChatBox();
@@ -41,8 +51,25 @@ document.onkeydown = function(event) {
 			}
 		}
 	}else if(code == 27){
-		hideChatBox();
-		document.getElementById("message").value = "";
+		if(me()){
+			if(isChatBoxOpen()){
+				hideChatBox();
+				document.getElementById("message").value = "";
+			}
+			/**
+				MENU:
+
+				Leaderboards
+				Current Quest
+			*/
+			/*
+			if(noblur){
+				fadeBlurIn();
+			}else{
+				fadeBlurOut();
+			}
+			*/
+		}
 	}
 
 	if(myIndex == undefined || isChatBoxOpen() || !noblur){

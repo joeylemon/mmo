@@ -1,7 +1,7 @@
 var quests = [
      new Quest(
           "Tale of the Shirtless Man",
-          3,
+          5,
           [],
           [
                new KillEntityObjective(Entity.SKELETON, 5),
@@ -10,6 +10,16 @@ var quests = [
           ],
           1000,
           100
+     ),
+     new Quest(
+          "Cocky Coders",
+          2,
+          [],
+          [
+               new TalkInChatObjective("what is a variable?", "named location in storage"),
+          ],
+          100,
+          25
      )
 ];
 

@@ -88,7 +88,8 @@ var Entity = {
 
 var Objective = {
 	KILL_ENTITY: "KillEntityObjective",
-	TALK_TO_NPC: "TalkToNPCObjective"
+	TALK_TO_NPC: "TalkToNPCObjective",
+	TALK_IN_CHAT: "TalkInChatObjective"
 };
 
 var SwordOffset = {
@@ -135,6 +136,7 @@ var Animations = {
 var TextColor = {
 	XP: "#00DF00",
 	LEVEL_UP: "#FF9B2E",
+	GP: "#00BEE4",
 	HURT: "#EB0000",
 	KILL_XP: "#DD9B00",
 	MESSAGE: "#FFFFFF",
@@ -381,6 +383,10 @@ function getRandom(num){
 	return Math.floor(Math.random() * num);
 }
 
+function getRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 function getLevelColor(level){
 	if(level <= 10){
 		return "#00BA19";
@@ -453,6 +459,20 @@ function fadeBlurOut(){
 			$("#game").css("filter", "blur(0px)");
 			clearInterval(task);
 			noblur = true;
+		}
+	}, 5);
+}
+
+function fadeBlurIn(){
+	var blur = 0;
+	var task = setInterval(function(){
+		blur += 0.1;
+		if(blur < 3.0){
+			$("#game").css("filter", "blur(" + blur + "px)");
+		}else{
+			$("#game").css("filter", "blur(3px)");
+			clearInterval(task);
+			noblur = false;
 		}
 	}, 5);
 }

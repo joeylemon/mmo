@@ -51,6 +51,8 @@
      margin: 0px;
      padding: 0px;
 
+     text-shadow: 1px 1px 3px #000;
+
      -webkit-user-select: none;
      -moz-user-select: none;
      user-select: none;

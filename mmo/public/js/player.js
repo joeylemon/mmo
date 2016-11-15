@@ -330,6 +330,14 @@ Player.prototype.attack = function(){
 			}else{
 				broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
 				this.addXP(DeathExperience[hit.getID()], TextColor.KILL_XP);
+				if(Math.random() <= 0.2){
+					var gp = getRange(10, 25);
+					this.addGP(gp);
+					setTimeout(function(){
+						var text = new Text("+" + gp + " gp", {size: 25, color: TextColor.GP});
+						me().addText(text);
+					}, 500);
+				}
 
 				if(this.isDoingObjective(Objective.KILL_ENTITY)){
 					if(hit.getID() == this.getCurrentObjective().getEntity()){

@@ -61,6 +61,10 @@ NPC.prototype.getCenter = function(){
 };
 
 NPC.prototype.talk = function(){
+	if(this.stepTask){
+		clearInterval(this.stepTask);
+	}
+
 	if(me().isDoingObjective(Objective.TALK_TO_NPC)){
 		if(me().getCurrentObjective().getNPC() == this.name){
 			me().advanceQuest();
@@ -97,6 +101,11 @@ NPC.prototype.talk = function(){
 		this.message = new Message(msg, TextColor.NPC_TALK);
 	}
 	this.current_dialogue.step++;
+
+	var instance = this;
+	this.stepTask = setTimeout(function(){
+		instance.current_dialogue.step = 1;
+	}, 4000);
 };
 
 NPC.prototype.draw = function(){
