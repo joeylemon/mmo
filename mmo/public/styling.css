@@ -170,19 +170,24 @@
 	font-size: 20px;
 }
 
-.menu {
-     position: fixed;
-     top: 0px;
-     bottom: 0px;
-     right: 0px;
-     padding-right: 5px;
-     font-family: profont;
-     font-size: 30px;
+.menu-container {
+	display: none;
 }
 
-.menu .link {
-     color: #000000;
-     opacity: 0.8;
+.menu {
+	display: inline-block;
+	font-size: 25px;
+	font-family: profont;
+	color: #fff;
+	width: 300px;
+}
+
+.menu .menu-button {
+	width: 300px;
+	margin-top: 6px;
+	background-color: #31B404;
+	box-shadow: 1px 1px 5px #000;
+	color: #fff;
 }
 
 .inventory {
@@ -299,19 +304,19 @@
      -webkit-box-shadow: 0 0 0 1000px white inset !important;
 }
 
-.login .button {
+.button {
 	height: 40px;
 	color: rgba(0, 0, 0, 1);
 	background-color: #E6E6E6;
 	border-width: 0px;
 }
 
-.login .new {
+.new {
 	color: #fff;
 	background-color: #31B404;
 }
 
-.login .button:hover {
+.button:hover {
 	opacity: 0.6;
 }
 

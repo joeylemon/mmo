@@ -22,7 +22,7 @@ document.onkeydown = function(event) {
 		if(me()){
 			if(!isChatBoxOpen()){
 				showChatBox();
-				clearKeys();
+				client.clearKeys();
 			}else{
 				var chat = document.getElementById("message").value;
 				if(chat.length > 0){
@@ -42,7 +42,7 @@ document.onkeydown = function(event) {
 							uuid: me().getUUID(),
 							msg: chat
 						};
-						broadcast("chat", msg);
+						game.broadcast("chat", msg);
 					}
 				}
 
@@ -62,13 +62,11 @@ document.onkeydown = function(event) {
 				Leaderboards
 				Current Quest
 			*/
-			/*
-			if(noblur){
-				fadeBlurIn();
+			if(!game.isMenuShowing()){
+				game.showMenu();
 			}else{
-				fadeBlurOut();
+				game.hideMenu();
 			}
-			*/
 		}
 	}
 
@@ -78,19 +76,19 @@ document.onkeydown = function(event) {
 
 	if(code == 38 || code == 87){
 		if(!timings.enabled || Date.now() - timings.last_up > timings.delay){
-			addKey(Key.UP);
+			client.addKey(Key.UP);
 		}
 	}else if(code == 40 || code == 83){
 		if(!timings.enabled || Date.now() - timings.last_down > timings.delay){
-			addKey(Key.DOWN);
+			client.addKey(Key.DOWN);
 		}
 	}else if(code == 37 || code == 65){
 		if(!timings.enabled || Date.now() - timings.last_left > timings.delay){
-			addKey(Key.LEFT);
+			client.addKey(Key.LEFT);
 		}
 	}else if(code == 39 || code == 68){
 		if(!timings.enabled || Date.now() - timings.last_right > timings.delay){
-			addKey(Key.RIGHT);
+			client.addKey(Key.RIGHT);
 		}
 	}else if(code == 192){
 		screen.toggleDebug();
@@ -106,33 +104,33 @@ document.onkeyup = function(event) {
 		code = event.charCode;
 	}
 
-	if(myIndex == undefined || isChatBoxOpen() || !noblur){
+	if(myIndex == undefined || isChatBoxOpen() || game.isMenuShowing()){
 		return;
 	}
 
 	if(code == 38 || code == 87){
-		removeKey(Key.UP);
+		client.removeKey(Key.UP);
 		me().getSprite().stopAnimation(Animations.WALK_UP);
 
 		if(timings.enabled){
 			timings.last_up = Date.now();
 		}
 	}else if(code == 40 || code == 83){
-		removeKey(Key.DOWN);
+		client.removeKey(Key.DOWN);
 		me().getSprite().stopAnimation(Animations.WALK_DOWN);
 
 		if(timings.enabled){
 			timings.last_down = Date.now();
 		}
 	}else if(code == 37 || code == 65){
-		removeKey(Key.LEFT);
+		client.removeKey(Key.LEFT);
 		me().getSprite().stopAnimation(Animations.WALK_LEFT);
 
 		if(timings.enabled){
 			timings.last_left = Date.now();
 		}
 	}else if(code == 39 || code == 68){
-		removeKey(Key.RIGHT);
+		client.removeKey(Key.RIGHT);
 		me().getSprite().stopAnimation(Animations.WALK_RIGHT);
 
 		if(timings.enabled){
@@ -151,27 +149,21 @@ document.onmousedown = function(event) {
 	}
 
 	if(code == 0){
-		var npc = getClickedNPC();
-		if(npc){
-			npc.talk();
-		}else if(me().canAttack()){
-			me().attack();
-			var msg = {
-				index: myIndex,
-				uuid: me().uuid
-			};
-			broadcast("attack", msg);
-
-			/*
-			console.log(me().getX() + ", " + me().getY());
-			var cell = getTileAt(me().getX(), me().getY());
-			if(cell){
-				console.log(cell.true_x + ", " + cell.true_y + " (" + cell.id + ")");
+		if(!game.isMenuShowing()){
+			var npc = game.getClickedNPC();
+			if(npc){
+				npc.talk();
+			}else if(me().canAttack()){
+				me().attack();
+				var msg = {
+					index: myIndex,
+					uuid: me().uuid
+				};
+				game.broadcast("attack", msg);
 			}
-			*/
 		}
 	}else if(code == 2){
-		clearKeys();
+		client.clearKeys();
 	}
 };
 
@@ -179,12 +171,12 @@ document.onmouseup = function(event) {
 	var code = event.button;
 
 	if(code == 2){
-		clearKeys();
+		client.clearKeys();
 	}
 };
 
 $(window).blur(function(e){
-	clearKeys();
+	client.clearKeys();
 	if(isChatBoxOpen()){
 		hideChatBox();
 		document.getElementById("message").value = "";

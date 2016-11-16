@@ -148,7 +148,7 @@ Entity.prototype.draw = function(){
 		}
 
 		if(Date.now() > this.death + 1000){
-			removeEntity(this.uid);
+			game.removeEntity(this.uid);
 		}
 
 		return;
@@ -162,7 +162,7 @@ Entity.prototype.draw = function(){
 
 	if(!this.sprites.entity.isDoingAnimation()){
 		var idle = this.sprites.entity.getIdleAnimation();
-		var time = this.lastIdleChange + getIdleChange(this.id) + (Math.random() * 1000);
+		var time = this.lastIdleChange + game.getIdleChange(this.id) + (Math.random() * 1000);
 		if(Date.now() > time){
 			this.idleStep += 1;
 			if(this.idleStep > idle.length){
@@ -179,10 +179,10 @@ Entity.prototype.draw = function(){
 	if(this.sprites.entity.isDataSet() && this.hp < this.maxhp){
 		var bottom = this.getBottomCenter();
 		var percent = (this.hp / this.maxhp);
-		var color = getHealthColor(percent);
+		var color = game.getHealthColor(percent);
 
-		strokeRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, "rgba(0, 0, 0, 0.8)");
-		drawRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, color);
+		game.strokeRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, "rgba(0, 0, 0, 0.8)");
+		game.drawRect(bottom.x, bottom.y, percent * Settings.health_bar_width, Settings.health_bar_height, color);
 	}
 
 	for(var i = 0; i < this.flyingtexts.length; i++){

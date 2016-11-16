@@ -12,33 +12,35 @@ socket.on('msg', function(data){
 		}
 		myIndex = players.length;
 		players.push(myplayer);
-		me().setX(getCenter().x);
-		me().setY(getCenter().y);
+		if(game){
+			me().setX(game.getCenter().x);
+			me().setY(game.getCenter().y);
+		}
 
 		for(var i = 0; i < data.entities.length; i++){
 			var entity = new Entity(data.entities[i].id, data.entities[i].uid, data.entities[i].x, data.entities[i].y, data.entities[i].hp);
-			addEntity(entity);
+			game.addEntity(entity);
 		}
 
-		document.getElementById("online").innerHTML = getPlayersOnline();
+		document.getElementById("online").innerHTML = game.getPlayersOnline();
 
-		removeLoginScreen();
+		game.removeLoginScreen();
 	}
 
 	/* Entity messages */
 	if(me()){
 		if(data.type == Messages.ADD_ENTITY){
 			var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp);
-			addEntity(entity);
+			game.addEntity(entity);
 		}else if(data.type == Messages.KILL_ENTITY){
-			getEntity(data.uid).setDead();
+			game.getEntity(data.uid).setDead();
 		}else if(data.type == Messages.ATTACK_ENTITY){
-			getEntity(data.uid).hurt(data.amount);
+			game.getEntity(data.uid).hurt(data.amount);
 		}else if(data.type == Messages.MOVE_ENTITIES){
 			/*
 			for(var i = 0; i < data.moves.length; i++){
 				var move = data.moves[i];
-				getEntity(move.uid).moveTo(move.x, move.y);
+				game.getEntity(move.uid).moveTo(move.x, move.y);
 			}
 			*/
 		}
@@ -52,13 +54,13 @@ socket.on('msg', function(data){
 	if(data.type == Messages.JOIN){
 		var p = new Player(data.uuid, data.username, data.level, data.inv, data.pos, data.quests, data.gp);
 		players.push(p);
-		document.getElementById("online").innerHTML = getPlayersOnline();
+		document.getElementById("online").innerHTML = game.getPlayersOnline();
 	}else if(data.type == Messages.LEAVE){
-		var index = getPlayerByUUID(data.uuid);
+		var index = game.getPlayerByUUID(data.uuid);
 		if(index > -1){
 			players[index] = null;
 		}
-		document.getElementById("online").innerHTML = getPlayersOnline();
+		document.getElementById("online").innerHTML = game.getPlayersOnline();
 	}else if(data.type == Messages.KEYS){
 		var array = data.keys;
 		if(array.length > 0){

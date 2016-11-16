@@ -30,7 +30,7 @@ var npcs = [
                "Hello there!",
                "Hmm, I have a quest for you.",
                "However, you need to be a little stronger!",
-               "Come back to me when you're level 3."
+               "Come back to me when you're level 6."
           ],
           [
                "Get to killing, traveler!",

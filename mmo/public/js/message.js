@@ -9,5 +9,5 @@ Message.prototype.isDead = function(){
 };
 
 Message.prototype.draw = function(pos){
-     drawText(pos.x + 64, pos.y + 5, this.text, 20, "rgba(0, 0, 0, 0.75)", 4, this.color);
+     game.drawText(pos.x + 64, pos.y + 5, this.text, 20, "rgba(0, 0, 0, 0.75)", 4, this.color);
 };

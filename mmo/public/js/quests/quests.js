@@ -1,7 +1,7 @@
 var quests = [
      new Quest(
           "Tale of the Shirtless Man",
-          5,
+          6,
           [],
           [
                new KillEntityObjective(Entity.SKELETON, 5),

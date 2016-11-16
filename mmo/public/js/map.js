@@ -17,14 +17,14 @@ function drawMap(drawTop){
 		if(drawTop){
 			for(var i = 0; i < map_layers[1].length; i++){
 				var cell = map_layers[1][i];
-				if(isVisible(cell.true_x, cell.true_y)){
+				if(game.isVisible(cell.true_x, cell.true_y)){
 					renderCell(cell);
 				}
 			}
 		}else{
 			for(var i = 0; i < map_layers[0].length; i++){
 				var cell = map_layers[0][i];
-				if(isVisible(cell.true_x, cell.true_y)){
+				if(game.isVisible(cell.true_x, cell.true_y)){
 					renderCell(cell);
 				}
 			}
@@ -150,12 +150,10 @@ function getMaxY(){
 }
 
 function getTileAt(x, y){
-	for(var x = 0; x < map_layers.length; x++){
-		for(var i = 0; i < map_layers[x].length; i++){
-			var cell = map_layers[x][i];
-			if(distance({x: x, y: y}, {x: cell.true_x, y: cell.true_y}) <= Settings.tilewidth){
-				return cell;
-			}
+	for(var i = 0; i < map_layers[0].length; i++){
+		var cell = map_layers[0][i];
+		if(distance({x: x, y: y}, {x: cell.true_x, y: cell.true_y}) <= Settings.tilewidth && collisions.indexOf(cell.id) >= 0){
+			return cell;
 		}
 	}
 	return undefined;

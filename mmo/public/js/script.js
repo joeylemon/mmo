@@ -99,9 +99,9 @@ function login(){
 					player.updateXPBar();
 					player.updateGPValue();
 
-					broadcast(Messages.USER_INFO, player.getObject());
-					broadcast(Messages.JOIN, player.getObject());
-					broadcast(Messages.GET_PLAYERS, {uuid: player.uuid});
+					game.broadcast(Messages.USER_INFO, player.getObject());
+					game.broadcast(Messages.JOIN, player.getObject());
+					game.broadcast(Messages.GET_PLAYERS, {uuid: player.uuid});
 
 					myplayer = player;
 
@@ -123,7 +123,7 @@ function login(){
 		$.ajax({
 			type: "POST",
 			url: "js/newuser.js",
-			data: {'username': username, 'password': password, 'uuid': getNewUUID()},
+			data: {'username': username, 'password': password, 'uuid': game.getNewUUID()},
 			success: function (result){
 				if(result != "bad username"){
 					var form = document.getElementById("existing-login");
@@ -225,6 +225,6 @@ function resize(){
 	}
 
 	if(me()){
-		clearKeys();
+		client.clearKeys();
 	}
 }

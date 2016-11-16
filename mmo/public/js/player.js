@@ -19,7 +19,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 		this.progress.quest = quests[this.quests.current];
 		this.progress.data = this.quests.data;
 		this.progress.step = this.quests.step;
-		flashMessage("<span style='color:#FF9B2E'>Current objective:</span> " + this.getCurrentObjective().getAlert());
+		game.flashMessage("<span style='color:#FF9B2E'>Current objective:</span> " + this.getCurrentObjective().getAlert());
 	}
 
 	this.idleStep = 1;
@@ -66,18 +66,18 @@ Player.prototype.getPosition = function(){
 };
 
 Player.prototype.setX = function(x){
-	if(x + 45 > 0 && x + 90 < getMaxX()){
+	if(x + 45 > 0 && x + 90 < getMaxX() /*&& collisions.indexOf(getTileAt(this.position.x, this.position.y)) == -1*/){
 		this.position.x = x;
 		this.sprites.player.setX(x);
-		this.sprites.sword.setX(x + getSwordOffset(this.sprites.player.getOrientation).x);
+		this.sprites.sword.setX(x + game.getSwordOffset(this.sprites.player.getOrientation).x);
 	}
 };
 
 Player.prototype.setY = function(y){
-	if(y - 60 > 0 && y + 90 < getMaxY()){
+	if(y - 60 > 0 && y + 90 < getMaxY() /*&& collisions.indexOf(getTileAt(this.position.x, this.position.y)) == -1*/){
 		this.position.y = y;
 		this.sprites.player.setY(y);
-		this.sprites.sword.setY(y + getSwordOffset(this.sprites.player.getOrientation).y);
+		this.sprites.sword.setY(y + game.getSwordOffset(this.sprites.player.getOrientation).y);
 	}
 };
 
@@ -108,7 +108,7 @@ Player.prototype.getSprite = function(){
 
 Player.prototype.addGP = function(gp){
 	this.gp += gp;
-	broadcast(Messages.UPDATE_GP, {newgp: this.gp});
+	game.broadcast(Messages.UPDATE_GP, {newgp: this.gp});
 	this.updateGPValue();
 };
 
@@ -146,7 +146,7 @@ Player.prototype.addXP = function(xp, color = TextColor.XP){
 	var text = new Text("+" + xp + " xp", {size: 25, color: color});
 	this.addText(text);
 
-	broadcast(Messages.UPDATE_XP, {newxp: this.level.xp});
+	game.broadcast(Messages.UPDATE_XP, {newxp: this.level.xp});
 	if(this.canLevelUp()){
 		this.levelUp();
 	}
@@ -154,27 +154,27 @@ Player.prototype.addXP = function(xp, color = TextColor.XP){
 };
 
 Player.prototype.updateXPBar = function(){
-	var prev_xp = getNextLevel(this.level.level - 1);
+	var prev_xp = game.getNextLevel(this.level.level - 1);
 	var new_xp = (this.level.xp - prev_xp);
 	if(new_xp < 0){
 		new_xp = 0;
 	}
-	var percent = (new_xp / (getNextLevel(this.level.level) - prev_xp)) * 100;
+	var percent = (new_xp / (game.getNextLevel(this.level.level) - prev_xp)) * 100;
 	$("#xp-bar").css("width", percent.toString() + "%");
 	$("#xp-bar-value").html(new_xp.toString());
 };
 
 Player.prototype.canLevelUp = function(){
-	return this.getXP() > getNextLevel(this.getLevel());
+	return this.getXP() > game.getNextLevel(this.getLevel());
 };
 
 Player.prototype.levelUp = function(){
-	this.setLevel(getLevelFromXP(this.getXP()));
+	this.setLevel(game.getLevelFromXP(this.getXP()));
 
 	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
 	this.addText(text);
 
-	broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
+	game.broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
 };
 
 Player.prototype.isDoingObjective = function(objective){
@@ -222,7 +222,7 @@ Player.prototype.advanceQuest = function(){
 		this.progress.data = this.getCurrentObjective().getDefaultData();
 		this.quests.data = this.getCurrentObjective().getDefaultData();
 		this.quests.step = this.progress.step;
-		flashMessage("<span style='color:#FF9B2E'>New objective:</span> " + this.getCurrentObjective().getAlert());
+		game.flashMessage("<span style='color:#FF9B2E'>New objective:</span> " + this.getCurrentObjective().getAlert());
 	}else{
 		this.completeQuest();
 	}
@@ -235,7 +235,7 @@ Player.prototype.completeQuest = function(){
 
 	var text = new Text("Quest Complete!", {size: 30, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
 	this.addText(text);
-	flashMessage("<span style='color:#FF9B2E'>Completed:</span> \"" + this.getQuest().getTitle() + "\"");
+	game.flashMessage("<span style='color:#FF9B2E'>Completed:</span> \"" + this.getQuest().getTitle() + "\"");
 
 	this.quests.completed.push(getQuestID(this.getQuest().getTitle()));
 	this.quests.current = -1;
@@ -253,7 +253,7 @@ Player.prototype.hasCompletedQuest = function(id){
 };
 
 Player.prototype.sendQuestUpdate = function(id){
-	broadcast(Messages.UPDATE_QUESTS, {quests: clone(this.quests)});
+	game.broadcast(Messages.UPDATE_QUESTS, {quests: clone(this.quests)});
 };
 
 Player.prototype.addText = function(text){
@@ -321,14 +321,14 @@ Player.prototype.attack = function(){
 
 	if(this.uuid == me().getUUID()){
 		this.lastAttack = Date.now();
-		var hit = getHitEntity(this.getCenter(), this.getSprite().getOrientation());
+		var hit = game.getHitEntity(this.getCenter(), this.getSprite().getOrientation());
 		if(hit){
 			var amount = this.getDamage();
 			if(hit.getHP() - amount > 0){
-				broadcast(Messages.ATTACK_ENTITY, {uid: hit.getUID(), amount: amount});
+				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit.getUID(), amount: amount});
 				this.addXP(15);
 			}else{
-				broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
+				game.broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
 				this.addXP(DeathExperience[hit.getID()], TextColor.KILL_XP);
 				if(Math.random() <= 0.2){
 					var gp = getRange(10, 25);
@@ -376,9 +376,9 @@ Player.prototype.draw = function(){
 		this.sprites.sword.draw(anim.col, anim.row);
 	}
 
-	var color = getLevelColor(this.level.level);
-	drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 5, "#fff");
-	drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level.level, 15, "#000", 3, color);
+	var color = game.getLevelColor(this.level.level);
+	game.drawText(this.position.x + 64, this.position.y + 128, this.name, 19, "#000", 5, "#fff");
+	game.drawText(this.position.x + 64, this.position.y + 148, "Lvl. " + this.level.level, 15, "#000", 3, color);
 
 	for(var i = 0; i < this.flyingtexts.length; i++){
 		var text = this.flyingtexts[i];
