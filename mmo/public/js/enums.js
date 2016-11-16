@@ -69,6 +69,7 @@ var Settings = {
 	player_idle_change: 800,
 	entity_idle_change: 800,
 	entity_speed: 4.8,
+	entity_attack_speed: 2000,
 	health_bar_width: 45,
 	health_bar_height: 5
 };
@@ -102,7 +103,9 @@ var SwordOffset = {
 };
 
 var Damage = {
-	IRON: 10
+	IRON: 10,
+	bat: 3,
+	skeleton: 5
 };
 
 var Key = {

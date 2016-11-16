@@ -43,6 +43,11 @@ socket.on('msg', function(data){
 				game.getEntity(move.uid).moveTo(move.x, move.y);
 			}
 			*/
+		}else if(data.type == Messages.AGGRO){
+			var player = players[game.getPlayerByUUID(data.player)];
+			if(!player.isClient()){
+				game.getEntity(data.uid).aggro(player);
+			}
 		}
 	}
 

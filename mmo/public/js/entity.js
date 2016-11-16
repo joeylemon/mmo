@@ -107,6 +107,18 @@ Entity.prototype.attack = function(orientation){
 	}
 };
 
+Entity.prototype.aggro = function(player){
+	this.aggressive = {
+		player: player,
+		lastAttack: 0
+	};
+	game.broadcast(Messages.AGGRO, {uid: this.uid, player: player.getUUID()});
+};
+
+Entity.prototype.isAggressive = function(){
+	return this.aggressive != undefined;
+};
+
 Entity.prototype.setDead = function(){
 	this.dead = true;
 	this.death = Date.now();
@@ -190,6 +202,19 @@ Entity.prototype.draw = function(){
 		text.draw(this.getTop());
 		if(text.isDead()){
 			this.flyingtexts.splice(i, 1);
+		}
+	}
+
+	if(this.aggressive){
+		console.log(Date.now() - this.aggressive.lastAttack);
+		if(Date.now() - this.aggressive.lastAttack > 1000){
+			if(distance(this.getPosition(), this.aggressive.player.getPosition()) <= 100){
+				this.aggressive.player.hurt(Damage[this.id]);
+				this.aggressive.lastAttack = Date.now();
+				this.attack(game.getOrientation(this.getPosition(), this.aggressive.player.getPosition()));
+			}else{
+				this.aggressive = undefined;
+			}
 		}
 	}
 };

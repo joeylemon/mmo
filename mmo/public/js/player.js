@@ -5,6 +5,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.inventory = inventory;
 	this.position = position;
 	this.gp = gp;
+	this.hp = 100;
 	this.keys = new Array();
 
 	this.quests = my_quests;
@@ -35,6 +36,10 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 		shadow: new Sprite(Sprites.SHADOW, position.x, position.y),
 		sword: new Sprite(Sprites.SWORD, position.x + SwordOffset.DOWN, position.y + SwordOffset.DOWN)
 	};
+};
+
+Player.prototype.isClient = function(){
+	return me().getUUID() == this.uuid;
 };
 
 Player.prototype.getObject = function(){
@@ -70,6 +75,13 @@ Player.prototype.setX = function(x){
 		this.position.x = x;
 		this.sprites.player.setX(x);
 		this.sprites.sword.setX(x + game.getSwordOffset(this.sprites.player.getOrientation).x);
+
+		if(this.isClient()){
+			var entity = game.getNearbyEntity(this.getCenter().x, this.getCenter().y);
+			if(entity && !entity.isAggressive()){
+				entity.aggro(this);
+			}
+		}
 	}
 };
 
@@ -319,7 +331,7 @@ Player.prototype.attack = function(){
 		this.sprites.player.setIdleAnimation(Animations.IDLE_RIGHT);
 	}
 
-	if(this.uuid == me().getUUID()){
+	if(this.isClient()){
 		this.lastAttack = Date.now();
 		var hit = game.getHitEntity(this.getCenter(), this.getSprite().getOrientation());
 		if(hit){
@@ -349,6 +361,22 @@ Player.prototype.attack = function(){
 				}
 			}
 		}
+	}
+};
+
+Player.prototype.updateHPBar = function(){
+	var percent = Math.floor((this.hp / 100) * 100);
+	$("#hp-bar").css("width", percent.toString() + "%");
+	$("#hp").html(this.hp);
+};
+
+Player.prototype.hurt = function(amount){
+	var text = new Text("-" + amount + " hp", {size: 20, color: TextColor.HURT});
+	this.addText(text);
+
+	if(this.isClient()){
+		this.hp -= amount;
+		this.updateHPBar();
 	}
 };
 

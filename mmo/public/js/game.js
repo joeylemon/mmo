@@ -100,6 +100,16 @@ Game.prototype.getHitEntity = function(center, playerOrientation){
 	return undefined;
 };
 
+Game.prototype.getNearbyEntity = function(x, y){
+	for(var i = 0; i < entities.length; i++){
+		var entity = entities[i];
+		if(distance(entity.getPosition(), {x: x, y: y}) <= 100){
+			return entity;
+		}
+	}
+	return undefined;
+};
+
 Game.prototype.getClickedNPC = function(){
 	var npc;
 	for(var i = 0; i < npcs.length; i++){
