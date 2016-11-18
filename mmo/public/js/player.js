@@ -189,6 +189,10 @@ Player.prototype.levelUp = function(){
 	game.broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
 };
 
+Player.prototype.hasQuest = function(){
+	return this.progress.quest != undefined;
+};
+
 Player.prototype.isDoingObjective = function(objective){
 	if(this.progress.quest){
 		return this.progress.quest.getObjective(this.progress.step).constructor.name == objective;
@@ -262,6 +266,15 @@ Player.prototype.completeQuest = function(){
 
 Player.prototype.hasCompletedQuest = function(id){
 	return this.quests.completed.indexOf(id) >= 0;
+};
+
+Player.prototype.getCompletedQuests = function(){
+	var completed = new Array();
+	for(var i = 0; i < this.quests.completed.length; i++){
+		var id = this.quests.completed[i];
+		completed.push(quests[id]);
+	}
+	return completed;
 };
 
 Player.prototype.sendQuestUpdate = function(id){

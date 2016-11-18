@@ -255,62 +255,6 @@ Game.prototype.isVisible = function(x, y){
 	return (x < (canvas.width - newOffset.x + 64) && x > -newOffset.x) && (y < (canvas.height - newOffset.y + 64) && y > -newOffset.y - 45);
 };
 
-Game.prototype.removeLoginScreen = function(){
-	fadeSoundtrackOut();
-
-	$("#existing-user").fadeOut(250);
-	$("#borders").fadeOut(1000);
-	$("#logo").fadeOut(0);
-	this.fadeBlurOut();
-
-	$("body").css("cursor", "url(styles/images/cursor.png), auto");
-	$("#info-container").fadeIn(250);
-};
-
-Game.prototype.fadeBlurOut = function(){
-	var blur = 3.0;
-	var task = setInterval(function(){
-		blur -= 0.1;
-		if(blur >= 0){
-			$("#game").css("filter", "blur(" + blur + "px)");
-		}else{
-			$("#game").css("filter", "blur(0px)");
-			clearInterval(task);
-			noblur = true;
-		}
-	}, 5);
-};
-
-Game.prototype.fadeBlurIn = function(){
-	var blur = 0;
-	var task = setInterval(function(){
-		blur += 0.1;
-		if(blur < 3.0){
-			$("#game").css("filter", "blur(" + blur + "px)");
-		}else{
-			$("#game").css("filter", "blur(3px)");
-			clearInterval(task);
-			noblur = false;
-		}
-	}, 5);
-};
-
-Game.prototype.showMenu = function(){
-	this.fadeBlurIn();
-	$("#logo").fadeIn(250);
-	$("#menu").fadeIn(250);
-};
-
-Game.prototype.hideMenu = function(){
-	this.fadeBlurOut();
-	$("#logo").fadeOut(250);
-	$("#menu").fadeOut(250);
-};
-
-Game.prototype.isMenuShowing = function(){
-	return !noblur;
-};
-
 Game.prototype.drawText = function(x, y, text, size, stroke, width, fill){
 	ctx.font = size + "px profont";
 	ctx.textAlign = "center";

@@ -62,10 +62,10 @@ document.onkeydown = function(event) {
 				Leaderboards
 				Current Quest
 			*/
-			if(!game.isMenuShowing()){
-				game.showMenu();
+			if(!screen.isMenuShowing()){
+				screen.showMenu();
 			}else{
-				game.hideMenu();
+				screen.hideMenu();
 			}
 		}
 	}
@@ -104,7 +104,7 @@ document.onkeyup = function(event) {
 		code = event.charCode;
 	}
 
-	if(myIndex == undefined || isChatBoxOpen() || game.isMenuShowing()){
+	if(myIndex == undefined || isChatBoxOpen() || screen.isMenuShowing()){
 		return;
 	}
 
@@ -149,7 +149,7 @@ document.onmousedown = function(event) {
 	}
 
 	if(code == 0){
-		if(!game.isMenuShowing()){
+		if(!screen.isMenuShowing()){
 			var npc = game.getClickedNPC();
 			if(npc){
 				npc.talk();

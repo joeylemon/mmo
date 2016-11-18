@@ -16,7 +16,7 @@ var quests = [
           2,
           [],
           [
-               new TalkInChatObjective("what is a variable?", "named location in storage"),
+               new TalkInChatObjective("Question: what is a variable?", "named location in storage"),
           ],
           100,
           25
