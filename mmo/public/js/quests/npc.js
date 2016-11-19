@@ -32,6 +32,10 @@ var NPC = function(name, quest, id, x, y, dialogue, completed, low_level, doing_
 	};
 };
 
+NPC.prototype.getQuestID = function(){
+	return this.quest.id;
+};
+
 NPC.prototype.getSprite = function(){
 	return this.sprites.npc;
 };

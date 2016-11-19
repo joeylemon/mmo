@@ -31,3 +31,13 @@ function getQuestID(title){
      }
 	return undefined;
 }
+
+function getQuestNPC(id){
+	for(var i = 0; i < npcs.length; i++){
+		var npc = npcs[i];
+		if(npc.getQuestID() == id){
+			return npc;
+		}
+	}
+	return undefined;
+};

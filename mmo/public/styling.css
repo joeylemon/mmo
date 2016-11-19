@@ -192,15 +192,31 @@
 
 .quests {
      display: none;
+     position: relative;
      width: 500px;
      background-color: #fff;
-     border-radius: 2px;
+     border-radius: 3px;
      font-family: profont;
+     padding-bottom: 10px;
 }
 
 .quests .title {
      font-size: 40px;
      color: #000;
+}
+
+.quests .close-button {
+     position: absolute;
+	top: -5px;
+	right: 5px;
+	cursor: pointer;
+	font-size: 25px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select:none;
+	user-select:none;
+	-o-user-select:none;
+     color: #BCBCBC;
 }
 
 .quests .quest {
@@ -229,6 +245,10 @@
 
 .quest .in-progress {
      color: #CA9100;
+}
+
+.quest .not-started {
+     color: red;
 }
 
 .quest .objective {

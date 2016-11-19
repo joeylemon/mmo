@@ -277,6 +277,16 @@ Player.prototype.getCompletedQuests = function(){
 	return completed;
 };
 
+Player.prototype.getIncompletedQuests = function(){
+	var incompleted = new Array();
+	for(var i = 0; i < quests.length; i++){
+		if(this.quests.completed.indexOf(i) == -1){
+			incompleted.push(quests[i]);
+		}
+	}
+	return incompleted;
+};
+
 Player.prototype.sendQuestUpdate = function(id){
 	game.broadcast(Messages.UPDATE_QUESTS, {quests: clone(this.quests)});
 };

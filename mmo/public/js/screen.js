@@ -34,7 +34,7 @@ PlayerScreen.prototype.removeLoginScreen = function(){
 PlayerScreen.prototype.fadeBlurOut = function(){
 	var blur = 3.0;
 	var task = setInterval(function(){
-		blur -= 0.1;
+		blur -= 0.3;
 		if(blur >= 0){
 			$("#game").css("filter", "blur(" + blur + "px)");
 		}else{
@@ -48,7 +48,7 @@ PlayerScreen.prototype.fadeBlurOut = function(){
 PlayerScreen.prototype.fadeBlurIn = function(){
 	var blur = 0;
 	var task = setInterval(function(){
-		blur += 0.1;
+		blur += 0.3;
 		if(blur < 3.0){
 			$("#game").css("filter", "blur(" + blur + "px)");
 		}else{
@@ -70,6 +70,7 @@ PlayerScreen.prototype.hideMenu = function(){
 	this.fadeBlurOut();
 	$("#logo").fadeOut(250);
 	$("#menu").fadeOut(250);
+	$("#quests").fadeOut(250);
 	$("#info-container").fadeIn(250);
 };
 
@@ -91,12 +92,13 @@ PlayerScreen.prototype.hideQuests = function(){
 };
 
 PlayerScreen.prototype.updateQuestScreen = function(){
+	$("#quests-list").html("");
 	if(me().hasQuest()){
 		var quest = me().getQuest();
 
-		$("#quests").append("" +
+		$("#quests-list").append("" +
 		"<div class='quest'>" +
-			"<span class='title'>" + quest.getTitle() + "</span>" +
+			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 			"<br>" +
 			"<span class='status in-progress'>In Progress</span>" +
 			"<span class='separator'> | </span>" +
@@ -105,16 +107,30 @@ PlayerScreen.prototype.updateQuestScreen = function(){
 	}
 
 	var completed = me().getCompletedQuests();
-	for(var i = 0; i < me().getCompletedQuests().length; i++){
+	for(var i = 0; i < completed.length; i++){
 		var quest = completed[i];
 
-		$("#quests").append("" +
+		$("#quests-list").append("" +
 		"<div class='quest'>" +
-			"<span class='title'>" + quest.getTitle() + "</span>" +
+			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 			"<br>" +
 			"<span class='status completed'>Completed</span>" +
 			"<span class='separator'> | </span>" +
 			"<span class='status objective'>+" + quest.getXPReward() + " xp, +" + quest.getGPReward() + " gp</span>" +
+		"</div>");
+	}
+
+	var incompleted = me().getIncompletedQuests();
+	for(var i = 0; i < incompleted.length; i++){
+		var quest = incompleted[i];
+
+		$("#quests-list").append("" +
+		"<div class='quest'>" +
+			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
+			"<br>" +
+			"<span class='status not-started'>Not Started</span>" +
+			"<span class='separator'> | </span>" +
+			"<span class='status objective'>at lvl. " + quest.getMinimumLevel() + " talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + "</span>" +
 		"</div>");
 	}
 };
