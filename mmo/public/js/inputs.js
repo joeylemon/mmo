@@ -159,7 +159,7 @@ document.onmousedown = function(event) {
 					index: myIndex,
 					uuid: me().uuid
 				};
-				game.broadcast("attack", msg);
+				game.broadcast(Messages.ATTACK, msg);
 			}
 		}
 	}else if(code == 2){

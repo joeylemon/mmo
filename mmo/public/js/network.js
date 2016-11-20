@@ -45,8 +45,9 @@ socket.on('msg', function(data){
 			*/
 		}else if(data.type == Messages.AGGRO){
 			var player = players[game.getPlayerByUUID(data.player)];
-			if(!player.isClient()){
-				game.getEntity(data.uid).aggro(player);
+			var entity = game.getEntity(data.uid);
+			if(player && !player.isClient() && entity){
+				entity.aggro(player);
 			}
 		}
 	}
@@ -87,5 +88,8 @@ socket.on('msg', function(data){
 		players[data.index].addText(new Text("Level Up!", {size: 25, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4}));
 	}else if(data.type == Messages.CHAT){
 		players[data.index].say(data.msg);
+	}else if(data.type == Messages.NEW_ARMOR){
+		var player = players[data.index];
+		players[data.index].sprites.player = new Sprite(data.armor, player.position.x, player.position.y);
 	}
 });

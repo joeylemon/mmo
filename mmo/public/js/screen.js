@@ -130,7 +130,7 @@ PlayerScreen.prototype.updateQuestScreen = function(){
 			"<br>" +
 			"<span class='status not-started'>Not Started</span>" +
 			"<span class='separator'> | </span>" +
-			"<span class='status objective'>at lvl. " + quest.getMinimumLevel() + " talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + "</span>" +
+			"<span class='status objective'>talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + " at lvl. " + quest.getMinimumLevel() + "</span>" +
 		"</div>");
 	}
 };

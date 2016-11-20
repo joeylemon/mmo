@@ -108,6 +108,11 @@ var Damage = {
 	skeleton: 5
 };
 
+var Armor = {
+	CLOTH: "clotharmor",
+	GOLDEN: "goldenarmor"
+};
+
 var Key = {
 	UP: "up",
 	DOWN: "down",

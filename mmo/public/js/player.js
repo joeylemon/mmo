@@ -118,6 +118,19 @@ Player.prototype.getSprite = function(){
 	return this.sprites.player;
 };
 
+Player.prototype.giveArmor = function(armor){
+	this.inventory.armor = armor;
+	this.sprites.player = new Sprite(this.inventory.armor, this.position.x, this.position.y);
+
+	game.broadcast(Messages.UPDATE_INV, {newinv: this.inventory});
+	var msg = {
+		index: myIndex,
+		uuid: me().uuid,
+		armor: this.inventory.armor
+	};
+	game.broadcast(Messages.NEW_ARMOR, msg);
+};
+
 Player.prototype.addGP = function(gp){
 	this.gp += gp;
 	game.broadcast(Messages.UPDATE_GP, {newgp: this.gp});
@@ -280,7 +293,7 @@ Player.prototype.getCompletedQuests = function(){
 Player.prototype.getIncompletedQuests = function(){
 	var incompleted = new Array();
 	for(var i = 0; i < quests.length; i++){
-		if(this.quests.completed.indexOf(i) == -1){
+		if(this.quests.completed.indexOf(i) == -1 && this.progress.quest != quests[i]){
 			incompleted.push(quests[i]);
 		}
 	}
