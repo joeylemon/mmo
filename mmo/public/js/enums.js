@@ -46,6 +46,7 @@ var noblur = false;
 var flashid = 0;
 
 var keys = new Array();
+var items = new Array();
 var players = new Array();
 var entities = new Array();
 var flyingtexts = new Array();
@@ -92,7 +93,8 @@ var Entity = {
 var Objective = {
 	KILL_ENTITY: "KillEntityObjective",
 	TALK_TO_NPC: "TalkToNPCObjective",
-	TALK_IN_CHAT: "TalkInChatObjective"
+	TALK_IN_CHAT: "TalkInChatObjective",
+	PICKUP_ITEM: "PickupItemObjective"
 };
 
 var SwordOffset = {
@@ -184,7 +186,7 @@ function getNumberWithCommas(number) {
 }
 
 function getNumberWithLeadingZeroes(number){
-	if(number < 10 && number > 0){
+	if(number < 10 && number >= 0){
 		return "0" + number.toString();
 	}
 	return number.toString();

@@ -103,7 +103,7 @@ Game.prototype.getHitEntity = function(center, playerOrientation){
 Game.prototype.getNearbyEntity = function(x, y){
 	for(var i = 0; i < entities.length; i++){
 		var entity = entities[i];
-		if(distance(entity.getPosition(), {x: x, y: y}) <= 100){
+		if(distance(entity.getCenter(), {x: x, y: y}) <= 100){
 			return entity;
 		}
 	}
@@ -120,6 +120,30 @@ Game.prototype.getClickedNPC = function(){
 		}
 	}
 	return npc;
+};
+
+Game.prototype.getNearbyItem = function(x, y){
+	for(var i = 0; i < items.length; i++){
+		var item = items[i];
+		if(distance(item.getCenter(), {x: x, y: y}) <= 50){
+			return item;
+		}
+	}
+	return undefined;
+};
+
+Game.prototype.addItem = function(item, x, y){
+	items.push(new Item(item, x, y));
+};
+
+Game.prototype.removeItem = function(remove){
+	for(var i = 0; i < items.length; i++){
+		var item = items[i];
+		if(item.getX() == remove.getX() && item.getY() == remove.getY()){
+			items.splice(i, 1);
+			break;
+		}
+	}
 };
 
 Game.prototype.getPlayersOnline = function(){

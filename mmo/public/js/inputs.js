@@ -92,6 +92,13 @@ document.onkeydown = function(event) {
 		}
 	}else if(code == 192){
 		screen.toggleDebug();
+	}else if(code == 32){
+		var item = game.getNearbyItem(me().getCenter().x, me().getCenter().y);
+		game.removeItem(item);
+
+		me().giveItem(item, 1);
+		var text = new Text("+1 " + item.getID(), {size: 25, color: TextColor.GP});
+		me().addText(text);
 	}
 };
 

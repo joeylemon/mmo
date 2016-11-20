@@ -132,6 +132,36 @@ Player.prototype.giveSword = function(sword){
 	this.sendInventoryUpdate();
 };
 
+Player.prototype.giveItem = function(item, amount){
+	if(!this.inventory.items[item.getID()]){
+		this.inventory.items[item.getID()] = amount;
+	}else{
+		this.inventory.items[item.getID()] += amount;
+	}
+
+	this.sendInventoryUpdate();
+
+	if(this.isDoingObjective(Objective.PICKUP_ITEM)){
+		if(item.getID() == this.getCurrentObjective().getItem()){
+			this.increaseQuestData("items");
+			if(this.getQuestData().items >= this.getCurrentObjective().getAmount()){
+				this.advanceQuest();
+			}
+		}
+	}
+};
+
+Player.prototype.takeItem = function(item, amount){
+	if(this.inventory.items[item.getID()]){
+		this.inventory.items[item.getID()] -= amount;
+		if(this.inventory.items[item.getID()] < 0){
+			this.inventory.items[item.getID()] = 0;
+		}
+	}
+
+	this.sendInventoryUpdate();
+};
+
 Player.prototype.sendInventoryUpdate = function(sword){
 	var msg = {
 		index: myIndex,

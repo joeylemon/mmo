@@ -30,7 +30,7 @@ var npcs = [
                "Hello there!",
                "Hmm, I have a quest for you.",
                "However, you need to be a little stronger!",
-               "Come back to me when you're level 6."
+               "Come back to me when you're level 10."
           ],
           [
                "Get to killing, traveler!",
@@ -47,8 +47,8 @@ var npcs = [
           "Nerdy Nate",
           1,
           "coder",
-          1100,
-          800,
+          177,
+          340,
           [
                "Greetings, fellow programmer.",
                "I hear you think you're a better coder than me?",
@@ -78,6 +78,40 @@ var npcs = [
                "I would challenge your intelligence...",
                "But you seem to be busy already.",
                "Maybe once you're done!"
+          ]
+     ),
+     new NPC(
+          "Farmer Joe",
+          2,
+          "desertnpc",
+          1367,
+          376,
+          [
+               "Howdy there, partner!",
+               "I was just about to gather me up some dinner.",
+               "Problem is... the darned bats stole my fresh apples!",
+               "This old man ain't got the strength to fight no more.",
+               "Maybe you could get my apples for me, what d'ya say?"
+          ],
+          [
+               "Now that's what I'm talking 'bout!",
+               "Sally'll be so proud of me...",
+               "I'll see ya around kid."
+          ],
+          [
+               "These darn bats!",
+               "Hey you, if you ever reach level 5...",
+               "me 'n you could have a little chat."
+          ],
+          [
+               "Have you gotten the food yet?",
+               "The bats stole the apples from me!",
+               "I'll pay ya to get them back, I swear on it!"
+          ],
+          [
+               "Howdy partner!",
+               "You seem a little busy, don't ya.",
+               "I won't bother you with my worries."
           ]
      )
 ];

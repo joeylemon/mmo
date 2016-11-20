@@ -1,7 +1,9 @@
 var Client = function(){
 	loadWorld();
-
 	then = Date.now();
+
+	this.players_onscreen = 0;
+	this.entities_onscreen = 0;
 };
 
 Client.prototype.draw = function(){
@@ -24,7 +26,6 @@ Client.prototype.draw = function(){
 
 		drawMap(MapLayer.BOTTOM);
 
-		var players_onscreen = 0;
 		for(var i = 0; i < players.length; i++){
 			var p = players[i];
 			if(i != myIndex && p != null){
@@ -33,11 +34,10 @@ Client.prototype.draw = function(){
 					p.setX(p.getX() - pos.x);
 					p.setY(p.getY() - pos.y);
 					p.draw();
-					players_onscreen++;
+					this.players_onscreen++;
 				}
 			}
 		}
-		document.getElementById("players").innerHTML = players_onscreen;
 
 		if(myIndex != undefined){
 			me().setX(player_pos.x);
@@ -45,25 +45,17 @@ Client.prototype.draw = function(){
 			me().draw();
 		}
 
-		var entities_onscreen = 0;
-		for(var i = 0; i < entities.length; i++){
-			var entity = entities[i];
-			if(entity.getSprite().isDataSet() && game.isVisible(entity.getCenter().x, entity.getCenter().y)){
-				entity.draw();
-				entities_onscreen++;
-			}
-		}
+		this.drawArray(entities);
+		this.drawArray(items);
 
 		drawMap(MapLayer.TOP);
 
-		for(var i = 0; i < npcs.length; i++){
-			var npc = npcs[i];
-			if(npc.getSprite().isDataSet() && game.isVisible(npc.getCenter().x, npc.getCenter().y)){
-				npc.draw();
-				entities_onscreen++;
-			}
-		}
-		document.getElementById("entities").innerHTML = entities_onscreen;
+		this.drawArray(npcs);
+
+		document.getElementById("players").innerHTML = this.players_onscreen;
+		document.getElementById("entities").innerHTML = this.entities_onscreen;
+		this.players_onscreen = 0;
+		this.entities_onscreen = 0;
 
 		ctx.restore();
 	}
@@ -71,6 +63,16 @@ Client.prototype.draw = function(){
 	if(drawing){
 		lastDraw = Date.now();
 		window.requestAnimationFrame(this.draw.bind(this));
+	}
+};
+
+Client.prototype.drawArray = function(array){
+	for(var i = 0; i < array.length; i++){
+		var object = array[i];
+		if(object.getSprite().isDataSet() && game.isVisible(object.getCenter().x, object.getCenter().y)){
+			object.draw();
+			this.entities_onscreen++;
+		}
 	}
 };
 

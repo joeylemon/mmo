@@ -59,7 +59,11 @@ Entity.prototype.getPosition = function(){
 };
 
 Entity.prototype.getCenter = function(){
-	return {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 2)};
+	if(this.sprites.entity.isDataSet()){
+		return {x: this.getX() + (this.sprites.entity.getWidth() / 2), y: this.getY() + (this.sprites.entity.getWidth() / 2)};
+	}else{
+		return {x: this.getX(), y: this.getY()};
+	}
 };
 
 Entity.prototype.getTopLeft = function(){
@@ -123,6 +127,12 @@ Entity.prototype.setDead = function(){
 	this.dead = true;
 	this.death = Date.now();
 	this.sprites.death.startAnimation(Animations.DEATH);
+
+	if(me().hasQuest() && me().getQuest().getTitle() == "Apple Pickers" && me().isDoingObjective(Objective.PICKUP_ITEM)){
+		if(Math.random() <= 0.2){
+			game.addItem("apple", this.x, this.y);
+		}
+	}
 };
 
 Entity.prototype.isDead = function(){
@@ -206,7 +216,7 @@ Entity.prototype.draw = function(){
 	}
 
 	if(this.aggressive){
-		if(Date.now() - this.aggressive.lastAttack > 1000){
+		if(Date.now() - this.aggressive.lastAttack > Settings.entity_attack_speed){
 			if(distance(this.getPosition(), this.aggressive.player.getPosition()) <= 100){
 				this.aggressive.player.hurt(Damage[this.id]);
 				this.aggressive.lastAttack = Date.now();

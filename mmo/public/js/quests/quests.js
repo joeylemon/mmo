@@ -1,7 +1,7 @@
 var quests = [
      new Quest(
           "Tale of the Shirtless Man",
-          6,
+          10,
           [],
           [
                new KillEntityObjective(Entity.SKELETON, 5),
@@ -20,6 +20,17 @@ var quests = [
           ],
           100,
           25
+     ),
+     new Quest(
+          "Apple Pickers",
+          5,
+          [],
+          [
+               new PickupItemObjective("apple", 5),
+               new TalkToNPCObjective("Farmer Joe")
+          ],
+          500,
+          100
      )
 ];
 

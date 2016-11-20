@@ -97,7 +97,7 @@ PlayerScreen.prototype.updateQuestScreen = function(){
 		var quest = me().getQuest();
 
 		$("#quests-list").append("" +
-		"<div class='quest'>" +
+		"<div class='quest in-progress'>" +
 			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 			"<br>" +
 			"<span class='status in-progress'>In Progress</span>" +
@@ -111,7 +111,7 @@ PlayerScreen.prototype.updateQuestScreen = function(){
 		var quest = completed[i];
 
 		$("#quests-list").append("" +
-		"<div class='quest'>" +
+		"<div class='quest completed'>" +
 			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 			"<br>" +
 			"<span class='status completed'>Completed</span>" +
@@ -125,7 +125,7 @@ PlayerScreen.prototype.updateQuestScreen = function(){
 		var quest = incompleted[i];
 
 		$("#quests-list").append("" +
-		"<div class='quest'>" +
+		"<div class='quest not-started'>" +
 			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 			"<br>" +
 			"<span class='status not-started'>Not Started</span>" +
