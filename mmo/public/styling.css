@@ -76,6 +76,12 @@
      padding-left: 7px;
 }
 
+.info-bar-container .info-bar-glyph {
+     position: relative;
+     font-size: 25px;
+     top: 10px;
+}
+
 .info-bar-container .info-bar-width {
      float: right;
      width: 243px;
@@ -90,8 +96,8 @@
 
 .info-bar-container .info-bar-value {
      position: relative;
-     left: 22px;
-     top: -41px;
+     left: 60px;
+     top: -26px;
 
      font-size: 20px;
      font-family: profont;

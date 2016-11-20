@@ -21,22 +21,28 @@
 
 		<div id="info-container" class="info-container">
 			<div class="info-bar-container" style="float:right;width:auto;">
-				<div class="info-bar-icon">gp</div>
+				<div class="info-bar-icon">
+					<span class="glyphicon glyphicon-gbp info-bar-glyph" aria-hidden="true" style="top: 12px;"></span>
+				</div>
 				<div class="info-bar-icon" style="color: #fff;" id="gp">0</div>
 			</div>
 			<div class="info-bar-container">
-				<div class="info-bar-icon">hp</div>
+				<div class="info-bar-icon">
+					<span class="glyphicon glyphicon-plus info-bar-glyph" aria-hidden="true" style="left: 5px;"></span>
+				</div>
 				<div class="info-bar-width">
 					<div id="hp-bar" class="info-bar" style="background-color: green;"></div>
 				</div>
-				<div class="info-bar-value" id="hp">100</div>
+				<span class="info-bar-value" id="hp">100</span>
 			</div>
 			<div class="info-bar-container" style="margin-bottom: 0px;">
-				<div class="info-bar-icon">xp</div>
+				<div class="info-bar-icon">
+					<span class="glyphicon glyphicon-stats info-bar-glyph" aria-hidden="true" style="left: 3px;"></span>
+				</div>
 				<div class="info-bar-width">
 					<div id="xp-bar" class="info-bar" style="background-color: #FF9B2E;"></div>
 				</div>
-				<div class="info-bar-value" id="xp-bar-value">100</div>
+				<span class="info-bar-value" id="xp-bar-value">100</span>
 			</div>
 		</div>
 
@@ -148,10 +154,10 @@
 		</div>
 	</body>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="styles/jquery.min.js"></script>
+	<script src="styles/bootstrap.min.js"></script>
 
-	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/socket.io.js"></script>
 	<script src="js/universal.js"></script>
 	<script src="js/screen.js"></script>
 	<script src="js/game.js"></script>

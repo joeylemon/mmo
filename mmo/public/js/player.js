@@ -124,8 +124,8 @@ Player.prototype.addGP = function(gp){
 	this.updateGPValue();
 };
 
-Player.prototype.updateGPValue = function(gp){
-	$("#gp").html(this.gp.toString());
+Player.prototype.updateGPValue = function(){
+	$("#gp").html(getNumberWithCommas(this.gp));
 };
 
 Player.prototype.getLevelObject = function(){

@@ -206,7 +206,6 @@ Entity.prototype.draw = function(){
 	}
 
 	if(this.aggressive){
-		console.log(Date.now() - this.aggressive.lastAttack);
 		if(Date.now() - this.aggressive.lastAttack > 1000){
 			if(distance(this.getPosition(), this.aggressive.player.getPosition()) <= 100){
 				this.aggressive.player.hurt(Damage[this.id]);
