@@ -113,6 +113,10 @@ var Armor = {
 	GOLDEN: "goldenarmor"
 };
 
+var Sword = {
+	IRON: "sword"
+};
+
 var Key = {
 	UP: "up",
 	DOWN: "down",
@@ -177,6 +181,13 @@ function distance(p1, p2){
 
 function getNumberWithCommas(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function getNumberWithLeadingZeroes(number){
+	if(number < 10 && number > 0){
+		return "0" + number.toString();
+	}
+	return number.toString();
 }
 
 function getRandom(num){

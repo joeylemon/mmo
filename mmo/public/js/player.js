@@ -34,7 +34,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.sprites = {
 		player: new Sprite(inventory.armor, position.x, position.y),
 		shadow: new Sprite(Sprites.SHADOW, position.x, position.y),
-		sword: new Sprite(Sprites.SWORD, position.x + SwordOffset.DOWN, position.y + SwordOffset.DOWN)
+		sword: new Sprite(this.inventory.sword, position.x, position.y)
 	};
 };
 
@@ -122,13 +122,23 @@ Player.prototype.giveArmor = function(armor){
 	this.inventory.armor = armor;
 	this.sprites.player = new Sprite(this.inventory.armor, this.position.x, this.position.y);
 
-	game.broadcast(Messages.UPDATE_INV, {newinv: this.inventory});
+	this.sendInventoryUpdate();
+};
+
+Player.prototype.giveSword = function(sword){
+	this.inventory.sword = sword;
+	this.sprites.sword = new Sprite(this.inventory.sword, this.position.x, this.position.y);
+
+	this.sendInventoryUpdate();
+};
+
+Player.prototype.sendInventoryUpdate = function(sword){
 	var msg = {
 		index: myIndex,
 		uuid: me().uuid,
-		armor: this.inventory.armor
+		newinv: this.inventory
 	};
-	game.broadcast(Messages.NEW_ARMOR, msg);
+	game.broadcast(Messages.UPDATE_INV, msg);
 };
 
 Player.prototype.addGP = function(gp){
@@ -186,7 +196,7 @@ Player.prototype.updateXPBar = function(){
 	}
 	var percent = (new_xp / (game.getNextLevel(this.level.level) - prev_xp)) * 100;
 	$("#xp-bar").css("width", percent.toString() + "%");
-	$("#xp-bar-value").html(new_xp.toString());
+	$("#xp-bar-value").html(getNumberWithLeadingZeroes(new_xp));
 };
 
 Player.prototype.canLevelUp = function(){
@@ -403,7 +413,7 @@ Player.prototype.attack = function(){
 Player.prototype.updateHPBar = function(){
 	var percent = Math.floor((this.hp / 100) * 100);
 	$("#hp-bar").css("width", percent.toString() + "%");
-	$("#hp").html(this.hp);
+	$("#hp").html(getNumberWithLeadingZeroes(this.hp));
 };
 
 Player.prototype.hurt = function(amount){
@@ -412,6 +422,16 @@ Player.prototype.hurt = function(amount){
 
 	if(this.isClient()){
 		this.hp -= amount;
+		this.updateHPBar();
+	}
+};
+
+Player.prototype.heal = function(amount){
+	var text = new Text("+" + amount + " hp", {size: 20, color: TextColor.XP});
+	this.addText(text);
+
+	if(this.isClient()){
+		this.hp += amount;
 		this.updateHPBar();
 	}
 };

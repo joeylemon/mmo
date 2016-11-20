@@ -88,8 +88,18 @@ socket.on('msg', function(data){
 		players[data.index].addText(new Text("Level Up!", {size: 25, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4}));
 	}else if(data.type == Messages.CHAT){
 		players[data.index].say(data.msg);
-	}else if(data.type == Messages.NEW_ARMOR){
+	}else if(data.type == Messages.UPDATE_INV){
 		var player = players[data.index];
-		players[data.index].sprites.player = new Sprite(data.armor, player.position.x, player.position.y);
+		var oldinv = player.inventory;
+		var newinv = data.newinv;
+
+		player.inventory = newinv;
+
+		if(oldinv.armor != newinv.armor){
+			player.sprites.player = new Sprite(player.inventory.armor, player.position.x, player.position.y);
+		}
+		if(oldinv.sword != newinv.sword){
+			player.sprites.sword = new Sprite(player.inventory.sword, position.x, position.y);
+		}
 	}
 });
