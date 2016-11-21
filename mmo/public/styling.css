@@ -238,7 +238,7 @@
 }
 
 .quests .in-progress {
-     background-color: #FFFCC0;
+     background-color: #FFD690;
 }
 
 .quests .not-started {
@@ -260,14 +260,17 @@
 
 .quest .completed {
      color: #389F00;
+     text-shadow: 0.5px 0.5px #000;
 }
 
 .quest .in-progress {
      color: #CA9100;
+     text-shadow: 0.5px 0.5px #000;
 }
 
 .quest .not-started {
      color: red;
+     text-shadow: 0.5px 0.5px #000;
 }
 
 .quest .objective {

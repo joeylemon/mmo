@@ -162,6 +162,10 @@ Player.prototype.takeItem = function(item, amount){
 	this.sendInventoryUpdate();
 };
 
+Player.prototype.getItems = function(){
+	return this.inventory.items;
+};
+
 Player.prototype.sendInventoryUpdate = function(sword){
 	var msg = {
 		index: myIndex,

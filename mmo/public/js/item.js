@@ -6,6 +6,11 @@ var Item = function(id, x, y){
      this.idleStep = 1;
 	this.lastIdleChange = 0;
 
+     this.death = Date.now() + 30000;
+
+	 this.floating = true;
+	 this.float_y = y;
+
      this.sprites = {
 		item: new Sprite(id, x, y, true),
 		shadow: new Sprite(Sprites.SHADOW, x, y)
@@ -14,6 +19,16 @@ var Item = function(id, x, y){
 
 Item.prototype.getSprite = function(){
 	return this.sprites.item;
+};
+
+Item.prototype.setPosition = function(x, y){
+	this.x = x;
+     this.y = y;
+     this.sprites.item.setX(x);
+     this.sprites.shadow.setX(x);
+     this.sprites.item.setY(y);
+     this.sprites.shadow.setY(y);
+     this.float_y = y;
 };
 
 Item.prototype.getX = function(){
@@ -39,15 +54,21 @@ Item.prototype.draw = function(){
 	}
 	this.sprites.shadow.draw(1, 0);
 
-	var idle = this.sprites.item.getIdleAnimation();
-	var change = game.getIdleChange(this.id);
-	var time = this.lastIdleChange + game.getIdleChange(this.id) + (Math.random() * 1000);
-	if(Date.now() > time){
-		this.idleStep += 1;
-		if(this.idleStep > idle.length){
-			this.idleStep = 1;
+	this.sprites.item.setY(this.float_y);
+	this.sprites.item.draw(1, 0);
+	if(this.floating){
+		this.float_y += Settings.item_float_speed;
+		if(this.float_y - this.y > Settings.item_float_dist){
+			this.floating = false;
 		}
-		this.lastIdleChange = Date.now();
+	}else{
+		this.float_y -= Settings.item_float_speed;
+		if(this.float_y - this.y <= 0){
+			this.floating = true;
+		}
 	}
-	this.sprites.item.draw(this.idleStep, idle.row);
+
+     if(Date.now() - this.death >= 0){
+          game.removeItem(this);
+     }
 };

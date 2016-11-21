@@ -128,9 +128,9 @@ Entity.prototype.setDead = function(){
 	this.death = Date.now();
 	this.sprites.death.startAnimation(Animations.DEATH);
 
-	if(me().hasQuest() && me().getQuest().getTitle() == "Apple Pickers" && me().isDoingObjective(Objective.PICKUP_ITEM)){
-		if(Math.random() <= 0.2){
-			game.addItem("apple", this.x, this.y);
+	if(this.id == "bat" && me().hasQuest() && me().getQuest().getTitle() == "Apple Pickers" && me().isDoingObjective(Objective.PICKUP_ITEM)){
+		if(Math.random() <= 0.25){
+			game.addItem("apple", this.getCenter().x, this.getCenter().y);
 		}
 	}
 };

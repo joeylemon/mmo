@@ -25,6 +25,7 @@ Client.prototype.draw = function(){
 		camera.update(player_pos, nextpos);
 
 		drawMap(MapLayer.BOTTOM);
+		this.drawArray(items);
 
 		for(var i = 0; i < players.length; i++){
 			var p = players[i];
@@ -46,7 +47,6 @@ Client.prototype.draw = function(){
 		}
 
 		this.drawArray(entities);
-		this.drawArray(items);
 
 		drawMap(MapLayer.TOP);
 

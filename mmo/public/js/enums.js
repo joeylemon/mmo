@@ -72,7 +72,9 @@ var Settings = {
 	entity_speed: 4.8,
 	entity_attack_speed: 2000,
 	health_bar_width: 45,
-	health_bar_height: 5
+	health_bar_height: 5,
+	item_float_speed: 0.15,
+	item_float_dist: 15
 };
 
 var IdleChange = {

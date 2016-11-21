@@ -133,7 +133,12 @@ Game.prototype.getNearbyItem = function(x, y){
 };
 
 Game.prototype.addItem = function(item, x, y){
-	items.push(new Item(item, x, y));
+	var item = new Item(item, x, y);
+	var sprite = item.sprites.item;
+	setTimeout(function(){
+		item.setPosition(x - (sprite.getWidth() / 2), y - (sprite.getHeight() / 2));
+		items.push(item);
+	}, 250);
 };
 
 Game.prototype.removeItem = function(remove){
