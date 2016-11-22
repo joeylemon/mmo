@@ -69,7 +69,7 @@ Client.prototype.draw = function(){
 Client.prototype.drawArray = function(array){
 	for(var i = 0; i < array.length; i++){
 		var object = array[i];
-		if(object.getSprite().isDataSet() && game.isVisible(object.getCenter().x, object.getCenter().y)){
+		if(object.getSprite().isDataSet() && (game.isVisible(object.getCenter().x, object.getCenter().y) || object.dest)){
 			object.draw();
 			this.entities_onscreen++;
 		}

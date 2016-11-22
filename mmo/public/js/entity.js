@@ -46,6 +46,13 @@ Entity.prototype.setY = function(y){
 	this.sprites.entity.setY(y);
 };
 
+Entity.prototype.setPosition = function(x, y){
+	this.x = x;
+	this.sprites.entity.setX(x);
+	this.y = y;
+	this.sprites.entity.setY(y);
+};
+
 Entity.prototype.getX = function(){
 	return this.x;
 };
@@ -94,7 +101,11 @@ Entity.prototype.hurt = function(amount){
 	this.addText(text);
 };
 
-Entity.prototype.attack = function(orientation){
+Entity.prototype.attack = function(player){
+	var orientation = game.getOrientation(this.getCenter(), player.getCenter());
+	player.hurt(Damage[this.id]);
+	this.aggressive.lastAttack = Date.now();
+
 	this.sprites.entity.setOrientation(orientation);
 	if(orientation == Orientation.UP){
 		this.sprites.entity.startAnimation(Animations.ATTACK_UP);
@@ -111,16 +122,27 @@ Entity.prototype.attack = function(orientation){
 	}
 };
 
+Entity.prototype.canAttack = function(){
+	return Date.now() - this.aggressive.lastAttack > Settings.entity_attack_speed;
+};
+
 Entity.prototype.aggro = function(player){
 	this.aggressive = {
 		player: player,
 		lastAttack: 0
 	};
-	game.broadcast(Messages.AGGRO, {uid: this.uid, player: player.getUUID()});
+
+	if(me().getUUID() == this.aggressive.player.getUUID()){
+		game.broadcast(Messages.AGGRO, {uid: this.uid, player: player.getUUID()});
+	}
 };
 
 Entity.prototype.isAggressive = function(){
 	return this.aggressive != undefined;
+};
+
+Entity.prototype.getDistanceFromTarget = function(){
+	return distance(this.getTop(), this.aggressive.player.getCenter());
 };
 
 Entity.prototype.setDead = function(){
@@ -155,8 +177,34 @@ Entity.prototype.startMoveAnimation = function(orientation){
 	}
 };
 
+Entity.prototype.move = function(x, y){
+	var dx = (x - this.x);
+	var dy = (y - this.y);
+	var mag = Math.sqrt(dx * dx + dy * dy);
+	this.dest = {
+		x: x,
+		y: y,
+		vx: (dx / mag) * Settings.entity_speed,
+		vy: (dy / mag) * Settings.entity_speed
+	};
+
+	if(this.aggressive && this.aggressive.player.getUUID() == me().getUUID()){
+		var msg = {
+			player: this.aggressive.player.getUUID(),
+			uid: this.uid,
+			x: x,
+			y: y
+		}
+		game.broadcast(Messages.ENTITY_MOVE, msg);
+	}
+};
+
 Entity.prototype.atDestination = function(){
-	return Math.floor(this.getX()) == Math.floor(this.dest.x) && Math.floor(this.getY()) == Math.floor(this.dest.y);
+	return distance(this.dest, this.getTop()) <= Settings.entity_move_min_dist;
+};
+
+Entity.prototype.isVisible = function(){
+	return game.isVisible(this.getCenter().x, this.getCenter().y);
 };
 
 Entity.prototype.draw = function(){
@@ -216,14 +264,39 @@ Entity.prototype.draw = function(){
 	}
 
 	if(this.aggressive){
-		if(Date.now() - this.aggressive.lastAttack > Settings.entity_attack_speed){
-			if(distance(this.getPosition(), this.aggressive.player.getPosition()) <= 100){
-				this.aggressive.player.hurt(Damage[this.id]);
-				this.aggressive.lastAttack = Date.now();
-				this.attack(game.getOrientation(this.getPosition(), this.aggressive.player.getPosition()));
-			}else{
-				this.aggressive = undefined;
+		if(this.getDistanceFromTarget() <= Settings.entity_move_min_dist){
+			if(this.canAttack()){
+				if(game.getPlayerByUUID(this.aggressive.player.getUUID()) >= 0){
+					this.attack(this.aggressive.player);
+				}else{
+					this.aggressive = undefined;
+					this.dest = undefined;
+				}
 			}
+		}else if(this.getDistanceFromTarget() <= 500){
+			this.move(this.aggressive.player.getCenter().x, this.aggressive.player.getCenter().y);
+		}else{
+			this.aggressive = undefined;
+			this.dest = undefined;
+		}
+	}
+
+	if(this.dest){
+		if(this.isVisible()){
+			if(!this.atDestination()){
+				this.x += this.dest.vx;
+				this.y += this.dest.vy;
+				this.sprites.entity.setPosition(this.x, this.y);
+
+				this.startMoveAnimation(game.getOrientation(this.getCenter(), this.dest));
+			}else{
+				this.dest = undefined;
+			}
+		}else{
+			this.x = this.dest.x;
+			this.y = this.dest.y;
+			this.sprites.entity.setPosition(this.x, this.y);
+			this.dest = undefined;
 		}
 	}
 };

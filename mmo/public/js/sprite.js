@@ -40,6 +40,11 @@ Sprite.prototype.setY = function(y){
 	this.y = y;
 };
 
+Sprite.prototype.setPosition = function(x, y){
+	this.x = x;
+	this.y = y;
+};
+
 Sprite.prototype.setOrientation = function(orientation){
 	this.orientation = orientation;
 };

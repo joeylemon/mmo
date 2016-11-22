@@ -75,13 +75,6 @@ Player.prototype.setX = function(x){
 		this.position.x = x;
 		this.sprites.player.setX(x);
 		this.sprites.sword.setX(x + game.getSwordOffset(this.sprites.player.getOrientation).x);
-
-		if(this.isClient()){
-			var entity = game.getNearbyEntity(this.getCenter().x, this.getCenter().y);
-			if(entity && !entity.isAggressive()){
-				entity.aggro(this);
-			}
-		}
 	}
 };
 
@@ -438,6 +431,12 @@ Player.prototype.attack = function(){
 							this.advanceQuest();
 						}
 					}
+				}
+			}
+
+			if(this.isClient()){
+				if(!hit.isAggressive()){
+					hit.aggro(this);
 				}
 			}
 		}

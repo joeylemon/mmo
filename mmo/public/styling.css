@@ -84,7 +84,7 @@
 
 .info-bar-container .info-bar-width {
      float: right;
-     width: 243px;
+     width: 245px;
      height: 33px;
      margin-top: 7px;
 }
@@ -200,7 +200,7 @@
 .quests {
      display: none;
      position: relative;
-     width: 500px;
+     width: 600px;
      background-color: #fff;
      border-radius: 3px;
      font-family: profont;
@@ -234,15 +234,15 @@
 }
 
 .quests .completed {
-     background-color: #B4FFB6;
+     background-color: #DCFFDC;
 }
 
 .quests .in-progress {
-     background-color: #FFD690;
+     background-color: #FFF1D2;
 }
 
 .quests .not-started {
-     background-color: #FFD5D5;
+     background-color: #FFE9E9;
 }
 
 .quest .title {

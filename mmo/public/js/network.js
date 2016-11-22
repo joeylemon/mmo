@@ -37,17 +37,23 @@ socket.on('msg', function(data){
 		}else if(data.type == Messages.ATTACK_ENTITY){
 			game.getEntity(data.uid).hurt(data.amount);
 		}else if(data.type == Messages.MOVE_ENTITIES){
-			/*
 			for(var i = 0; i < data.moves.length; i++){
 				var move = data.moves[i];
-				game.getEntity(move.uid).moveTo(move.x, move.y);
+				var entity = game.getEntity(move.uid);
+				if(!entity.isAggressive()){
+					entity.move(move.x, move.y);
+				}
 			}
-			*/
 		}else if(data.type == Messages.AGGRO){
 			var player = players[game.getPlayerByUUID(data.player)];
 			var entity = game.getEntity(data.uid);
 			if(player && !player.isClient() && entity){
 				entity.aggro(player);
+			}
+		}else if(data.type == Messages.ENTITY_MOVE){
+			if(data.player != me().getUUID()){
+				var entity = game.getEntity(data.uid);
+				entity.move(data.x, data.y);
 			}
 		}
 	}
