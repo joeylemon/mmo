@@ -23,6 +23,7 @@ var screen;
 var camera;
 var client;
 var game;
+var map;
 
 var myIndex;
 
@@ -63,6 +64,7 @@ for(var key in Sprites){
 
 /* Initialize enums */
 var Settings = {
+	max_blur: 4,
 	tilewidth: 32,
 	idle_camera_speed: {x: -0.10, y: -0.175},
 	player_speed: 4.8,
@@ -75,7 +77,8 @@ var Settings = {
 	health_bar_width: 45,
 	health_bar_height: 5,
 	item_float_speed: 0.15,
-	item_float_dist: 15
+	item_float_dist: 15,
+	collision_factor: 1
 };
 
 var IdleChange = {
@@ -127,6 +130,17 @@ var Key = {
 	DOWN: "down",
 	LEFT: "left",
 	RIGHT: "right"
+};
+
+var KeyCodes = {
+	38: Key.UP,
+	87: Key.UP,
+	40: Key.DOWN,
+	83: Key.DOWN,
+	37: Key.LEFT,
+	65: Key.LEFT,
+	39: Key.RIGHT,
+	68: Key.RIGHT
 };
 
 var Orientation = {

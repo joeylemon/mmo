@@ -105,8 +105,8 @@ function login(){
 
 					myplayer = player;
 
-					offset.x = (-getMaxX() / 2) + (canvas.width / 2) - 150;
-					offset.y = (-getMaxY() / 2) + (canvas.height / 2);
+					offset.x = (-map.maxX / 2) + (canvas.width / 2) - 150;
+					offset.y = (-map.maxY / 2) + (canvas.height / 2);
 				}else{
 					if(result == "bad username"){
 						alertBadInput("username", "Username does not exist.");

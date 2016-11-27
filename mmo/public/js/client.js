@@ -1,7 +1,8 @@
 var Client = function(){
-	loadWorld();
+	map = new GameMap();
 	then = Date.now();
 
+	this.temp_pos = {x: 10, y: 10};
 	this.players_onscreen = 0;
 	this.entities_onscreen = 0;
 };
@@ -18,13 +19,7 @@ Client.prototype.draw = function(){
 
 		ctx.translate(offset.x, offset.y);
 
-		var player_pos = clone(game.getMyPosition());
-		var nextpos = this.getMovement(myIndex);
-		player_pos.x += -nextpos.x;
-		player_pos.y += -nextpos.y;
-		camera.update(player_pos, nextpos);
-
-		drawMap(MapLayer.BOTTOM);
+		map.draw(MapLayer.BOTTOM);
 		this.drawArray(items);
 
 		for(var i = 0; i < players.length; i++){
@@ -40,15 +35,38 @@ Client.prototype.draw = function(){
 			}
 		}
 
-		if(myIndex != undefined){
+		if(me()){
+			var player_pos = clone(game.getMyPosition());
+			var nextpos = this.getMovement(myIndex);
+			var validity = me().isNextPositionValid();
+
+			if(validity.x && validity.y){
+				player_pos.x += -nextpos.x;
+				player_pos.y += -nextpos.y;
+			}else if(validity.x && !validity.y){
+				player_pos.x += -nextpos.x;
+				nextpos.y = 0;
+			}else if(!validity.x && validity.y){
+				player_pos.y += -nextpos.y;
+				nextpos.x = 0;
+			}else if(!validity.x && !validity.y){
+				nextpos.x = 0;
+				nextpos.y = 0;
+			}
+
+			camera.update(player_pos, nextpos);
 			me().setX(player_pos.x);
 			me().setY(player_pos.y);
 			me().draw();
+		}else{
+			camera.update(this.temp_pos, Settings.idle_camera_speed);
+			this.temp_pos.x += Settings.idle_camera_speed;
+			this.temp_pos.y += Settings.idle_camera_speed;
 		}
 
 		this.drawArray(entities);
 
-		drawMap(MapLayer.TOP);
+		map.draw(MapLayer.TOP);
 
 		this.drawArray(npcs);
 

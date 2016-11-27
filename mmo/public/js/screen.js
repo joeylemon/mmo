@@ -32,7 +32,7 @@ PlayerScreen.prototype.removeLoginScreen = function(){
 };
 
 PlayerScreen.prototype.fadeBlurOut = function(){
-	var blur = 3.0;
+	var blur = Settings.max_blur;
 	var task = setInterval(function(){
 		blur -= 0.3;
 		if(blur >= 0){
@@ -49,10 +49,10 @@ PlayerScreen.prototype.fadeBlurIn = function(){
 	var blur = 0;
 	var task = setInterval(function(){
 		blur += 0.3;
-		if(blur < 3.0){
+		if(blur < Settings.max_blur){
 			$("#game").css("filter", "blur(" + blur + "px)");
 		}else{
-			$("#game").css("filter", "blur(3px)");
+			$("#game").css("filter", "blur(" + Settings.max_blur + "px)");
 			clearInterval(task);
 			noblur = false;
 		}
@@ -76,6 +76,25 @@ PlayerScreen.prototype.hideMenu = function(){
 
 PlayerScreen.prototype.isMenuShowing = function(){
 	return !noblur;
+};
+
+PlayerScreen.prototype.showDeathScreen = function(){
+	$("#logo").fadeOut(0);
+	$("#menu").fadeOut(0);
+	$("#quests").fadeOut(0);
+
+	$("#game").css("filter", "blur(" + Settings.max_blur + "px) grayscale(100%)");
+	noblur = false;
+	$("#dead").fadeIn(2000);
+	$("#dead-button").delay(3000).fadeIn(1000);
+	$("#info-container").fadeOut(250);
+};
+
+PlayerScreen.prototype.hideDeathScreen = function(){
+	this.fadeBlurOut();
+	$("#dead").fadeOut(250);
+	$("#dead-button").fadeOut(250);
+	$("#info-container").fadeIn(250);
 };
 
 PlayerScreen.prototype.showQuests = function(){

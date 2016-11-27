@@ -141,11 +141,16 @@ Entity.prototype.isAggressive = function(){
 	return this.aggressive != undefined;
 };
 
+Entity.prototype.resetAggressiveness = function(){
+	this.aggressive = undefined;
+	this.dest = undefined;
+};
+
 Entity.prototype.getDistanceFromTarget = function(){
 	return distance(this.getTop(), this.aggressive.player.getCenter());
 };
 
-Entity.prototype.setDead = function(){
+Entity.prototype.kill = function(){
 	this.dead = true;
 	this.death = Date.now();
 	this.sprites.death.startAnimation(Animations.DEATH);
@@ -264,25 +269,27 @@ Entity.prototype.draw = function(){
 	}
 
 	if(this.aggressive){
-		if(this.getDistanceFromTarget() <= Settings.entity_move_min_dist){
-			if(this.canAttack()){
-				if(game.getPlayerByUUID(this.aggressive.player.getUUID()) >= 0){
-					this.attack(this.aggressive.player);
-				}else{
-					this.aggressive = undefined;
-					this.dest = undefined;
+		if(!this.aggressive.player.isDead()){
+			if(this.getDistanceFromTarget() <= Settings.entity_move_min_dist){
+				if(this.canAttack()){
+					if(game.getPlayerByUUID(this.aggressive.player.getUUID()) >= 0){
+						this.attack(this.aggressive.player);
+					}else{
+						this.resetAggressiveness();
+					}
 				}
+			}else if(this.getDistanceFromTarget() <= 500){
+				this.move(this.aggressive.player.getCenter().x, this.aggressive.player.getCenter().y);
+			}else{
+				this.resetAggressiveness();
 			}
-		}else if(this.getDistanceFromTarget() <= 500){
-			this.move(this.aggressive.player.getCenter().x, this.aggressive.player.getCenter().y);
 		}else{
-			this.aggressive = undefined;
-			this.dest = undefined;
+			this.resetAggressiveness();
 		}
 	}
 
 	if(this.dest){
-		if(this.isVisible()){
+		if(this.isVisible() || this.isAggressive()){
 			if(!this.atDestination()){
 				this.x += this.dest.vx;
 				this.y += this.dest.vy;

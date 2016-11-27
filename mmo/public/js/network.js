@@ -33,7 +33,7 @@ socket.on('msg', function(data){
 			var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp);
 			game.addEntity(entity);
 		}else if(data.type == Messages.KILL_ENTITY){
-			game.getEntity(data.uid).setDead();
+			game.getEntity(data.uid).kill();
 		}else if(data.type == Messages.ATTACK_ENTITY){
 			game.getEntity(data.uid).hurt(data.amount);
 		}else if(data.type == Messages.MOVE_ENTITIES){
@@ -107,5 +107,9 @@ socket.on('msg', function(data){
 		if(oldinv.sword != newinv.sword){
 			player.sprites.sword = new Sprite(player.inventory.sword, position.x, position.y);
 		}
+	}else if(data.type == Messages.DEATH){
+		players[data.index].kill();
+	}else if(data.type == Messages.REVIVE){
+		players[data.index].revive();
 	}
 });

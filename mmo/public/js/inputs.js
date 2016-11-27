@@ -1,12 +1,3 @@
-var timings = {
-	enabled: false,
-	last_up: 0,
-	last_down: 0,
-	last_left: 0,
-	last_right: 0,
-	delay: 10
-};
-
 document.onkeydown = function(event) {
 	if(!event){
 		event = window.event;
@@ -51,7 +42,7 @@ document.onkeydown = function(event) {
 			}
 		}
 	}else if(code == 27){
-		if(me()){
+		if(me() && !me().isDead()){
 			if(isChatBoxOpen()){
 				hideChatBox();
 				document.getElementById("message").value = "";
@@ -74,31 +65,20 @@ document.onkeydown = function(event) {
 		return;
 	}
 
-	if(code == 38 || code == 87){
-		if(!timings.enabled || Date.now() - timings.last_up > timings.delay){
-			client.addKey(Key.UP);
-		}
-	}else if(code == 40 || code == 83){
-		if(!timings.enabled || Date.now() - timings.last_down > timings.delay){
-			client.addKey(Key.DOWN);
-		}
-	}else if(code == 37 || code == 65){
-		if(!timings.enabled || Date.now() - timings.last_left > timings.delay){
-			client.addKey(Key.LEFT);
-		}
-	}else if(code == 39 || code == 68){
-		if(!timings.enabled || Date.now() - timings.last_right > timings.delay){
-			client.addKey(Key.RIGHT);
-		}
+	var key = game.getKeyFromCode(code);
+	if(key){
+		client.addKey(key);
 	}else if(code == 192){
 		screen.toggleDebug();
 	}else if(code == 32){
 		var item = game.getNearbyItem(me().getCenter().x, me().getCenter().y);
-		game.removeItem(item);
+		if(item){
+			game.removeItem(item);
 
-		me().giveItem(item, 1);
-		var text = new Text("+1 " + item.getID(), {size: 25, color: TextColor.GP});
-		me().addText(text);
+			me().giveItem(item, 1);
+			var text = new Text("+1 " + item.getID(), {size: 25, color: TextColor.GP});
+			me().addText(text);
+		}
 	}
 };
 
@@ -115,34 +95,10 @@ document.onkeyup = function(event) {
 		return;
 	}
 
-	if(code == 38 || code == 87){
-		client.removeKey(Key.UP);
-		me().getSprite().stopAnimation(Animations.WALK_UP);
-
-		if(timings.enabled){
-			timings.last_up = Date.now();
-		}
-	}else if(code == 40 || code == 83){
-		client.removeKey(Key.DOWN);
-		me().getSprite().stopAnimation(Animations.WALK_DOWN);
-
-		if(timings.enabled){
-			timings.last_down = Date.now();
-		}
-	}else if(code == 37 || code == 65){
-		client.removeKey(Key.LEFT);
-		me().getSprite().stopAnimation(Animations.WALK_LEFT);
-
-		if(timings.enabled){
-			timings.last_left = Date.now();
-		}
-	}else if(code == 39 || code == 68){
-		client.removeKey(Key.RIGHT);
-		me().getSprite().stopAnimation(Animations.WALK_RIGHT);
-
-		if(timings.enabled){
-			timings.last_right = Date.now();
-		}
+	var key = game.getKeyFromCode(code);
+	if(key){
+		client.removeKey(key);
+		me().getSprite().stopAnimation(game.getAnimationFromKey(key));
 	}
 };
 

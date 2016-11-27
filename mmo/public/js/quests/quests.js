@@ -40,7 +40,6 @@ function getQuestID(title){
                return i;
           }
      }
-	return undefined;
 }
 
 function getQuestNPC(id){
@@ -50,5 +49,4 @@ function getQuestNPC(id){
 			return npc;
 		}
 	}
-	return undefined;
 };

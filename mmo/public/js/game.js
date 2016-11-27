@@ -40,11 +40,36 @@ Game.prototype.flashMessage = function(message){
 	}, 5000);
 };
 
+Game.prototype.getKeyFromCode = function(code){
+	return KeyCodes[code];
+};
+
+Game.prototype.getAnimationFromKey = function(key){
+	if(key == Key.UP){
+		return Animations.WALK_UP;
+	}else if(key == Key.DOWN){
+		return Animations.WALK_DOWN;
+	}else if(key == Key.LEFT){
+		return Animations.WALK_LEFT;
+	}else if(key == Key.RIGHT){
+		return Animations.WALK_RIGHT;
+	}
+};
+
 Game.prototype.getMyPosition = function(){
 	if(me()){
 		return me().getPosition();
 	}else{
 		return this.getCenter();
+	}
+};
+
+Game.prototype.collides = function(x, y){
+	var tile = map.getTileAt(x, y);
+	if(tile){
+		return map.collisions.indexOf(tile.id) > -1;
+	}else{
+		return false;
 	}
 };
 
@@ -97,7 +122,6 @@ Game.prototype.getHitEntity = function(center, playerOrientation){
 			}
 		}
 	}
-	return undefined;
 };
 
 Game.prototype.getNearbyEntity = function(x, y){
@@ -107,7 +131,6 @@ Game.prototype.getNearbyEntity = function(x, y){
 			return entity;
 		}
 	}
-	return undefined;
 };
 
 Game.prototype.getClickedNPC = function(){
@@ -129,7 +152,6 @@ Game.prototype.getNearbyItem = function(x, y){
 			return item;
 		}
 	}
-	return undefined;
 };
 
 Game.prototype.addItem = function(item, x, y){
@@ -268,8 +290,8 @@ Game.prototype.getSwordOffset = function(orientation){
 
 Game.prototype.isOffWorld = function(x, y){
 	var offWorld = {
-		x: (x - canvas.width) < -getMaxX() || x > 0,
-		y: (y - canvas.height) < -getMaxY() || y > 0
+		x: (x - canvas.width) < -map.getMaxX() || x > 0,
+		y: (y - canvas.height) < -map.getMaxY() || y > 0
 	};
 
 	return offWorld;

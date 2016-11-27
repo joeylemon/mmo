@@ -31,10 +31,13 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 
 	this.lastAttack = 0;
 
+	this.dead = false;
+
 	this.sprites = {
 		player: new Sprite(inventory.armor, position.x, position.y),
 		shadow: new Sprite(Sprites.SHADOW, position.x, position.y),
-		sword: new Sprite(this.inventory.sword, position.x, position.y)
+		sword: new Sprite(this.inventory.sword, position.x, position.y),
+		death: new Sprite(Sprites.DEATH, position.x, position.y)
 	};
 };
 
@@ -71,7 +74,7 @@ Player.prototype.getPosition = function(){
 };
 
 Player.prototype.setX = function(x){
-	if(x + 45 > 0 && x + 90 < getMaxX() /*&& collisions.indexOf(getTileAt(this.position.x, this.position.y)) == -1*/){
+	if(x + 45 > 0 && x + 90 < map.getMaxX()){
 		this.position.x = x;
 		this.sprites.player.setX(x);
 		this.sprites.sword.setX(x + game.getSwordOffset(this.sprites.player.getOrientation).x);
@@ -79,11 +82,24 @@ Player.prototype.setX = function(x){
 };
 
 Player.prototype.setY = function(y){
-	if(y - 60 > 0 && y + 90 < getMaxY() /*&& collisions.indexOf(getTileAt(this.position.x, this.position.y)) == -1*/){
+	if(y - 60 > 0 && y + 90 < map.getMaxY()){
 		this.position.y = y;
 		this.sprites.player.setY(y);
 		this.sprites.sword.setY(y + game.getSwordOffset(this.sprites.player.getOrientation).y);
 	}
+};
+
+Player.prototype.getNextPosition = function(){
+	var movement = client.getMovement(myIndex);
+	var pos = {
+		x: this.getCenter().x + movement.x * -Settings.collision_factor,
+		y: this.getCenter().y + movement.y * -Settings.collision_factor
+	}
+	return pos;
+};
+
+Player.prototype.isNextPositionValid = function(){
+	return {x: !game.collides(this.getNextPosition().x, this.getCenter().y), y: !game.collides(this.getCenter().x, this.getNextPosition().y)};
 };
 
 Player.prototype.getCenter = function(){
@@ -454,8 +470,13 @@ Player.prototype.hurt = function(amount){
 	this.addText(text);
 
 	if(this.isClient()){
-		this.hp -= amount;
-		this.updateHPBar();
+		var new_hp = this.hp - amount;
+		if(new_hp > 0){
+			this.hp -= amount;
+			this.updateHPBar();
+		}else{
+			this.kill();
+		}
 	}
 };
 
@@ -469,7 +490,56 @@ Player.prototype.heal = function(amount){
 	}
 };
 
+Player.prototype.kill = function(){
+	this.dead = true;
+
+	this.sprites.death.setX(this.getCenter().x - 24);
+	this.sprites.death.setY(this.getCenter().y - 15);
+	this.sprites.death.startAnimation(Animations.DEATH);
+
+	if(this.isClient()){
+		this.hp = 0;
+		this.updateHPBar();
+
+		screen.showDeathScreen();
+
+		game.broadcast(Messages.DEATH, {index: myIndex, uuid: this.uuid});
+	}
+};
+
+Player.prototype.revive = function(){
+	this.dead = false;
+
+	if(this.isClient()){
+		this.hp = 100;
+		this.updateHPBar();
+
+		offset.x = (-map.maxX / 2) + (canvas.width / 2) - 150;
+		offset.y = (-map.maxY / 2) + (canvas.height / 2);
+		me().setX(game.getCenter().x);
+		me().setY(game.getCenter().y);
+
+		screen.hideDeathScreen();
+
+		game.broadcast(Messages.REVIVE, {index: myIndex, uuid: this.uuid});
+	}
+};
+
+Player.prototype.isDead = function(){
+	return this.dead;
+};
+
 Player.prototype.draw = function(){
+	if(this.dead){
+		var anim = this.sprites.death.getNextAnimation();
+		if(anim){
+			this.sprites.death.draw(anim.col, anim.row);
+		}
+
+		return;
+	}
+
+
 	if(this.sprites.shadow.isDataSet()){
 		this.sprites.shadow.setX(this.position.x + 38);
 		this.sprites.shadow.setY(this.position.y + 64 + 6);

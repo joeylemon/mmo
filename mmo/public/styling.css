@@ -28,7 +28,7 @@
      -moz-user-select: none;
      user-select: none;
 
-     filter: blur(3px);
+     filter: blur(4px);
 }
 
 .borders {
@@ -275,6 +275,32 @@
 
 .quest .objective {
      color: #575757;
+}
+
+.dead {
+     display: none;
+     font-size: 25px;
+	font-family: profont;
+	color: #fff;
+}
+
+.dead .title {
+     font-size: 100px;
+     font-family: profont;
+     color: #fff;
+     text-shadow: 3px 3px #000;
+}
+
+.dead .dead-button {
+     display: none;
+     width: 325px;
+     margin-top: 10px;
+     background-color: rgba(0, 0, 0, 0);
+     color: #fff;
+     box-shadow: 2px 2px 5px #000;
+     border-radius: 2px;
+     border: 2px solid #fff;
+     text-shadow: 2px 2px #000;
 }
 
 .center-container {
