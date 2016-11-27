@@ -88,7 +88,7 @@ Game.prototype.getPlayerByUUID = function(uuid){
 Game.prototype.getEntity = function(uid){
 	for(var i = 0; i < entities.length; i++){
 		var entity = entities[i];
-		if(entity.getUID() == uid){
+		if(entity && entity.getUID() == uid){
 			return entity;
 		}
 	}

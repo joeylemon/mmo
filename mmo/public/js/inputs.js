@@ -115,7 +115,11 @@ document.onmousedown = function(event) {
 		if(!screen.isMenuShowing()){
 			var npc = game.getClickedNPC();
 			if(npc){
-				npc.talk();
+				if(npc.quest){
+					npc.talk();
+				}else{
+					screen.showStore();
+				}
 			}else if(me().canAttack()){
 				me().attack();
 				var msg = {

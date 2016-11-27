@@ -66,6 +66,7 @@ for(var key in Sprites){
 var Settings = {
 	max_blur: 4,
 	tilewidth: 32,
+	armory_color: "#fff",
 	idle_camera_speed: {x: -0.10, y: -0.175},
 	player_speed: 4.8,
 	attack_speed: 200,
@@ -78,7 +79,7 @@ var Settings = {
 	health_bar_height: 5,
 	item_float_speed: 0.15,
 	item_float_dist: 15,
-	collision_factor: 1
+	collision_factor: 3
 };
 
 var IdleChange = {
@@ -117,8 +118,13 @@ var Damage = {
 };
 
 var Armor = {
-	CLOTH: "clotharmor",
-	GOLDEN: "goldenarmor"
+	CLOTH: {name: "clotharmor", reduction: 0, cost: 0},
+	LEATHER: {name: "leatherarmor", reduction: 5, cost: 100},
+	MAIL: {name: "mailarmor", reduction: 15, cost: 300},
+	RED: {name: "redarmor", reduction: 25, cost: 600},
+	PLATE: {name: "platearmor", reduction: 30, cost: 800},
+	GOLDEN: {name: "goldenarmor", reduction: 40, cost: 1000},
+	DEATH: {name: "deathknight", reduction: 50, cost: 1500}
 };
 
 var Sword = {

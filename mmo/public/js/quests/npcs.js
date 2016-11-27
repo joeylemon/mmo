@@ -1,10 +1,11 @@
 var npcs = [
+     new StoreNPC(1400, 1000),
      new NPC(
           "Shirtless Steve",
           0,
           "beachnpc",
-          1400,
-          1000,
+          1454,
+          1749,
           [
                "Hello there, traveler.",
                "How are you today?",
