@@ -56,6 +56,56 @@ Game.prototype.getAnimationFromKey = function(key){
 	}
 };
 
+Game.prototype.getArmors = function(cost){
+	if(!this.armors){
+		this.armors = new Array();
+		for(var key in Armor){
+			this.armors.push(Armor[key]);
+		}
+	}
+	return this.armors;
+};
+
+Game.prototype.getArmorFromID = function(id){
+	for(var key in Armor){
+		var armor = Armor[key];
+		if(armor.id == id){
+			return armor;
+		}
+	}
+};
+
+Game.prototype.getWeapons = function(cost){
+	if(!this.weapons){
+		this.weapons = new Array();
+		for(var key in Weapon){
+			this.weapons.push(Weapon[key]);
+		}
+	}
+	return this.weapons;
+};
+
+Game.prototype.getWeaponFromID = function(id){
+	for(var key in Weapon){
+		var weapon = Weapon[key];
+		if(weapon.id == id){
+			return weapon;
+		}
+	}
+};
+
+Game.prototype.getItemFromID = function(id){
+	var item = this.getArmorFromID(id);
+	var name = "";
+	if(!item){
+		item = this.getWeaponFromID(id);
+		name = item.name;
+	}else{
+		name = item.name + " Armor";
+	}
+	return {item: item, name: name};
+};
+
 Game.prototype.getMyPosition = function(){
 	if(me()){
 		return me().getPosition();

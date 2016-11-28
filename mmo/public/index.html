@@ -157,8 +157,30 @@
 					<input id="dead-button" class="button dead-button" type="submit" value="Respawn" onclick="me().revive()"></input>
 				</div>
 
+				<div id="store" class="store">
+					<span class="close-button" onclick="screen.hideMenu()">x</span>
+					<span class="title">Armory</span>
+					<div class="nav">
+						<span class="type"><a href="#" onclick="screen.showArmorStore()">Armor</a></span>
+						<br>
+						<span class="type"><a href="#" onclick="screen.showWeaponStore()">Swords</a></span>
+					</div>
+					<div class="sub-store" id="armor-store"></div>
+					<div class="sub-store" id="weapon-store" style="display: none;"></div>
+				</div>
+
 			</div>
 		</div>
+
+		<div id="overlay" class="overlay"></div>
+		<div id="confirm-purchase" class="confirm-purchase">
+			<span class="close-button" onclick="screen.declinePurchase()">x</span>
+			<span class="title">Purchase <span id="current-purchase"></span>?</span>
+			<br>
+			<input class="button purchase-button" type="submit" value="Confirm" onclick="screen.acceptPurchase()"></input>
+			<input class="button purchase-button" type="submit" value="Decline" onclick="screen.declinePurchase()"></input>
+		</div>
+
 	</body>
 
 	<script src="styles/jquery.min.js"></script>

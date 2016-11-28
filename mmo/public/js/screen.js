@@ -71,6 +71,7 @@ PlayerScreen.prototype.hideMenu = function(){
 	$("#logo").fadeOut(250);
 	$("#menu").fadeOut(250);
 	$("#quests").fadeOut(250);
+	$("#store").fadeOut(250);
 	$("#info-container").fadeIn(250);
 };
 
@@ -108,6 +109,122 @@ PlayerScreen.prototype.hideQuests = function(){
 	$("#quests").fadeOut(250);
 	$("#menu").delay(250).fadeIn(250);
 	$("#logo").delay(250).fadeIn(250);
+};
+
+PlayerScreen.prototype.showStore = function(){
+	this.updateStoreCosts();
+	this.fadeBlurIn();
+	$("#armor-store").fadeIn(0);
+	$("#weapon-store").fadeOut(0);
+	$("#store").fadeIn(250);
+	$("#info-container").fadeOut(250);
+};
+
+PlayerScreen.prototype.hideStore = function(){
+	this.fadeBlurOut();
+	$("#store").fadeOut(250);
+};
+
+PlayerScreen.prototype.showArmorStore = function(){
+	$("#weapon-store").fadeOut(250);
+	$("#armor-store").delay(250).fadeIn(250);
+};
+
+PlayerScreen.prototype.showWeaponStore = function(){
+	$("#armor-store").fadeOut(250);
+	$("#weapon-store").delay(250).fadeIn(250);
+};
+
+PlayerScreen.prototype.setStoreItems = function(){
+	for(var key in Armor){
+		var armor = Armor[key];
+		if(armor.cost > me().getArmor().cost){
+			$("#armor-store").append("" +
+				"<div class='store-item' onclick='screen.attemptPurchase(\"" + armor.id + "\")'>" +
+					"<div class='image'><img src='styles/images/" + armor.id + ".png'></img></div>" +
+					"<div class='desc'>" +
+						"<div class='name'>" + armor.name + " Armor</div>" +
+						"<br>" +
+						"<div class='ability'>Reduces damage by " + (armor.reduction * 100) + "%</div>" +
+					"</div>" +
+					"<div class='cost' id='store-" + armor.id + "'>" +
+						"<span class='glyphicon glyphicon-gbp cost-glyph' aria-hidden='true'></span>" + armor.cost +
+					"</div>" +
+				"</div>"
+			);
+		}
+	}
+
+	for(var key in Weapon){
+		var weapon = Weapon[key];
+		if(weapon.cost > me().getWeapon().cost){
+			$("#weapon-store").append("" +
+				"<div class='store-item' onclick='screen.attemptPurchase(\"" + weapon.id + "\")'>" +
+					"<div class='image'><img src='styles/images/" + weapon.id + ".png'></img></div>" +
+					"<div class='desc'>" +
+						"<div class='name'>" + weapon.name + "</div>" +
+						"<br>" +
+						"<div class='ability'>Deals " + weapon.damage + " hp of damage</div>" +
+					"</div>" +
+					"<div class='cost' id='store-" + weapon.id + "'><span class='glyphicon glyphicon-gbp cost-glyph' aria-hidden='true'></span>" + weapon.cost + "</div>" +
+				"</div>"
+			);
+		}
+	}
+};
+
+PlayerScreen.prototype.updateStoreCosts = function(){
+	var gp = me().getGP();
+
+	var armors = game.getArmors();
+	for(var i = 0; i < armors.length; i++){
+		var armor = armors[i];
+		if(armor.cost <= gp){
+			$("#store-" + armor.id).css("color", "#248c24");
+		}else{
+			$("#store-" + armor.id).css("color", "#942013");
+		}
+	}
+
+	var weapons = game.getWeapons();
+	for(var i = 0; i < weapons.length; i++){
+		var weapon = weapons[i];
+		if(weapon.cost <= gp){
+			$("#store-" + weapon.id).css("color", "#248c24");
+		}else{
+			$("#store-" + weapon.id).css("color", "#942013");
+		}
+	}
+};
+
+PlayerScreen.prototype.attemptPurchase = function(id){
+	var item = game.getItemFromID(id);
+	if(item.item.cost <= me().getGP()){
+		this.current_purchase = item.item;
+		document.getElementById("current-purchase").innerHTML = item.name;
+		$("#store").fadeOut(250);
+		$("#overlay").delay(250).fadeIn(250);
+		$("#confirm-purchase").delay(500).fadeIn(250);
+	}
+};
+
+PlayerScreen.prototype.acceptPurchase = function(){
+	me().removeGP(this.current_purchase.cost);
+	if(this.current_purchase.type == "armor"){
+		me().giveArmor(this.current_purchase);
+	}else{
+		me().giveSword(this.current_purchase);
+	}
+
+	$("#confirm-purchase").fadeOut(250);
+	$("#overlay").delay(250).fadeOut(250);
+	$("#store").delay(500).fadeIn(250);
+};
+
+PlayerScreen.prototype.declinePurchase = function(){
+	$("#confirm-purchase").fadeOut(250);
+	$("#overlay").delay(250).fadeOut(250);
+	$("#store").delay(500).fadeIn(250);
 };
 
 PlayerScreen.prototype.updateQuestScreen = function(){

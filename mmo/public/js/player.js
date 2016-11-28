@@ -8,6 +8,9 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.hp = 100;
 	this.keys = new Array();
 
+	this.armor = game.getArmorFromID(inventory.armor);
+	this.sword = game.getWeaponFromID(inventory.sword);
+
 	this.quests = my_quests;
 
 	this.progress = {
@@ -36,7 +39,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.sprites = {
 		player: new Sprite(inventory.armor, position.x, position.y),
 		shadow: new Sprite(Sprites.SHADOW, position.x, position.y),
-		sword: new Sprite(this.inventory.sword, position.x, position.y),
+		sword: new Sprite(inventory.sword, position.x, position.y),
 		death: new Sprite(Sprites.DEATH, position.x, position.y)
 	};
 };
@@ -128,17 +131,25 @@ Player.prototype.getSprite = function(){
 };
 
 Player.prototype.giveArmor = function(armor){
-	this.inventory.armor = armor;
+	this.inventory.armor = armor.id;
 	this.sprites.player = new Sprite(this.inventory.armor, this.position.x, this.position.y);
 
 	this.sendInventoryUpdate();
 };
 
-Player.prototype.giveSword = function(sword){
-	this.inventory.sword = sword;
+Player.prototype.getArmor = function(){
+	return this.armor;
+};
+
+Player.prototype.giveWeapon = function(sword){
+	this.inventory.sword = sword.id;
 	this.sprites.sword = new Sprite(this.inventory.sword, this.position.x, this.position.y);
 
 	this.sendInventoryUpdate();
+};
+
+Player.prototype.getWeapon = function(){
+	return this.sword;
 };
 
 Player.prototype.giveItem = function(item, amount){
@@ -188,6 +199,16 @@ Player.prototype.addGP = function(gp){
 	this.gp += gp;
 	game.broadcast(Messages.UPDATE_GP, {newgp: this.gp});
 	this.updateGPValue();
+};
+
+Player.prototype.removeGP = function(gp){
+	this.gp -= gp;
+	game.broadcast(Messages.UPDATE_GP, {newgp: this.gp});
+	this.updateGPValue();
+};
+
+Player.prototype.getGP = function(gp){
+	return this.gp;
 };
 
 Player.prototype.updateGPValue = function(){
@@ -396,7 +417,7 @@ Player.prototype.move = function(dir){
 };
 
 Player.prototype.getDamage = function(){
-	return Math.floor(Damage["IRON"] + (this.getLevel() / 5));
+	return Math.floor(this.getWeapon().damage + (this.getLevel() / 5));
 };
 
 Player.prototype.canAttack = function(){
@@ -466,6 +487,9 @@ Player.prototype.updateHPBar = function(){
 };
 
 Player.prototype.hurt = function(amount){
+	amount *= 1 - this.getArmor().reduction;
+	amount = Math.floor(amount);
+
 	var text = new Text("-" + amount + " hp", {size: 20, color: TextColor.HURT});
 	this.addText(text);
 

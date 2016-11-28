@@ -79,7 +79,7 @@ var Settings = {
 	health_bar_height: 5,
 	item_float_speed: 0.15,
 	item_float_dist: 15,
-	collision_factor: 3
+	collision_factor: 6
 };
 
 var IdleChange = {
@@ -112,23 +112,26 @@ var SwordOffset = {
 };
 
 var Damage = {
-	IRON: 10,
 	bat: 3,
 	skeleton: 5
 };
 
 var Armor = {
-	CLOTH: {name: "clotharmor", reduction: 0, cost: 0},
-	LEATHER: {name: "leatherarmor", reduction: 5, cost: 100},
-	MAIL: {name: "mailarmor", reduction: 15, cost: 300},
-	RED: {name: "redarmor", reduction: 25, cost: 600},
-	PLATE: {name: "platearmor", reduction: 30, cost: 800},
-	GOLDEN: {name: "goldenarmor", reduction: 40, cost: 1000},
-	DEATH: {name: "deathknight", reduction: 50, cost: 1500}
+	CLOTH: {type: "armor", id: "clotharmor", name: "Cloth", reduction: 0, cost: 0},
+	LEATHER: {type: "armor", id: "leatherarmor", name: "Leather", reduction: .05, cost: 100},
+	CHAINMAIL: {type: "armor", id: "mailarmor", name: "Chainmail", reduction: .15, cost: 300},
+	FIRE: {type: "armor", id: "redarmor", name: "Fire", reduction: .25, cost: 600},
+	IRON: {type: "armor", id: "platearmor", name: "Iron", reduction: .30, cost: 800},
+	GOLDEN: {type: "armor", id: "goldenarmor", name: "Golden", reduction: .40, cost: 1000}
 };
 
-var Sword = {
-	IRON: "sword"
+var Weapon = {
+	AXE: {type: "weapon", id: "axe", name: "Axe", damage: 10, cost: 0},
+	MACE: {type: "weapon", id: "morningstar", name: "Mace", damage: 15, cost: 100},
+	IRON_SWORD: {type: "weapon", id: "sword", name: "Iron Sword", damage: 20, cost: 500},
+	FIRE_SWORD: {type: "weapon", id: "redsword", name: "Fire Sword", damage: 30, cost: 1000},
+	GOLDEN_SWORD: {type: "weapon", id: "goldensword", name: "Golden Sword", damage: 35, cost: 1500},
+	DIAMOND_SWORD: {type: "weapon", id: "bluesword", name: "Diamond Sword", damage: 45, cost: 2250}
 };
 
 var Key = {

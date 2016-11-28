@@ -25,6 +25,7 @@ socket.on('msg', function(data){
 		document.getElementById("online").innerHTML = game.getPlayersOnline();
 
 		screen.removeLoginScreen();
+		screen.setStoreItems();
 	}
 
 	/* Entity messages */
