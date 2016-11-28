@@ -132,6 +132,7 @@ Player.prototype.getSprite = function(){
 
 Player.prototype.giveArmor = function(armor){
 	this.inventory.armor = armor.id;
+	this.armor = armor;
 	this.sprites.player = new Sprite(this.inventory.armor, this.position.x, this.position.y);
 
 	this.sendInventoryUpdate();
@@ -143,6 +144,7 @@ Player.prototype.getArmor = function(){
 
 Player.prototype.giveWeapon = function(sword){
 	this.inventory.sword = sword.id;
+	this.sword = sword;
 	this.sprites.sword = new Sprite(this.inventory.sword, this.position.x, this.position.y);
 
 	this.sendInventoryUpdate();

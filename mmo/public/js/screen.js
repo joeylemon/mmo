@@ -216,6 +216,8 @@ PlayerScreen.prototype.acceptPurchase = function(){
 		me().giveSword(this.current_purchase);
 	}
 
+	this.updateStoreCosts();
+
 	$("#confirm-purchase").fadeOut(250);
 	$("#overlay").delay(250).fadeOut(250);
 	$("#store").delay(500).fadeIn(250);

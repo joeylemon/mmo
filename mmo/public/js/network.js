@@ -41,7 +41,7 @@ socket.on('msg', function(data){
 			for(var i = 0; i < data.moves.length; i++){
 				var move = data.moves[i];
 				var entity = game.getEntity(move.uid);
-				if(!entity.isAggressive()){
+				if(entity && !entity.isAggressive()){
 					entity.move(move.x, move.y);
 				}
 			}

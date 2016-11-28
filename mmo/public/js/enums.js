@@ -64,10 +64,13 @@ for(var key in Sprites){
 
 /* Initialize enums */
 var Settings = {
+	/* Misc settings */
 	max_blur: 4,
 	tilewidth: 32,
 	armory_color: "#fff",
 	idle_camera_speed: {x: -0.10, y: -0.175},
+
+	/* Entity settings */
 	player_speed: 4.8,
 	attack_speed: 200,
 	player_idle_change: 800,
@@ -77,8 +80,12 @@ var Settings = {
 	entity_move_min_dist: 125,
 	health_bar_width: 45,
 	health_bar_height: 5,
+
+	/* Item settings */
 	item_float_speed: 0.15,
 	item_float_dist: 15,
+
+	/* Collision settings */
 	collision_factor: 6
 };
 
