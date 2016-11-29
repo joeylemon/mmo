@@ -36,8 +36,7 @@ StoreNPC.prototype.draw = function(){
 	this.sprites.shadow.draw(1, 0);
 
 	var idle = this.getSprite().getIdleAnimation();
-	var change = game.getIdleChange(this.id);
-	var time = this.lastIdleChange + game.getIdleChange(this.id) + (Math.random() * 1000);
+	var time = this.lastIdleChange + Settings.player_idle_change + (Math.random() * 1000);
 	if(Date.now() > time){
 		this.idleStep += 1;
 		if(this.idleStep > idle.length){

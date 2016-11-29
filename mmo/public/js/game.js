@@ -162,15 +162,29 @@ Game.prototype.removeEntity = function(uid){
 };
 
 Game.prototype.getHitEntity = function(center, playerOrientation){
-	for(var i = 0; i < entities.length; i++){
-		var entity = entities[i];
-		if(!entity.isDead() && distance(center, entity.getCenter()) <= 80){
-			var orientation = this.getOrientation(center, entity.getCenter());
-			if(orientation == playerOrientation){
-				return entity;
-			}
+	var entity = this.getNearestEntity(center.x, center.y);
+	if(!entity.isDead() && distance(center, entity.getCenter()) <= entity.getSettings().hit_dist){
+		var orientation = this.getOrientation(center, entity.getCenter());
+		if(orientation == playerOrientation){
+			return entity;
 		}
 	}
+};
+
+Game.prototype.getNearestEntity = function(x, y){
+	var nearest_ent;
+	var nearest_dist = 5000;
+	
+	for(var i = 0; i < entities.length; i++){
+		var entity = entities[i];
+		var dist = distance(entity.getCenter(), {x: x, y: y});
+		if(dist <= nearest_dist){
+			nearest_ent = entity;
+			nearest_dist = dist;
+		}
+	}
+	
+	return nearest_ent;
 };
 
 Game.prototype.getNearbyEntity = function(x, y){
@@ -243,14 +257,6 @@ Game.prototype.getHealthColor = function(percent){
 	}
 
 	return color;
-};
-
-Game.prototype.getIdleChange = function(id){
-	if(IdleChange[id]){
-		return IdleChange[id];
-	}else{
-		return Settings.player_idle_change;
-	}
 };
 
 Game.prototype.getMapMouse = function(){

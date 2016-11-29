@@ -1,5 +1,4 @@
 var existing = true;
-var chatbox = false;
 var loggingIn = false;
 
 var myplayer;
@@ -19,17 +18,6 @@ $("#existing-username").focus();
 
 resize();
 
-
-$("#inv-link").hover(function(){
-	$("#inv-link").fadeOut(50);
-	$("#inventory").fadeIn(50);
-});
-$("#inventory").mouseout(function(){
-	$("#inv-link").fadeIn(50);
-	$("#inventory").fadeOut(50);
-});
-
-screen = new PlayerScreen();
 camera = new Camera();
 
 
@@ -189,24 +177,6 @@ function fadeSoundtrackOut(){
 			soundtrack.volume = volume;
 		}
 	}, 100);
-}
-
-function showChatBox(){
-	$("#chatbox").fadeIn(0);
-	$("#info-container").fadeOut(0);
-	$("#message").focus();
-	chatbox = true;
-}
-
-function hideChatBox(){
-	$("#chatbox").fadeOut(0);
-	$("#info-container").fadeIn(0);
-	$("#message").blur();
-	chatbox = false;
-}
-
-function isChatBoxOpen(){
-	return chatbox;
 }
 
 function resize(){

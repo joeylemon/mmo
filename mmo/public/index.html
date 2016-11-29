@@ -130,13 +130,13 @@
 
 				<div id="menu" class="menu-container">
 					<div class="menu">
-						<input class="button menu-button" type="submit" value="Quest Journal" onclick="screen.showQuests()"></input>
+						<input class="button menu-button" type="submit" value="Quest Journal" onclick="questmenu.show()"></input>
 						<input class="button menu-button" type="submit" value="Leaderboards"></input>
 					</div>
 				</div>
 
 				<div id="quests" class="quests">
-					<span class="close-button" onclick="screen.hideQuests()">x</span>
+					<span class="close-button" onclick="questmenu.hide()">x</span>
 					<span class="title">Quest Journal</span>
 					<span id="quests-list">
 					<!--
@@ -161,9 +161,9 @@
 					<span class="close-button" onclick="screen.hideMenu()">x</span>
 					<span class="title">Armory</span>
 					<div class="nav">
-						<span class="type"><a href="#" onclick="screen.showArmorStore()">Armor</a></span>
+						<span class="type"><a href="#" onclick="armory.showArmorStore()">Armor</a></span>
 						<br>
-						<span class="type"><a href="#" onclick="screen.showWeaponStore()">Swords</a></span>
+						<span class="type"><a href="#" onclick="armory.showWeaponStore()">Swords</a></span>
 					</div>
 					<div class="sub-store" id="armor-store"></div>
 					<div class="sub-store" id="weapon-store" style="display: none;"></div>
@@ -174,11 +174,11 @@
 
 		<div id="overlay" class="overlay"></div>
 		<div id="confirm-purchase" class="confirm-purchase">
-			<span class="close-button" onclick="screen.declinePurchase()">x</span>
+			<span class="close-button" onclick="armory.declinePurchase()">x</span>
 			<span class="title">Purchase <span id="current-purchase"></span>?</span>
 			<br>
-			<input class="button purchase-button" type="submit" value="Confirm" onclick="screen.acceptPurchase()"></input>
-			<input class="button purchase-button" type="submit" value="Decline" onclick="screen.declinePurchase()"></input>
+			<input class="button purchase-button" type="submit" value="Confirm" onclick="armory.acceptPurchase()"></input>
+			<input class="button purchase-button" type="submit" value="Decline" onclick="armory.declinePurchase()"></input>
 		</div>
 
 	</body>
@@ -188,7 +188,11 @@
 
 	<script src="socket.io/socket.io.js"></script>
 	<script src="js/universal.js"></script>
-	<script src="js/screen.js"></script>
+	
+	<script src="js/ui/screen.js"></script>
+	<script src="js/ui/armory.js"></script>
+	<script src="js/ui/questmenu.js"></script>
+	
 	<script src="js/game.js"></script>
 	<script src="js/enums.js"></script>
 	<script src="js/map.js"></script>

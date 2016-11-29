@@ -19,7 +19,10 @@ $("#game").mousedown(function(event){
 /* Initialize game variables */
 var socket = io();
 
-var screen;
+var screen = new PlayerScreen();
+var armory = new Armory();
+var questmenu = new QuestMenu();
+
 var camera;
 var client;
 var game;
@@ -78,8 +81,6 @@ var Settings = {
 	player_idle_change: 800,
 	entity_idle_change: 800,
 	entity_speed: 3.8,
-	entity_attack_speed: 2000,
-	entity_move_min_dist: 125,
 	health_bar_width: 45,
 	health_bar_height: 5,
 
@@ -91,14 +92,10 @@ var Settings = {
 	collision_factor: 6
 };
 
-var IdleChange = {
-	bat: 400,
-	skeleton: 2500
-};
-
-var DeathExperience = {
-	bat: 20,
-	skeleton: 40
+var EntitySettings = {
+	bat: {idle: 400, death_xp: 20, damage: 3, attack_speed: 2000, hit_dist: 80, move_min_dist: 70},
+	skeleton: {idle: 2500, death_xp: 40, damage: 5, attack_speed: 2000, hit_dist: 80, move_min_dist: 125},
+	ogre: {idle: Settings.player_idle_change, death_xp: 200, damage: 20, attack_speed: 2000, hit_dist: 150, move_min_dist: 200}
 };
 
 var Entity = {
@@ -120,18 +117,13 @@ var SwordOffset = {
 	RIGHT: {x: -30, y: -25}
 };
 
-var Damage = {
-	bat: 3,
-	skeleton: 5
-};
-
 var Armor = {
 	CLOTH: {type: "armor", id: "clotharmor", name: "Cloth", reduction: 0, cost: 0},
-	LEATHER: {type: "armor", id: "leatherarmor", name: "Leather", reduction: .05, cost: 100},
-	CHAINMAIL: {type: "armor", id: "mailarmor", name: "Chainmail", reduction: .15, cost: 300},
-	FIRE: {type: "armor", id: "redarmor", name: "Fire", reduction: .25, cost: 600},
-	IRON: {type: "armor", id: "platearmor", name: "Iron", reduction: .30, cost: 800},
-	GOLDEN: {type: "armor", id: "goldenarmor", name: "Golden", reduction: .40, cost: 1000}
+	LEATHER: {type: "armor", id: "leatherarmor", name: "Leather", reduction: .10, cost: 100},
+	CHAINMAIL: {type: "armor", id: "mailarmor", name: "Chainmail", reduction: .20, cost: 300},
+	FIRE: {type: "armor", id: "redarmor", name: "Fire", reduction: .35, cost: 600},
+	IRON: {type: "armor", id: "platearmor", name: "Iron", reduction: .50, cost: 800},
+	GOLDEN: {type: "armor", id: "goldenarmor", name: "Golden", reduction: .65, cost: 1000}
 };
 
 var Weapon = {

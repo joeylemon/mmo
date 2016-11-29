@@ -7,6 +7,8 @@ var Client = function(){
 	this.entities_onscreen = 0;
 };
 
+entities.push(new Entity(Sprites.OGRE, 32847, 500, 500, 1000));
+
 Client.prototype.draw = function(){
 	now = Date.now();
 	elapsed = now - then;

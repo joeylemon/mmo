@@ -11,8 +11,8 @@ document.onkeydown = function(event) {
 
 	if(code == 13){
 		if(me()){
-			if(!isChatBoxOpen()){
-				showChatBox();
+			if(!screen.isChatBoxOpen()){
+				screen.showChatBox();
 				client.clearKeys();
 			}else{
 				var chat = document.getElementById("message").value;
@@ -37,14 +37,14 @@ document.onkeydown = function(event) {
 					}
 				}
 
-				hideChatBox();
+				screen.hideChatBox();
 				document.getElementById("message").value = "";
 			}
 		}
 	}else if(code == 27){
 		if(me() && !me().isDead()){
-			if(isChatBoxOpen()){
-				hideChatBox();
+			if(screen.isChatBoxOpen()){
+				screen.hideChatBox();
 				document.getElementById("message").value = "";
 			}
 			/**
@@ -61,7 +61,7 @@ document.onkeydown = function(event) {
 		}
 	}
 
-	if(myIndex == undefined || isChatBoxOpen() || !noblur){
+	if(myIndex == undefined || screen.isChatBoxOpen() || !noblur){
 		return;
 	}
 
@@ -91,7 +91,7 @@ document.onkeyup = function(event) {
 		code = event.charCode;
 	}
 
-	if(myIndex == undefined || isChatBoxOpen() || screen.isMenuShowing()){
+	if(myIndex == undefined || screen.isChatBoxOpen() || screen.isMenuShowing()){
 		return;
 	}
 
@@ -118,7 +118,7 @@ document.onmousedown = function(event) {
 				if(npc.quest){
 					npc.talk();
 				}else{
-					screen.showStore();
+					armory.showStore();
 				}
 			}else if(me().canAttack()){
 				me().attack();
@@ -144,8 +144,8 @@ document.onmouseup = function(event) {
 
 $(window).blur(function(e){
 	client.clearKeys();
-	if(isChatBoxOpen()){
-		hideChatBox();
+	if(screen.isChatBoxOpen()){
+		screen.hideChatBox();
 		document.getElementById("message").value = "";
 	}
 });

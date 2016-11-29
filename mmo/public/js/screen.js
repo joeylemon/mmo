@@ -136,6 +136,9 @@ PlayerScreen.prototype.showWeaponStore = function(){
 };
 
 PlayerScreen.prototype.setStoreItems = function(){
+	document.getElementById("armor-store").innerHTML = "";
+	document.getElementById("weapon-store").innerHTML = "";
+
 	for(var key in Armor){
 		var armor = Armor[key];
 		if(armor.cost > me().getArmor().cost){
@@ -154,6 +157,11 @@ PlayerScreen.prototype.setStoreItems = function(){
 			);
 		}
 	}
+	if(document.getElementById("armor-store").innerHTML.length == 0){
+		$("#armor-store").css("fontSize", "25px");
+		$("#armor-store").css("margin-top", "15px");
+		$("#armor-store").append("<span class='empty'>There is no more armor to purchase!</span>");
+	}
 
 	for(var key in Weapon){
 		var weapon = Weapon[key];
@@ -170,6 +178,11 @@ PlayerScreen.prototype.setStoreItems = function(){
 				"</div>"
 			);
 		}
+	}
+	if(document.getElementById("weapon-store").innerHTML.length == 0){
+		$("#weapon-store").css("fontSize", "25px");
+		$("#weapon-store").css("margin-top", "15px");
+		$("#weapon-store").append("<span class='empty'>There are no more weapons to purchase!</span>");
 	}
 };
 
@@ -202,9 +215,8 @@ PlayerScreen.prototype.attemptPurchase = function(id){
 	if(item.item.cost <= me().getGP()){
 		this.current_purchase = item.item;
 		document.getElementById("current-purchase").innerHTML = item.name;
-		$("#store").fadeOut(250);
-		$("#overlay").delay(250).fadeIn(250);
-		$("#confirm-purchase").delay(500).fadeIn(250);
+		$("#overlay").fadeIn(250);
+		$("#confirm-purchase").delay(250).fadeIn(250);
 	}else{
 		this.flashItem(id);
 	}
@@ -218,6 +230,7 @@ PlayerScreen.prototype.acceptPurchase = function(){
 		me().giveWeapon(this.current_purchase);
 	}
 
+	this.setStoreItems();
 	this.updateStoreCosts();
 
 	$("#confirm-purchase").fadeOut(250);

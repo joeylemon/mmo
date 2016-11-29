@@ -48,7 +48,7 @@ var npcs = [
           "Nerdy Nate",
           1,
           "coder",
-          177,
+          225,
           340,
           [
                "Greetings, fellow programmer.",

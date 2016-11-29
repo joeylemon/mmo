@@ -459,7 +459,7 @@ Player.prototype.attack = function(){
 				this.addXP(15);
 			}else{
 				game.broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
-				this.addXP(DeathExperience[hit.getID()], TextColor.KILL_XP);
+				this.addXP(hit.getSettings().death_xp, TextColor.KILL_XP);
 				if(Math.random() <= 0.2){
 					var gp = getRange(10, 25);
 					this.addGP(gp);

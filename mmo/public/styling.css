@@ -234,15 +234,15 @@
 }
 
 .quests .completed {
-     background-color: #DCFFDC;
+     background-color: #F1F1F1;
 }
 
 .quests .in-progress {
-     background-color: #FFF1D2;
+     background-color: #F1F1F1;
 }
 
 .quests .not-started {
-     background-color: #FFE9E9;
+     background-color: #F1F1F1;
 }
 
 .quest .title {
@@ -410,7 +410,7 @@
      right: 0px;
      bottom: 0px;
      z-index: 10;
-     background-color: rgba(0, 0, 0, 0.85);
+     background-color: rgba(0, 0, 0, 0.8);
 }
 
 .confirm-purchase {

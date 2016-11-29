@@ -24,6 +24,10 @@ Entity.prototype.getSprite = function(){
 	return this.sprites.entity;
 };
 
+Entity.prototype.getSettings = function(){
+	return EntitySettings[this.id];
+};
+
 Entity.prototype.getID = function(){
 	return this.id;
 };
@@ -103,7 +107,7 @@ Entity.prototype.hurt = function(amount){
 
 Entity.prototype.attack = function(player){
 	var orientation = game.getOrientation(this.getCenter(), player.getCenter());
-	player.hurt(Damage[this.id]);
+	player.hurt(this.getSettings().damage);
 	this.aggressive.lastAttack = Date.now();
 
 	this.sprites.entity.setOrientation(orientation);
@@ -123,7 +127,7 @@ Entity.prototype.attack = function(player){
 };
 
 Entity.prototype.canAttack = function(){
-	return Date.now() - this.aggressive.lastAttack > Settings.entity_attack_speed;
+	return Date.now() - this.aggressive.lastAttack > this.getSettings().attack_speed;
 };
 
 Entity.prototype.aggro = function(player){
@@ -205,7 +209,7 @@ Entity.prototype.move = function(x, y){
 };
 
 Entity.prototype.atDestination = function(){
-	return distance(this.dest, this.getTop()) <= Settings.entity_move_min_dist;
+	return distance(this.dest, this.getTop()) <= this.getSettings().move_min_dist;
 };
 
 Entity.prototype.isVisible = function(){
@@ -237,7 +241,7 @@ Entity.prototype.draw = function(){
 
 	if(!this.sprites.entity.isDoingAnimation()){
 		var idle = this.sprites.entity.getIdleAnimation();
-		var time = this.lastIdleChange + game.getIdleChange(this.id) + (Math.random() * 1000);
+		var time = this.lastIdleChange + this.getSettings().idle + (Math.random() * 1000);
 		if(Date.now() > time){
 			this.idleStep += 1;
 			if(this.idleStep > idle.length){
@@ -270,7 +274,7 @@ Entity.prototype.draw = function(){
 
 	if(this.aggressive){
 		if(!this.aggressive.player.isDead()){
-			if(this.getDistanceFromTarget() <= Settings.entity_move_min_dist){
+			if(this.getDistanceFromTarget() <= this.getSettings().move_min_dist){
 				if(this.canAttack()){
 					if(game.getPlayerByUUID(this.aggressive.player.getUUID()) >= 0){
 						this.attack(this.aggressive.player);
