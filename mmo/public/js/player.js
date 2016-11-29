@@ -135,7 +135,9 @@ Player.prototype.giveArmor = function(armor){
 	this.armor = armor;
 	this.sprites.player = new Sprite(this.inventory.armor, this.position.x, this.position.y);
 
-	this.sendInventoryUpdate();
+	if(this.isClient()){
+		this.sendInventoryUpdate();
+	}
 };
 
 Player.prototype.getArmor = function(){
@@ -147,7 +149,9 @@ Player.prototype.giveWeapon = function(sword){
 	this.sword = sword;
 	this.sprites.sword = new Sprite(this.inventory.sword, this.position.x, this.position.y);
 
-	this.sendInventoryUpdate();
+	if(this.isClient()){
+		this.sendInventoryUpdate();
+	}
 };
 
 Player.prototype.getWeapon = function(){
@@ -161,7 +165,9 @@ Player.prototype.giveItem = function(item, amount){
 		this.inventory.items[item.getID()] += amount;
 	}
 
-	this.sendInventoryUpdate();
+	if(this.isClient()){
+		this.sendInventoryUpdate();
+	}
 
 	if(this.isDoingObjective(Objective.PICKUP_ITEM)){
 		if(item.getID() == this.getCurrentObjective().getItem()){
@@ -522,6 +528,9 @@ Player.prototype.kill = function(){
 	this.sprites.death.setX(this.getCenter().x - 24);
 	this.sprites.death.setY(this.getCenter().y - 15);
 	this.sprites.death.startAnimation(Animations.DEATH);
+
+	this.giveWeapon(Weapon.AXE);
+	this.giveArmor(Armor.CLOTH);
 
 	if(this.isClient()){
 		this.hp = 0;

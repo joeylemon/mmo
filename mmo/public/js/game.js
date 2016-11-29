@@ -12,25 +12,24 @@ Game.prototype.flashMessage = function(message){
 	var id = flashid;
 
 	var vis = true;
-	var diff = 100;
 	var delay = 0;
 	for(var i = 0; i < 5; i++){
 		if(vis){
 			setTimeout(function(){
 				if(id == flashid){
-					$("#msg").fadeIn(diff);
+					$("#msg").fadeIn(Settings.message_flash_diff);
 				}
 			}, delay);
 		}else{
 			setTimeout(function(){
 				if(id == flashid){
-					$("#msg").fadeOut(diff);
+					$("#msg").fadeOut(Settings.message_flash_diff);
 				}
 			}, delay);
 		}
 
 		vis = !vis;
-		delay += diff;
+		delay += Settings.message_flash_diff;
 	}
 
 	setTimeout(function(){

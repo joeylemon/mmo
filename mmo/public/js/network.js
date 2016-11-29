@@ -103,10 +103,10 @@ socket.on('msg', function(data){
 		player.inventory = newinv;
 
 		if(oldinv.armor != newinv.armor){
-			player.sprites.player = new Sprite(player.inventory.armor, player.position.x, player.position.y);
+			player.giveArmor(game.getArmorFromID(newinv.armor));
 		}
 		if(oldinv.sword != newinv.sword){
-			player.sprites.sword = new Sprite(player.inventory.sword, position.x, position.y);
+			player.giveWeapon(game.getWeaponFromID(newinv.sword));
 		}
 	}else if(data.type == Messages.DEATH){
 		players[data.index].kill();

@@ -143,7 +143,7 @@ PlayerScreen.prototype.setStoreItems = function(){
 				"<div class='store-item' onclick='screen.attemptPurchase(\"" + armor.id + "\")'>" +
 					"<div class='image'><img src='styles/images/" + armor.id + ".png'></img></div>" +
 					"<div class='desc'>" +
-						"<div class='name'>" + armor.name + " Armor</div>" +
+						"<div class='name' id='flash-" + armor.id + "'>" + armor.name + " Armor</div>" +
 						"<br>" +
 						"<div class='ability'>Reduces damage by " + (armor.reduction * 100) + "%</div>" +
 					"</div>" +
@@ -162,7 +162,7 @@ PlayerScreen.prototype.setStoreItems = function(){
 				"<div class='store-item' onclick='screen.attemptPurchase(\"" + weapon.id + "\")'>" +
 					"<div class='image'><img src='styles/images/" + weapon.id + ".png'></img></div>" +
 					"<div class='desc'>" +
-						"<div class='name'>" + weapon.name + "</div>" +
+						"<div class='name' id='flash-" + weapon.id + "'>" + weapon.name + "</div>" +
 						"<br>" +
 						"<div class='ability'>Deals " + weapon.damage + " hp of damage</div>" +
 					"</div>" +
@@ -205,6 +205,8 @@ PlayerScreen.prototype.attemptPurchase = function(id){
 		$("#store").fadeOut(250);
 		$("#overlay").delay(250).fadeIn(250);
 		$("#confirm-purchase").delay(500).fadeIn(250);
+	}else{
+		this.flashItem(id);
 	}
 };
 
@@ -213,7 +215,7 @@ PlayerScreen.prototype.acceptPurchase = function(){
 	if(this.current_purchase.type == "armor"){
 		me().giveArmor(this.current_purchase);
 	}else{
-		me().giveSword(this.current_purchase);
+		me().giveWeapon(this.current_purchase);
 	}
 
 	this.updateStoreCosts();
@@ -227,6 +229,19 @@ PlayerScreen.prototype.declinePurchase = function(){
 	$("#confirm-purchase").fadeOut(250);
 	$("#overlay").delay(250).fadeOut(250);
 	$("#store").delay(500).fadeIn(250);
+};
+
+PlayerScreen.prototype.flashItem = function(id){
+	$("#flash-" + id).css("color", "#8e0303");
+	setTimeout(function(){
+		$("#flash-" + id).css("color", "#000");
+	}, Settings.store_flash_diff);
+	setTimeout(function(){
+		$("#flash-" + id).css("color", "#8e0303");
+	}, Settings.store_flash_diff * 2);
+	setTimeout(function(){
+		$("#flash-" + id).css("color", "#000");
+	}, Settings.store_flash_diff * 3);
 };
 
 PlayerScreen.prototype.updateQuestScreen = function(){

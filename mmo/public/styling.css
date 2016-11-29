@@ -312,6 +312,10 @@
      border-radius: 3px;
      font-family: profont;
      margin-top: -30px;
+
+     -webkit-user-select: none;
+     -moz-user-select: none;
+     user-select: none;
 }
 
 .store .title {
@@ -376,6 +380,7 @@
 .desc .name {
      float: left;
      font-size: 30px;
+     color: #000;
 }
 
 .desc .ability {

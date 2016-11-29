@@ -68,6 +68,8 @@ var Settings = {
 	max_blur: 4,
 	tilewidth: 32,
 	armory_color: "#fff",
+	message_flash_diff: 150,
+	store_flash_diff: 175,
 	idle_camera_speed: {x: -0.10, y: -0.175},
 
 	/* Entity settings */
@@ -135,10 +137,10 @@ var Armor = {
 var Weapon = {
 	AXE: {type: "weapon", id: "axe", name: "Axe", damage: 10, cost: 0},
 	MACE: {type: "weapon", id: "morningstar", name: "Mace", damage: 15, cost: 100},
-	IRON_SWORD: {type: "weapon", id: "sword", name: "Iron Sword", damage: 20, cost: 500},
-	FIRE_SWORD: {type: "weapon", id: "redsword", name: "Fire Sword", damage: 30, cost: 1000},
-	GOLDEN_SWORD: {type: "weapon", id: "goldensword", name: "Golden Sword", damage: 35, cost: 1500},
-	DIAMOND_SWORD: {type: "weapon", id: "bluesword", name: "Diamond Sword", damage: 45, cost: 2250}
+	WATER_SWORD: {type: "weapon", id: "bluesword", name: "Water Sword", damage: 20, cost: 500},
+	IRON_SWORD: {type: "weapon", id: "sword", name: "Iron Sword", damage: 25, cost: 1000},
+	FIRE_SWORD: {type: "weapon", id: "redsword", name: "Fire Sword", damage: 35, cost: 1600},
+	GOLDEN_SWORD: {type: "weapon", id: "goldensword", name: "Golden Sword", damage: 45, cost: 2250}
 };
 
 var Key = {
