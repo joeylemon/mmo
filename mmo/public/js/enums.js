@@ -80,7 +80,6 @@ var Settings = {
 	attack_speed: 200,
 	player_idle_change: 800,
 	entity_idle_change: 800,
-	entity_speed: 3.8,
 	health_bar_width: 45,
 	health_bar_height: 5,
 
@@ -93,9 +92,9 @@ var Settings = {
 };
 
 var EntitySettings = {
-	bat: {idle: 400, death_xp: 20, damage: 3, attack_speed: 2000, hit_dist: 80, move_min_dist: 70},
-	skeleton: {idle: 2500, death_xp: 40, damage: 5, attack_speed: 2000, hit_dist: 80, move_min_dist: 125},
-	ogre: {idle: Settings.player_idle_change, death_xp: 200, damage: 20, attack_speed: 2000, hit_dist: 150, move_min_dist: 200}
+	bat: {idle: 400, death_xp: 20, damage: 3, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
+	skeleton: {idle: 2500, death_xp: 40, damage: 5, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
+	ogre: {idle: Settings.player_idle_change, death_xp: 200, damage: 20, walk_speed: 2.8, attack_speed: 2000, hit_dist: 175, move_min_dist: 200, shadow_offset: 55}
 };
 
 var Entity = {

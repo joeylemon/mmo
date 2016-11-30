@@ -442,7 +442,7 @@ Player.prototype.attack = function(){
 		this.sprites.player.startAnimation(Animations.ATTACK_DOWN);
 		this.sprites.player.setIdleAnimation(Animations.IDLE_DOWN);
 	}else if(orientation == Orientation.LEFT){
-		this.sprites.player.startAnimation(Animations.ATTACK_LEFT);
+		this.sprites.player.startAnimation(Animations.ATTACK_LEFT, true);
 		this.sprites.player.setIdleAnimation(Animations.IDLE_LEFT);
 	}else if(orientation == Orientation.RIGHT){
 		this.sprites.player.startAnimation(Animations.ATTACK_RIGHT);

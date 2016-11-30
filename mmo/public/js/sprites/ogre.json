@@ -8,7 +8,7 @@
 			"row": 0
 		},
 		"walk_right": {
-			"length": 4,
+			"length": 6,
 			"row": 1
 		},
 		"idle_right": {
@@ -20,7 +20,7 @@
 			"row": 9
 		},
 		"walk_left": {
-			"length": 4,
+			"length": 6,
 			"row": 10
 		},
 		"idle_left": {
@@ -32,11 +32,11 @@
 			"row": 3
 		},
 		"walk_up": {
-			"length": 4,
+			"length": 5,
 			"row": 4
 		},
 		"idle_up": {
-			"length": 3,
+			"length": 2,
 			"row": 5
 		},
 		"atk_down": {
@@ -44,11 +44,11 @@
 			"row": 6
 		},
 		"walk_down": {
-			"length": 4,
+			"length": 6,
 			"row": 7
 		},
 		"idle_down": {
-			"length": 3,
+			"length": 2,
 			"row": 8
 		}
 	},

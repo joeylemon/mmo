@@ -24,6 +24,13 @@ Entity.prototype.getSprite = function(){
 	return this.sprites.entity;
 };
 
+Entity.prototype.getShadowOffset = function(){
+	if(this.getSettings().shadow_offset){
+		return this.getSettings().shadow_offset;
+	}
+	return 6;
+};
+
 Entity.prototype.getSettings = function(){
 	return EntitySettings[this.id];
 };
@@ -103,6 +110,8 @@ Entity.prototype.hurt = function(amount){
 
 	var text = new Text("-" + amount + " hp", {size: 17, color: TextColor.HURT});
 	this.addText(text);
+
+	this.move(this.x + 1, this.y + 1);
 };
 
 Entity.prototype.attack = function(player){
@@ -193,8 +202,8 @@ Entity.prototype.move = function(x, y){
 	this.dest = {
 		x: x,
 		y: y,
-		vx: (dx / mag) * Settings.entity_speed,
-		vy: (dy / mag) * Settings.entity_speed
+		vx: (dx / mag) * this.getSettings().walk_speed,
+		vy: (dy / mag) * this.getSettings().walk_speed
 	};
 
 	if(this.aggressive && this.aggressive.player.getUUID() == me().getUUID()){
@@ -235,7 +244,7 @@ Entity.prototype.draw = function(){
 
 	if(this.sprites.shadow.isDataSet()){
 		this.sprites.shadow.setX(this.x + (this.sprites.entity.getWidth() / 2) - (this.sprites.shadow.getWidth() / 2));
-		this.sprites.shadow.setY(this.y + (this.sprites.entity.getHeight() / 2) + 6);
+		this.sprites.shadow.setY(this.y + (this.sprites.entity.getHeight() / 2) + this.getShadowOffset());
 	}
 	this.sprites.shadow.draw(1, 0);
 

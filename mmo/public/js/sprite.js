@@ -98,7 +98,7 @@ Sprite.prototype.getIdleAnimation = function(){
 	}
 };
 
-Sprite.prototype.startAnimation = function(animation){
+Sprite.prototype.startAnimation = function(animation, reverse){
 	if(animation.type == "attack"){
 		this.animating = false;
 	}
@@ -108,7 +108,12 @@ Sprite.prototype.startAnimation = function(animation){
 
 		this.animating = true;
 		this.orientation = animation.orientation;
-		this.nextAnim = {col: 1, row: row, length: length, time: Date.now(), anim: animation.name};
+
+		var col = 1;
+		if(reverse){
+			col = length;
+		}
+		this.nextAnim = {col: col, row: row, length: length, time: Date.now(), anim: animation.name, reverse: reverse};
 	}
 };
 
@@ -129,8 +134,12 @@ Sprite.prototype.getNextAnimation = function(){
 	var next = this.nextAnim;
 	var current = Date.now();
 	if(next && (current - next.time) > 75){
-		if(next.col + 1 <= next.length){
-			this.nextAnim = {col: next.col + 1, row: next.row, length: next.length, time: current, anim: next.anim};
+		var col = next.col + 1;
+		if(next.reverse){
+			col = next.col - 1;
+		}
+		if(col <= next.length && col >= 1){
+			this.nextAnim = {col: col, row: next.row, length: next.length, time: current, anim: next.anim, reverse: next.reverse};
 		}else{
 			this.nextAnim = undefined;
 			this.animating = false;

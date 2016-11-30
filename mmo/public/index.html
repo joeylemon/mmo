@@ -8,11 +8,11 @@
 	</head>
 
 	<body style="background-color: #2D2D2D;" onresize="resize()">
-		<canvas id="game" class="game" draggable="false"></canvas>
+		<canvas id="game" class="game unselectable" draggable="false"></canvas>
 
 		<div id="borders" class="borders"></div>
 
-		<div class="msg-container">
+		<div class="msg-container unselectable">
 			<span id="msg" style="display: none;"></span>
 		</div>
 
@@ -20,7 +20,7 @@
 			<input id="message" type="text" placeholder="Type your message" name="msg" maxlength="35"></input>
 		</div>
 
-		<div id="info-container" class="info-container">
+		<div id="info-container" class="info-container unselectable">
 			<div class="info-bar-container" style="float:right;width:auto;">
 				<div class="info-bar-icon">
 					<span class="glyphicon glyphicon-gbp info-bar-glyph" aria-hidden="true" style="top: 12px;"></span>
@@ -47,7 +47,7 @@
 			</div>
 		</div>
 
-		<span class="debug" id="debug" style="display: none;">
+		<span class="debug unselectable" id="debug" style="display: none;">
 			<div id="coords" class="debug-prop left">
 				0, 0
 			</div>
@@ -136,7 +136,7 @@
 				</div>
 
 				<div id="quests" class="quests">
-					<span class="close-button" onclick="questmenu.hide()">x</span>
+					<span class="close-button unselectable" onclick="questmenu.hide()">x</span>
 					<span class="title">Quest Journal</span>
 					<span id="quests-list">
 					<!--
@@ -151,14 +151,14 @@
 					</span>
 				</div>
 
-				<div id="dead" class="dead">
+				<div id="dead" class="dead unselectable">
 					<span class="title">You have died.</span>
 					<br>
 					<input id="dead-button" class="button dead-button" type="submit" value="Respawn" onclick="me().revive()"></input>
 				</div>
 
-				<div id="store" class="store">
-					<span class="close-button" onclick="screen.hideMenu()">x</span>
+				<div id="store" class="store unselectable">
+					<span class="close-button unselectable" onclick="screen.hideMenu()">x</span>
 					<span class="title">Armory</span>
 					<div class="nav">
 						<span class="type"><a href="#" onclick="armory.showArmorStore()">Armor</a></span>
@@ -174,7 +174,7 @@
 
 		<div id="overlay" class="overlay"></div>
 		<div id="confirm-purchase" class="confirm-purchase">
-			<span class="close-button" onclick="armory.declinePurchase()">x</span>
+			<span class="close-button unselectable" onclick="armory.declinePurchase()">x</span>
 			<span class="title">Purchase <span id="current-purchase"></span>?</span>
 			<br>
 			<input class="button purchase-button" type="submit" value="Confirm" onclick="armory.acceptPurchase()"></input>
@@ -188,11 +188,11 @@
 
 	<script src="socket.io/socket.io.js"></script>
 	<script src="js/universal.js"></script>
-	
+
 	<script src="js/ui/screen.js"></script>
 	<script src="js/ui/armory.js"></script>
 	<script src="js/ui/questmenu.js"></script>
-	
+
 	<script src="js/game.js"></script>
 	<script src="js/enums.js"></script>
 	<script src="js/map.js"></script>

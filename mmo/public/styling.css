@@ -8,6 +8,16 @@
     src: url(styles/Pro-Font.ttf);
 }
 
+img {
+     filter: drop-shadow(0px 0px 2px #000);
+}
+
+.unselectable {
+     -webkit-user-select: none;
+     -moz-user-select: none;
+     user-select: none;
+}
+
 .logo {
 	display: none;
 	width: 500px;
@@ -23,11 +33,6 @@
 	left: 0px;
 	right: 0px;
      bottom: 0px;
-
-     -webkit-user-select: none;
-     -moz-user-select: none;
-     user-select: none;
-
      filter: blur(4px);
 }
 
@@ -52,10 +57,6 @@
      padding: 0px;
 
      text-shadow: 1px 1px 3px #000;
-
-     -webkit-user-select: none;
-     -moz-user-select: none;
-     user-select: none;
 }
 
 .info-container .info-bar-container {
@@ -116,12 +117,6 @@
      font-family: profont;
      color: #fff;
      text-shadow: 1px 1px 3px #000;
-
-     -moz-user-select: -moz-none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
 }
 
 .chatbox {
@@ -157,11 +152,6 @@
 	font-size: 25px;
 	color: #fff;
 	background-color: rgba(0, 0, 0, 0.6);
-	-moz-user-select: -moz-none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
 }
 
 .debug .left {
@@ -218,11 +208,6 @@
 	right: 5px;
 	cursor: pointer;
 	font-size: 25px;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select:none;
-	user-select:none;
-	-o-user-select:none;
      color: #BCBCBC;
 }
 
@@ -312,10 +297,6 @@
      border-radius: 3px;
      font-family: profont;
      margin-top: -30px;
-
-     -webkit-user-select: none;
-     -moz-user-select: none;
-     user-select: none;
 }
 
 .store .title {
