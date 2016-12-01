@@ -1,0 +1,13 @@
+{
+	"id": "wizard",
+	"width": 96,
+	"height": 96,
+	"animations": {
+		"idle_down": {
+			"length": 2,
+			"row": 0
+		}
+	},
+	"offset_x": -4,
+	"offset_y": -7
+}

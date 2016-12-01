@@ -26,6 +26,7 @@ socket.on('msg', function(data){
 
 		screen.removeLoginScreen();
 		armory.setStoreItems();
+		updateNPCs();
 	}
 
 	/* Entity messages */

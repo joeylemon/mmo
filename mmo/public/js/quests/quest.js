@@ -1,7 +1,6 @@
-var Quest = function(title, minlevel, required_quests, objectives, xp, gp){
+var Quest = function(title, minlevel, objectives, xp, gp){
      this.title = title;
      this.minlevel = minlevel;
-     this.required_quests = required_quests;
      this.objectives = objectives;
      this.xp = xp;
      this.gp = gp;
@@ -13,10 +12,6 @@ Quest.prototype.getTitle = function(){
 
 Quest.prototype.getMinimumLevel = function(){
 	return this.minlevel;
-};
-
-Quest.prototype.getRequiredQuests = function(){
-	return this.required_quests;
 };
 
 Quest.prototype.getObjectives = function(){

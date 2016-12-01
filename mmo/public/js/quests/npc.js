@@ -3,6 +3,7 @@ var NPC = function(name, quest, id, x, y, dialogue, completed, low_level, doing_
 	this.id = id;
 	this.x = x;
 	this.y = y;
+	this.uid = Math.floor(Math.random() * 100000);
 
 	this.idleStep = 1;
 	this.lastIdleChange = 0;

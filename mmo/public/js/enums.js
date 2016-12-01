@@ -70,7 +70,7 @@ var Settings = {
 	/* Misc settings */
 	max_blur: 4,
 	tilewidth: 32,
-	armory_color: "#fff",
+	heal_cost: 10,
 	message_flash_diff: 150,
 	store_flash_diff: 175,
 	idle_camera_speed: {x: -0.10, y: -0.175},
@@ -99,7 +99,8 @@ var EntitySettings = {
 
 var Entity = {
 	SKELETON: "skeleton",
-	BAT: "bat"
+	BAT: "bat",
+	OGRE: "ogre"
 };
 
 var Objective = {
@@ -132,6 +133,11 @@ var Weapon = {
 	IRON_SWORD: {type: "weapon", id: "sword", name: "Iron Sword", damage: 25, cost: 1000},
 	FIRE_SWORD: {type: "weapon", id: "redsword", name: "Fire Sword", damage: 35, cost: 1600},
 	GOLDEN_SWORD: {type: "weapon", id: "goldensword", name: "Golden Sword", damage: 45, cost: 2250}
+};
+
+var StoreType = {
+	ARMORY: {name: "Armory", id: "guard"},
+	HEALER: {name: "Healer", id: "wizard"}
 };
 
 var Key = {
@@ -205,6 +211,18 @@ function clone(object){
 
 function distance(p1, p2){
 	return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+}
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(find, 'g'), replace);
+}
+
+function getProperArticle(word){
+	if(word.indexOf("a") == 0 || word.indexOf("e") == 0 || word.indexOf("i") == 0 || word.indexOf("o") == 0 || word.indexOf("u") == 0){
+		return "an";
+	}else{
+		return "a";
+	}
 }
 
 function getNumberWithCommas(number) {

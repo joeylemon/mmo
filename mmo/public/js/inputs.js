@@ -118,7 +118,19 @@ document.onmousedown = function(event) {
 				if(npc.quest){
 					npc.talk();
 				}else{
-					armory.showStore();
+					if(npc.getType() == StoreType.ARMORY){
+						armory.showStore();
+					}else if(npc.getType() == StoreType.HEALER){
+						if(me().getHP() < 100){
+							if(me().getGP() >= Settings.heal_cost){
+								me().heal(100 - me().getHP());
+							}else{
+								npc.talk("Healing costs 10 gp.");
+							}
+						}else{
+							npc.talk("You are fully healed already.");
+						}
+					}
 				}
 			}else if(me().canAttack()){
 				me().attack();

@@ -2,7 +2,6 @@ var quests = [
      new Quest(
           "Tale of the Shirtless Man",
           10,
-          [],
           [
                new KillEntityObjective(Entity.SKELETON, 5),
                new KillEntityObjective(Entity.BAT, 5),
@@ -14,7 +13,6 @@ var quests = [
      new Quest(
           "Cocky Coders",
           2,
-          [],
           [
                new TalkInChatObjective("Question: what is a variable?", "named location in storage"),
           ],
@@ -24,13 +22,22 @@ var quests = [
      new Quest(
           "Apple Pickers",
           5,
-          [],
           [
                new PickupItemObjective("apple", 5),
                new TalkToNPCObjective("Farmer Joe")
           ],
           500,
           100
+     ),
+     new Quest(
+          "The Village's Demise",
+          15,
+          [
+               new KillEntityObjective(Entity.OGRE, 1),
+               new TalkToNPCObjective("Shirtless Steve")
+          ],
+          2000,
+          1000
      )
 ];
 

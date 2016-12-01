@@ -23,6 +23,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 		this.progress.quest = quests[this.quests.current];
 		this.progress.data = this.quests.data;
 		this.progress.step = this.quests.step;
+
 		game.flashMessage("<span style='color:#FF9B2E'>Current objective:</span> " + this.getCurrentObjective().getAlert());
 	}
 
@@ -357,6 +358,8 @@ Player.prototype.completeQuest = function(){
 	this.progress.quest = undefined;
 	this.progress.step = 1;
 	this.progress.data = undefined;
+
+	updateNPCs();
 };
 
 Player.prototype.hasCompletedQuest = function(id){
@@ -492,6 +495,10 @@ Player.prototype.updateHPBar = function(){
 	var percent = Math.floor((this.hp / 100) * 100);
 	$("#hp-bar").css("width", percent.toString() + "%");
 	$("#hp").html(getNumberWithLeadingZeroes(this.hp));
+};
+
+Player.prototype.getHP = function(){
+	return this.hp;
 };
 
 Player.prototype.hurt = function(amount){

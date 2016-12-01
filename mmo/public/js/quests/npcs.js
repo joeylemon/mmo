@@ -1,5 +1,9 @@
-var npcs = [
-     new StoreNPC(1400, 1000),
+var store_npcs = [
+     new StoreNPC(1400, 1000, StoreType.ARMORY),
+     new StoreNPC(1204, 925, StoreType.HEALER)
+];
+
+var all_npcs = [
      new NPC(
           "Shirtless Steve",
           0,
@@ -16,16 +20,9 @@ var npcs = [
           ],
           [
                "Thank you so much for killing those mobs.",
-               "I can't thank you enough!",
-               "Thank you!",
-               "Thank you very much!",
-               "¡Muchas gracias!",
-               "Thanks.",
-               "Thanks dude.",
-               "I think I thanked you enough.",
-               "¡Estás muy molesto!",
-               "Go away.",
-               "Stop."
+               "I have another urgent quest for you...",
+               "however, you must be much stronger.",
+               "Reach level 15, and maybe buy better armor."
           ],
           [
                "Hello there!",
@@ -36,6 +33,48 @@ var npcs = [
           [
                "Get to killing, traveler!",
                "I will reward you... once you've finished!"
+          ],
+          [
+               "Hey there!",
+               "I would ask you to do a job for me...",
+               "But you seem to be busy already.",
+               "Maybe once you're done!"
+          ]
+     ),
+     new NPC(
+          "Shirtless Steve",
+          3,
+          "beachnpc",
+          1454,
+          1749,
+          [
+               "Thanks for killing those mobs!",
+               "Our town has a much bigger problem now...",
+               "The troll has returned!",
+               "Decades ago, he was chased from our village.",
+               "Now, he seeks revenge!",
+               "He's killed many of our own.",
+               "Our warriors have already tried killing him...",
+               "However, none of them returned!",
+               "You have shown great abilities...",
+               "You are the only one who can kill him!",
+               "Get rid of the troll, and you will become a legend!"
+          ],
+          [
+               "I can't believe it...",
+               "You've killed the troll!",
+               "He will never again step foot in our village!",
+               "You are our hero!"
+          ],
+          [
+               "Hello there!",
+               "Hmm, I have a quest for you.",
+               "However, you need to be a little stronger!",
+               "Come back to me when you're level 15."
+          ],
+          [
+               "Have you killed the troll yet?",
+               "It won't be long until he starts killing all of us!"
           ],
           [
                "Hey there!",
@@ -116,3 +155,68 @@ var npcs = [
           ]
      )
 ];
+var npcs = new Array();
+
+function updateNPCs(){
+     npcs = new Array();
+     npcs = npcs.concat(store_npcs);
+     for(var i = 0; i < all_npcs.length; i++){
+		var n = all_npcs[i];
+          if(n.quest){
+               npcs.push(getBestNPC(n.getName()));
+          }
+     }
+}
+
+function removeNPC(uid){
+	for(var i = 0; i < npcs.length; i++){
+		if(npcs[i].uid == uid){
+			npcs.splice(i, 1);
+		}
+	}
+}
+
+function getAmountOfNPC(name){
+	var total = 0;
+	for(var i = 0; i < all_npcs.length; i++){
+		var n = all_npcs[i];
+		if(n.quest && n.getName() == name){
+			total++;
+		}
+	}
+	return total;
+}
+
+function getHighestLevelNPC(name){
+     var npc;
+     var highest = 0;
+	for(var i = 0; i < all_npcs.length; i++){
+		var n = all_npcs[i];
+          if(n.quest){
+               var level = quests[n.getQuestID()].getMinimumLevel();
+               if(n.getName() == name && level > highest){
+                    npc = n;
+                    highest = level;
+               }
+          }
+	}
+     return npc;
+}
+
+function getBestNPC(name){
+	var npc;
+	for(var i = 0; i < all_npcs.length; i++){
+		var n = all_npcs[i];
+		if(n.quest){
+			var level = quests[n.getQuestID()].getMinimumLevel();
+			if(!me().hasCompletedQuest(n.getQuestID()) && n.getName() == name && me().getLevel() <= level){
+				npc = n;
+                    break;
+			}
+		}
+	}
+	if(!npc){
+		npc = getHighestLevelNPC(name);
+	}
+	return npc;
+}

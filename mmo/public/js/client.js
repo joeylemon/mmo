@@ -69,6 +69,7 @@ Client.prototype.draw = function(){
 		map.draw(MapLayer.TOP);
 
 		this.drawArray(npcs);
+		this.drawArray(store_npcs);
 
 		document.getElementById("players").innerHTML = this.players_onscreen;
 		document.getElementById("entities").innerHTML = this.entities_onscreen;
