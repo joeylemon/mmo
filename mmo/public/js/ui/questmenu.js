@@ -45,7 +45,7 @@ QuestMenu.prototype.updateQuests = function(){
 	var incompleted = me().getIncompletedQuests();
 	for(var i = 0; i < incompleted.length; i++){
 		var quest = incompleted[i];
-
+		console.log(getQuestNPC(getQuestID(quest.getTitle())));
 		$("#quests-list").append("" +
 		"<div class='quest not-started'>" +
 			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +

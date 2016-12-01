@@ -70,7 +70,7 @@ var Settings = {
 	/* Misc settings */
 	max_blur: 4,
 	tilewidth: 32,
-	heal_cost: 10,
+	heal_cost: 6,
 	message_flash_diff: 150,
 	store_flash_diff: 175,
 	idle_camera_speed: {x: -0.10, y: -0.175},

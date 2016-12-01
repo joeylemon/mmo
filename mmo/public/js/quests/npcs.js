@@ -1,6 +1,6 @@
 var store_npcs = [
-     new StoreNPC(1400, 1000, StoreType.ARMORY),
-     new StoreNPC(1204, 925, StoreType.HEALER)
+     new StoreNPC(1531, 1480, StoreType.ARMORY),
+     new StoreNPC(1531, 1223, StoreType.HEALER)
 ];
 
 var all_npcs = [
@@ -166,14 +166,6 @@ function updateNPCs(){
                npcs.push(getBestNPC(n.getName()));
           }
      }
-}
-
-function removeNPC(uid){
-	for(var i = 0; i < npcs.length; i++){
-		if(npcs[i].uid == uid){
-			npcs.splice(i, 1);
-		}
-	}
 }
 
 function getAmountOfNPC(name){

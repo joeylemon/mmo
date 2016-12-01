@@ -124,8 +124,9 @@ document.onmousedown = function(event) {
 						if(me().getHP() < 100){
 							if(me().getGP() >= Settings.heal_cost){
 								me().heal(100 - me().getHP());
+								me().removeGP(Settings.heal_cost);
 							}else{
-								npc.talk("Healing costs 10 gp.");
+								npc.talk("Healing costs " + Settings.heal_cost + " gp.");
 							}
 						}else{
 							npc.talk("You are fully healed already.");

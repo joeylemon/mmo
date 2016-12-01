@@ -50,8 +50,8 @@ function getQuestID(title){
 }
 
 function getQuestNPC(id){
-	for(var i = 0; i < npcs.length; i++){
-		var npc = npcs[i];
+	for(var i = 0; i < all_npcs.length; i++){
+		var npc = all_npcs[i];
 		if(npc.quest && npc.getQuestID() == id){
 			return npc;
 		}
