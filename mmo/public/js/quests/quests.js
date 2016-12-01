@@ -56,4 +56,8 @@ function getQuestNPC(id){
 			return npc;
 		}
 	}
-};
+}
+
+function getOgreEntity(){
+	return game.getEntity(ogreID);
+}

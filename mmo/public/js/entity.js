@@ -1,10 +1,13 @@
-var Entity = function(id, uid, x, y, hp){
+var Entity = function(id, uid, x, y, hp, clientside){
 	this.id = id;
 	this.uid = uid;
 	this.x = x;
 	this.y = y;
+	this.orig_loc = {x: x, y: y};
 	this.hp = hp;
 	this.maxhp = hp;
+	this.clientside = clientside;
+	this.lastMove = 0;
 
 	this.flyingtexts = new Array();
 
@@ -45,6 +48,10 @@ Entity.prototype.getUID = function(){
 
 Entity.prototype.getHP = function(){
 	return this.hp;
+};
+
+Entity.prototype.setHP = function(hp){
+	this.hp = hp;
 };
 
 Entity.prototype.setX = function(x){
@@ -221,11 +228,27 @@ Entity.prototype.atDestination = function(){
 	return distance(this.dest, this.getTop()) <= this.getSettings().move_min_dist;
 };
 
+Entity.prototype.tooFar = function(){
+	if(!this.aggressive){
+		return distance(this.orig_loc, this.getTop()) > 250;
+	}else{
+		return false;
+	}
+};
+
 Entity.prototype.isVisible = function(){
 	return game.isVisible(this.getCenter().x, this.getCenter().y);
 };
 
 Entity.prototype.draw = function(){
+	var now = Date.now();
+	
+	if(this.clientside){
+		if(!me().isDoingObjective(Objective.KILL_ENTITY) || me().getQuest().getTitle() != "The Village's Demise"){
+			return;
+		}
+	}
+	
 	if(this.dead){
 		this.sprites.death.setX(this.getCenter().x - 24);
 		this.sprites.death.setY(this.getCenter().y - 15);
@@ -235,8 +258,22 @@ Entity.prototype.draw = function(){
 			this.sprites.death.draw(anim.col, anim.row);
 		}
 
-		if(Date.now() > this.death + 1000){
+		if(now > this.death + 1000){
 			game.removeEntity(this.uid);
+			if(this.clientside){
+				var instance = this;
+				this.aggressive = undefined;
+				this.dest = undefined;
+				this.getSprite().setOrientation(Orientation.DOWN);
+				setTimeout(function(){
+					instance.dead = false;
+					instance.hp = instance.maxhp;
+					
+					instance.setX(instance.orig_loc.x);
+					instance.setY(instance.orig_loc.y);
+					game.addEntity(instance);
+				}, 3000);
+			}
 		}
 
 		return;
@@ -251,12 +288,12 @@ Entity.prototype.draw = function(){
 	if(!this.sprites.entity.isDoingAnimation()){
 		var idle = this.sprites.entity.getIdleAnimation();
 		var time = this.lastIdleChange + this.getSettings().idle + (Math.random() * 1000);
-		if(Date.now() > time){
+		if(now > time){
 			this.idleStep += 1;
 			if(this.idleStep > idle.length){
 				this.idleStep = 1;
 			}
-			this.lastIdleChange = Date.now();
+			this.lastIdleChange = now;
 		}
 		this.sprites.entity.draw(this.idleStep, idle.row);
 	}else{
@@ -278,6 +315,19 @@ Entity.prototype.draw = function(){
 		text.draw(this.getTop());
 		if(text.isDead()){
 			this.flyingtexts.splice(i, 1);
+		}
+	}
+	
+	if(this.clientside){
+		if(!this.aggressive && now - this.lastMove > 5000){
+			if(!this.tooFar()){
+				if(Math.random() <= 0.3){
+					this.move(this.x + getFullRandom(150), this.y + getFullRandom(150));
+					this.lastMove = now + (Math.random() * 2500);
+				}
+			}else{
+				this.move(this.orig_loc.x, this.orig_loc.y);
+			}
 		}
 	}
 

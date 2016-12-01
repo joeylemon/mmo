@@ -23,8 +23,11 @@ var screen = new PlayerScreen();
 var armory = new Armory();
 var questmenu = new QuestMenu();
 
+var ogreID = Math.random() * 100000;
+
 var camera;
 var client;
+var events;
 var game;
 var map;
 
@@ -91,6 +94,10 @@ var Settings = {
 	collision_factor: 6
 };
 
+var EventType = {
+	LOGIN_FINISH: "login_finish"
+};
+
 var EntitySettings = {
 	bat: {idle: 400, death_xp: 20, damage: 3, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
 	skeleton: {idle: 2500, death_xp: 40, damage: 5, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
@@ -129,10 +136,10 @@ var Armor = {
 var Weapon = {
 	AXE: {type: "weapon", id: "axe", name: "Axe", damage: 10, cost: 0},
 	MACE: {type: "weapon", id: "morningstar", name: "Mace", damage: 15, cost: 100},
-	WATER_SWORD: {type: "weapon", id: "bluesword", name: "Water Sword", damage: 20, cost: 500},
-	IRON_SWORD: {type: "weapon", id: "sword", name: "Iron Sword", damage: 25, cost: 1000},
-	FIRE_SWORD: {type: "weapon", id: "redsword", name: "Fire Sword", damage: 35, cost: 1600},
-	GOLDEN_SWORD: {type: "weapon", id: "goldensword", name: "Golden Sword", damage: 45, cost: 2250}
+	WATER_SWORD: {type: "weapon", id: "bluesword", name: "Water Sword", damage: 20, cost: 300},
+	IRON_SWORD: {type: "weapon", id: "sword", name: "Iron Sword", damage: 25, cost: 600},
+	FIRE_SWORD: {type: "weapon", id: "redsword", name: "Fire Sword", damage: 35, cost: 800},
+	GOLDEN_SWORD: {type: "weapon", id: "goldensword", name: "Golden Sword", damage: 50, cost: 1000}
 };
 
 var StoreType = {
@@ -238,6 +245,14 @@ function getNumberWithLeadingZeroes(number){
 
 function getRandom(num){
 	return Math.floor(Math.random() * num);
+}
+
+function getFullRandom(num){
+	if(Math.random() <= 0.5){
+		return Math.floor(Math.random() * num) * -1;
+	}else{
+		return Math.floor(Math.random() * num);
+	}
 }
 
 function getRange(min, max){

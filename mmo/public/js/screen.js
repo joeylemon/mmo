@@ -55,6 +55,7 @@ PlayerScreen.prototype.fadeBlurIn = function(){
 			$("#game").css("filter", "blur(" + Settings.max_blur + "px)");
 			clearInterval(task);
 			noblur = false;
+			client.clearKeys();
 		}
 	}, 5);
 };

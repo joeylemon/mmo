@@ -45,14 +45,13 @@ QuestMenu.prototype.updateQuests = function(){
 	var incompleted = me().getIncompletedQuests();
 	for(var i = 0; i < incompleted.length; i++){
 		var quest = incompleted[i];
-		console.log(getQuestNPC(getQuestID(quest.getTitle())));
 		$("#quests-list").append("" +
-		"<div class='quest not-started'>" +
-			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
-			"<br>" +
-			"<span class='status not-started'>Not Started</span>" +
-			"<span class='separator'> | </span>" +
-			"<span class='status objective'>talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + " at lvl. " + quest.getMinimumLevel() + "</span>" +
-		"</div>");
+			"<div class='quest not-started'>" +
+				"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
+				"<br>" +
+				"<span class='status not-started'>Not Started</span>" +
+				"<span class='separator'> | </span>" +
+				"<span class='status objective'>talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + " at lvl. " + quest.getMinimumLevel() + "</span>" +
+			"</div>");
 	}
 };

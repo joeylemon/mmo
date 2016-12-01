@@ -71,4 +71,6 @@ Item.prototype.draw = function(){
      if(Date.now() - this.death >= 0){
           game.removeItem(this);
      }
+	 
+	 game.drawText(this.x + (this.sprites.item.getWidth() / 2), this.float_y + this.sprites.item.getHeight() + 25, "Press E to pick up", 15, "#000", 5, "#fff");
 };

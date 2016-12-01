@@ -214,6 +214,9 @@ Player.prototype.removeGP = function(gp){
 	this.gp -= gp;
 	game.broadcast(Messages.UPDATE_GP, {newgp: this.gp});
 	this.updateGPValue();
+
+	var text = new Text("-" + gp + " gp", {size: 20, color: TextColor.HURT});
+	this.addText(text);
 };
 
 Player.prototype.getGP = function(gp){
@@ -463,8 +466,8 @@ Player.prototype.attack = function(){
 			}else{
 				game.broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
 				this.addXP(hit.getSettings().death_xp, TextColor.KILL_XP);
-				if(Math.random() <= 0.2){
-					var gp = getRange(10, 25);
+				if(Math.random() <= 0.35){
+					var gp = getRange(3, 8);
 					this.addGP(gp);
 					setTimeout(function(){
 						var text = new Text("+" + gp + " gp", {size: 25, color: TextColor.GP});
@@ -544,8 +547,16 @@ Player.prototype.kill = function(){
 		this.updateHPBar();
 
 		screen.showDeathScreen();
+		armory.setStoreItems();
 
 		game.broadcast(Messages.DEATH, {index: myIndex, uuid: this.uuid});
+
+		setTimeout(function(){
+			//if(this.isDoingObjective(Objective.KILL_ENTITY) && this.getCurrentObjective().getEntity() == "ogre"){
+				var ogre = getOgreEntity();
+				ogre.setHP(ogre.maxhp);
+			//}
+		}, 100);
 	}
 };
 

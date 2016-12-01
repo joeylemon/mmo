@@ -24,9 +24,7 @@ socket.on('msg', function(data){
 
 		document.getElementById("online").innerHTML = game.getPlayersOnline();
 
-		screen.removeLoginScreen();
-		armory.setStoreItems();
-		updateNPCs();
+		events.fire(EventType.LOGIN_FINISH);
 	}
 
 	/* Entity messages */

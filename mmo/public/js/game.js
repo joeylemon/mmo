@@ -39,6 +39,10 @@ Game.prototype.flashMessage = function(message){
 	}, 5000);
 };
 
+Game.prototype.initializeClientEntities = function(){
+	entities.push(new Entity("ogre", ogreID, 850, 1650, 1000, true));
+};
+
 Game.prototype.getKeyFromCode = function(code){
 	return KeyCodes[code];
 };

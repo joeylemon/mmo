@@ -70,7 +70,7 @@ document.onkeydown = function(event) {
 		client.addKey(key);
 	}else if(code == 192){
 		screen.toggleDebug();
-	}else if(code == 32){
+	}else if(code == 69){
 		var item = game.getNearbyItem(me().getCenter().x, me().getCenter().y);
 		if(item){
 			game.removeItem(item);
@@ -124,7 +124,9 @@ document.onmousedown = function(event) {
 						if(me().getHP() < 100){
 							if(me().getGP() >= Settings.heal_cost){
 								me().heal(100 - me().getHP());
-								me().removeGP(Settings.heal_cost);
+								setTimeout(function(){
+									me().removeGP(Settings.heal_cost);
+								}, 500);
 							}else{
 								npc.talk("Healing costs " + Settings.heal_cost + " gp.");
 							}
