@@ -23,8 +23,6 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 		this.progress.quest = quests[this.quests.current];
 		this.progress.data = this.quests.data;
 		this.progress.step = this.quests.step;
-
-		game.flashMessage("<span style='color:#FF9B2E'>Current objective:</span> " + this.getCurrentObjective().getAlert());
 	}
 
 	this.idleStep = 1;
@@ -103,7 +101,8 @@ Player.prototype.getNextPosition = function(){
 };
 
 Player.prototype.isNextPositionValid = function(){
-	return {x: !game.collides(this.getNextPosition().x, this.getCenter().y), y: !game.collides(this.getCenter().x, this.getNextPosition().y)};
+	var next = this.getNextPosition();
+	return {x: !game.collides(next.x, this.getCenter().y), y: !game.collides(this.getCenter().x, next.y)};
 };
 
 Player.prototype.getCenter = function(){

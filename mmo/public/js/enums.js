@@ -95,6 +95,7 @@ var Settings = {
 };
 
 var EventType = {
+	LOGIN_BEGIN: "login_begin",
 	LOGIN_FINISH: "login_finish"
 };
 
@@ -144,7 +145,7 @@ var Weapon = {
 
 var StoreType = {
 	ARMORY: {name: "Armory", id: "guard"},
-	HEALER: {name: "Healer", id: "wizard"}
+	HEALER: {name: "Healer", id: "priest"}
 };
 
 var Key = {

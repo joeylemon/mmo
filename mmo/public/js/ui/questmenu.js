@@ -28,6 +28,19 @@ QuestMenu.prototype.updateQuests = function(){
 		"</div>");
 	}
 
+	var incompleted = me().getIncompletedQuests();
+	for(var i = 0; i < incompleted.length; i++){
+		var quest = incompleted[i];
+		$("#quests-list").append("" +
+			"<div class='quest not-started'>" +
+				"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
+				"<br>" +
+				"<span class='status not-started'>Not Started</span>" +
+				"<span class='separator'> | </span>" +
+				"<span class='status objective'>talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + " at lvl. " + quest.getMinimumLevel() + "</span>" +
+			"</div>");
+	}
+	
 	var completed = me().getCompletedQuests();
 	for(var i = 0; i < completed.length; i++){
 		var quest = completed[i];
@@ -40,18 +53,5 @@ QuestMenu.prototype.updateQuests = function(){
 			"<span class='separator'> | </span>" +
 			"<span class='status objective'>+" + quest.getXPReward() + " xp, +" + quest.getGPReward() + " gp</span>" +
 		"</div>");
-	}
-
-	var incompleted = me().getIncompletedQuests();
-	for(var i = 0; i < incompleted.length; i++){
-		var quest = incompleted[i];
-		$("#quests-list").append("" +
-			"<div class='quest not-started'>" +
-				"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
-				"<br>" +
-				"<span class='status not-started'>Not Started</span>" +
-				"<span class='separator'> | </span>" +
-				"<span class='status objective'>talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + " at lvl. " + quest.getMinimumLevel() + "</span>" +
-			"</div>");
 	}
 };
