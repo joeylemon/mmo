@@ -29,7 +29,6 @@ var camera;
 var client;
 var events;
 var game;
-var map;
 
 var myIndex;
 
@@ -67,6 +66,10 @@ for(var key in Sprites){
 
 	images[sprite] = img;
 }
+
+var tilesetImg = new Image();
+tilesetImg.src = "js/world/tilesheet.png";
+images["tileset"] = tilesetImg;
 
 /* Initialize enums */
 var Settings = {

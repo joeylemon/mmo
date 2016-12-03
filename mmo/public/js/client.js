@@ -1,5 +1,5 @@
 var Client = function(){
-	map = new GameMap();
+	map = maps[MapType.MAIN];
 	then = Date.now();
 
 	this.temp_pos = {x: 10, y: 10};
@@ -38,25 +38,39 @@ Client.prototype.draw = function(){
 		if(me() && !me().isDead()){
 			var player_pos = clone(game.getMyPosition());
 			var nextpos = this.getMovement(myIndex);
+			var fullnext = me().getNextPosition();
 			var validity = me().isNextPositionValid();
 
-			if(validity.x && validity.y){
-				player_pos.x += -nextpos.x;
-				player_pos.y += -nextpos.y;
-			}else if(validity.x && !validity.y){
-				player_pos.x += -nextpos.x;
-				nextpos.y = 0;
-			}else if(!validity.x && validity.y){
-				player_pos.y += -nextpos.y;
-				nextpos.x = 0;
-			}else if(!validity.x && !validity.y){
-				nextpos.x = 0;
-				nextpos.y = 0;
+			if(fullnext.y <= 60 && Math.abs(fullnext.x - map.getCenter().x) <= 200){
+				var next = game.getNextMap(Orientation.UP);
+				if(next){
+					game.switchMap(next);
+				}
+			}else if(fullnext.y >= map.getMaxY() - 90 && Math.abs(fullnext.x - map.getCenter().x) <= 200){
+				var next = game.getNextMap(Orientation.DOWN);
+				if(next){
+					game.switchMap(next);
+				}
+			}else{
+				if(validity.x && validity.y){
+					player_pos.x += -nextpos.x;
+					player_pos.y += -nextpos.y;
+				}else if(validity.x && !validity.y){
+					player_pos.x += -nextpos.x;
+					nextpos.y = 0;
+				}else if(!validity.x && validity.y){
+					player_pos.y += -nextpos.y;
+					nextpos.x = 0;
+				}else if(!validity.x && !validity.y){
+					nextpos.x = 0;
+					nextpos.y = 0;
+				}
+
+				camera.update(player_pos, nextpos);
+				me().setX(player_pos.x);
+				me().setY(player_pos.y);
 			}
 
-			camera.update(player_pos, nextpos);
-			me().setX(player_pos.x);
-			me().setY(player_pos.y);
 			me().draw();
 		}else{
 			camera.update(this.temp_pos, Settings.idle_camera_speed);

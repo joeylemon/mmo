@@ -39,8 +39,43 @@ Game.prototype.flashMessage = function(message){
 	}, 5000);
 };
 
+Game.prototype.switchMap = function(next){
+	if(map.getName() != next && maps[next]){
+		map = maps[next];
+		if(me().getY() <= 60){
+			camera.setToBottom();
+			me().setX((map.getMaxX() / 2) - 64);
+			me().setY(map.getMaxY() - 150);
+		}else{
+			camera.setToTop();
+			me().setX((map.getMaxX() / 2) - 64);
+			me().setY(65);
+		}
+
+		me().setMap(next);
+		var msg = {
+			index: myIndex,
+			uuid: me().uuid,
+			newmap: next
+		};
+		this.broadcast(Messages.CHANGE_MAP, msg);
+	}
+};
+
+Game.prototype.getNextMap = function(orientation){
+	if(orientation == Orientation.UP){
+		if(map.getName() == MapType.MAIN){
+			return MapType.GRASSLANDS;
+		}
+	}else if(orientation == Orientation.DOWN){
+		if(map.getName() == MapType.GRASSLANDS){
+			return MapType.MAIN;
+		}
+	}
+};
+
 Game.prototype.initializeClientEntities = function(){
-	entities.push(new Entity("ogre", ogreID, 850, 1650, 1000, true));
+	maps[MapType.MAIN].entities.push(new Entity("ogre", ogreID, 850, 1650, 1000, MapType.MAIN, true));
 };
 
 Game.prototype.getKeyFromCode = function(code){
@@ -167,8 +202,8 @@ Game.prototype.removeEntity = function(uid){
 
 Game.prototype.getHitEntity = function(center, playerOrientation){
 	var entity = this.getNearestEntity(center.x, center.y);
-	if(!entity.isDead() && distance(center, entity.getCenter()) <= entity.getSettings().hit_dist){
-		var orientation = this.getOrientation(center, entity.getCenter());
+	if(entity && !entity.isDead() && distance(center, entity.getCenter()) <= entity.getSettings().hit_dist){
+		var orientation = game.getOrientation(center, entity.getCenter());
 		if(orientation == playerOrientation){
 			return entity;
 		}
@@ -178,45 +213,39 @@ Game.prototype.getHitEntity = function(center, playerOrientation){
 Game.prototype.getNearestEntity = function(x, y){
 	var nearest_ent;
 	var nearest_dist = 5000;
-	
+
 	for(var i = 0; i < entities.length; i++){
 		var entity = entities[i];
-		var dist = distance(entity.getCenter(), {x: x, y: y});
-		if(dist <= nearest_dist){
-			nearest_ent = entity;
-			nearest_dist = dist;
+		if(entity.onMap()){
+			var dist = distance(entity.getCenter(), {x: x, y: y});
+			if(dist <= nearest_dist){
+				nearest_ent = entity;
+				nearest_dist = dist;
+			}
 		}
 	}
-	
+
 	return nearest_ent;
 };
 
 Game.prototype.getNearbyEntity = function(x, y){
 	for(var i = 0; i < entities.length; i++){
 		var entity = entities[i];
-		if(distance(entity.getCenter(), {x: x, y: y}) <= 100){
-			return entity;
+		if(entity.onMap()){
+			if(distance(entity.getCenter(), {x: x, y: y}) <= 100){
+				return entity;
+			}
 		}
 	}
-};
-
-Game.prototype.getClickedNPC = function(){
-	var npc;
-	for(var i = 0; i < npcs.length; i++){
-		var n = npcs[i];
-		if(distance(n.getCenter(), this.getMapMouse()) <= 50){
-			npc = n;
-			break;
-		}
-	}
-	return npc;
 };
 
 Game.prototype.getNearbyItem = function(x, y){
-	for(var i = 0; i < items.length; i++){
+	for(var i = 0; i < this.items.length; i++){
 		var item = items[i];
-		if(distance(item.getCenter(), {x: x, y: y}) <= 50){
-			return item;
+		if(item.onMap()){
+			if(distance(item.getCenter(), {x: x, y: y}) <= 50){
+				return item;
+			}
 		}
 	}
 };
@@ -226,18 +255,32 @@ Game.prototype.addItem = function(item, x, y){
 	var sprite = item.sprites.item;
 	setTimeout(function(){
 		item.setPosition(x - (sprite.getWidth() / 2), y - (sprite.getHeight() / 2));
-		items.push(item);
+		this.items.push(item);
 	}, 250);
 };
 
 Game.prototype.removeItem = function(remove){
-	for(var i = 0; i < items.length; i++){
+	for(var i = 0; i < this.items.length; i++){
 		var item = items[i];
 		if(item.getX() == remove.getX() && item.getY() == remove.getY()){
-			items.splice(i, 1);
+			this.items.splice(i, 1);
 			break;
 		}
 	}
+};
+
+Game.prototype.getClickedNPC = function(){
+	var npc;
+	for(var i = 0; i < npcs.length; i++){
+		var n = npcs[i];
+		if(n.onMap()){
+			if(distance(n.getCenter(), this.getMapMouse()) <= 50){
+				npc = n;
+				break;
+			}
+		}
+	}
+	return npc;
 };
 
 Game.prototype.getPlayersOnline = function(){

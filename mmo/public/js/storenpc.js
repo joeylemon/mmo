@@ -1,6 +1,7 @@
-var StoreNPC = function(x, y, type){
+var StoreNPC = function(x, y, map, type){
 	this.x = x;
 	this.y = y;
+	this.map = map;
 	this.type = type;
 	this.id = type.id;
 	this.name = type.name;
@@ -20,6 +21,10 @@ StoreNPC.prototype.getSprite = function(){
 
 StoreNPC.prototype.getType = function(){
 	return this.type;
+};
+
+StoreNPC.prototype.getMap = function(){
+	return this.map;
 };
 
 StoreNPC.prototype.getX = function(){
@@ -42,7 +47,15 @@ StoreNPC.prototype.talk = function(msg){
 	this.message = new Message(msg, TextColor.NPC_TALK);
 };
 
+StoreNPC.prototype.onMap = function(){
+	return this.map == map.getName();
+};
+
 StoreNPC.prototype.draw = function(){
+	if(!this.onMap()){
+		return;
+	}
+
 	if(this.sprites.shadow.isDataSet()){
 		this.sprites.shadow.setX(this.x + (this.sprites.npc.getWidth() / 2) - (this.sprites.shadow.getWidth() / 2));
 		this.sprites.shadow.setY(this.y + (this.sprites.npc.getHeight() / 2) + 6);

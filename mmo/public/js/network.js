@@ -18,7 +18,7 @@ socket.on('msg', function(data){
 		}
 
 		for(var i = 0; i < data.entities.length; i++){
-			var entity = new Entity(data.entities[i].id, data.entities[i].uid, data.entities[i].x, data.entities[i].y, data.entities[i].hp);
+			var entity = new Entity(data.entities[i].id, data.entities[i].uid, data.entities[i].x, data.entities[i].y, data.entities[i].hp, data.entities[i].map);
 			game.addEntity(entity);
 		}
 
@@ -30,7 +30,7 @@ socket.on('msg', function(data){
 	/* Entity messages */
 	if(me()){
 		if(data.type == Messages.ADD_ENTITY){
-			var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp);
+			var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp, data.entity.map);
 			game.addEntity(entity);
 		}else if(data.type == Messages.KILL_ENTITY){
 			game.getEntity(data.uid).kill();
@@ -87,6 +87,9 @@ socket.on('msg', function(data){
 		if(data.clear){
 			player.clearKeys();
 		}
+	}else if(data.type == Messages.CHANGE_MAP){
+		var player = players[data.index];
+		player.setMap(data.newmap);
 	}else if(data.type == Messages.ATTACK){
 		players[data.index].attack();
 	}else if(data.type == Messages.LEVEL_UP){

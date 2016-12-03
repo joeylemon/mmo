@@ -1,6 +1,6 @@
 var store_npcs = [
-     new StoreNPC(1531, 1480, StoreType.ARMORY),
-     new StoreNPC(1531, 1223, StoreType.HEALER)
+     new StoreNPC(1531, 1480, MapType.MAIN, StoreType.ARMORY),
+     new StoreNPC(1531, 1223, MapType.MAIN, StoreType.HEALER)
 ];
 
 var all_npcs = [
@@ -10,6 +10,7 @@ var all_npcs = [
           "beachnpc",
           1454,
           1749,
+          MapType.MAIN,
           [
                "Hello there, traveler.",
                "How are you today?",
@@ -47,6 +48,7 @@ var all_npcs = [
           "beachnpc",
           1454,
           1749,
+          MapType.MAIN,
           [
                "Thanks for killing those mobs!",
                "Our town has a much bigger problem now...",
@@ -89,6 +91,7 @@ var all_npcs = [
           "coder",
           225,
           340,
+          MapType.MAIN,
           [
                "Greetings, fellow programmer.",
                "I hear you think you're a better coder than me?",
@@ -126,6 +129,7 @@ var all_npcs = [
           "desertnpc",
           1367,
           376,
+          MapType.MAIN,
           [
                "Howdy there, partner!",
                "I was just about to gather me up some dinner.",

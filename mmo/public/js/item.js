@@ -47,7 +47,15 @@ Item.prototype.getCenter = function(){
 	return {x: this.x + (this.sprites.item.getWidth() / 2), y: this.y + (this.sprites.item.getWidth() / 2)};
 };
 
+Item.prototype.onMap = function(){
+	return this.map == map.getName();
+};
+
 Item.prototype.draw = function(){
+     if(!this.onMap()){
+          return;
+     }
+
 	if(this.sprites.shadow.isDataSet()){
 		this.sprites.shadow.setX(this.x + (this.sprites.item.getWidth() / 2) - (this.sprites.shadow.getWidth() / 2));
 		this.sprites.shadow.setY(this.y + (this.sprites.item.getHeight() / 2) + 6);
@@ -71,6 +79,6 @@ Item.prototype.draw = function(){
      if(Date.now() - this.death >= 0){
           game.removeItem(this);
      }
-	 
+
 	 game.drawText(this.x + (this.sprites.item.getWidth() / 2), this.float_y + this.sprites.item.getHeight() + 25, "Press E to pick up", 15, "#000", 5, "#fff");
 };

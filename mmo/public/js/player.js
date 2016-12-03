@@ -7,6 +7,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.gp = gp;
 	this.hp = 100;
 	this.keys = new Array();
+	this.map = MapType.MAIN;
 
 	this.armor = game.getArmorFromID(inventory.armor);
 	this.sword = game.getWeaponFromID(inventory.sword);
@@ -63,6 +64,14 @@ Player.prototype.getArmor = function(){
 	return this.inventory.armor;
 };
 
+Player.prototype.getMap = function(){
+	return this.map;
+};
+
+Player.prototype.setMap = function(map){
+	this.map = map;
+};
+
 Player.prototype.getX = function(){
 	return this.position.x;
 };
@@ -76,7 +85,7 @@ Player.prototype.getPosition = function(){
 };
 
 Player.prototype.setX = function(x){
-	if(x + 45 > 0 && x + 90 < map.getMaxX()){
+	if(x > -15 && x + 90 < map.getMaxX()){
 		this.position.x = x;
 		this.sprites.player.setX(x);
 		this.sprites.sword.setX(x + game.getSwordOffset(this.sprites.player.getOrientation).x);
@@ -84,7 +93,7 @@ Player.prototype.setX = function(x){
 };
 
 Player.prototype.setY = function(y){
-	if(y - 60 > 0 && y + 90 < map.getMaxY()){
+	if(y > -15 && y + 90 < map.getMaxY()){
 		this.position.y = y;
 		this.sprites.player.setY(y);
 		this.sprites.sword.setY(y + game.getSwordOffset(this.sprites.player.getOrientation).y);
@@ -460,10 +469,10 @@ Player.prototype.attack = function(){
 		if(hit){
 			var amount = this.getDamage();
 			if(hit.getHP() - amount > 0){
-				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit.getUID(), amount: amount});
+				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit.getUID(), amount: amount, map: map.getName()});
 				this.addXP(15);
 			}else{
-				game.broadcast(Messages.KILL_ENTITY, {uid: hit.getUID()});
+				game.broadcast(Messages.KILL_ENTITY, {uid: hit.getUID(), map: map.getName()});
 				this.addXP(hit.getSettings().death_xp, TextColor.KILL_XP);
 				if(Math.random() <= 0.35){
 					var gp = getRange(3, 8);
@@ -553,7 +562,9 @@ Player.prototype.kill = function(){
 		setTimeout(function(){
 			//if(this.isDoingObjective(Objective.KILL_ENTITY) && this.getCurrentObjective().getEntity() == "ogre"){
 				var ogre = getOgreEntity();
-				ogre.setHP(ogre.maxhp);
+				if(ogre){
+					ogre.setHP(ogre.maxhp);
+				}
 			//}
 		}, 100);
 	}
@@ -581,7 +592,17 @@ Player.prototype.isDead = function(){
 	return this.dead;
 };
 
+Player.prototype.onMap = function(){
+	return this.map == map.getName();
+};
+
 Player.prototype.draw = function(){
+	if(!this.isClient()){
+		if(!this.onMap()){
+			return;
+		}
+	}
+
 	if(this.dead){
 		var anim = this.sprites.death.getNextAnimation();
 		if(anim){

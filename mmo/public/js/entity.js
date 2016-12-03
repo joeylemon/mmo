@@ -1,4 +1,4 @@
-var Entity = function(id, uid, x, y, hp, clientside){
+var Entity = function(id, uid, x, y, hp, map, clientside){
 	this.id = id;
 	this.uid = uid;
 	this.x = x;
@@ -7,6 +7,7 @@ var Entity = function(id, uid, x, y, hp, clientside){
 	this.hp = hp;
 	this.maxhp = hp;
 	this.clientside = clientside;
+	this.map = map;
 	this.lastMove = 0;
 
 	this.flyingtexts = new Array();
@@ -52,6 +53,10 @@ Entity.prototype.getHP = function(){
 
 Entity.prototype.setHP = function(hp){
 	this.hp = hp;
+};
+
+Entity.prototype.getMap = function(){
+	return this.map;
 };
 
 Entity.prototype.setX = function(x){
@@ -153,7 +158,7 @@ Entity.prototype.aggro = function(player){
 	};
 
 	if(me().getUUID() == this.aggressive.player.getUUID()){
-		game.broadcast(Messages.AGGRO, {uid: this.uid, player: player.getUUID()});
+		game.broadcast(Messages.AGGRO, {uid: this.uid, player: player.getUUID(), map: this.getMap()});
 	}
 };
 
@@ -218,7 +223,8 @@ Entity.prototype.move = function(x, y){
 			player: this.aggressive.player.getUUID(),
 			uid: this.uid,
 			x: x,
-			y: y
+			y: y,
+			map: this.getMap()
 		}
 		game.broadcast(Messages.ENTITY_MOVE, msg);
 	}
@@ -236,19 +242,27 @@ Entity.prototype.tooFar = function(){
 	}
 };
 
+Entity.prototype.onMap = function(){
+	return this.map == map.getName();
+};
+
 Entity.prototype.isVisible = function(){
-	return game.isVisible(this.getCenter().x, this.getCenter().y);
+	return this.onMap() && game.isVisible(this.getCenter().x, this.getCenter().y);
 };
 
 Entity.prototype.draw = function(){
+	if(!this.onMap()){
+		return;
+	}
+
 	var now = Date.now();
-	
+
 	if(this.clientside){
 		if(!me().isDoingObjective(Objective.KILL_ENTITY) || me().getQuest().getTitle() != "The Village's Demise"){
 			return;
 		}
 	}
-	
+
 	if(this.dead){
 		this.sprites.death.setX(this.getCenter().x - 24);
 		this.sprites.death.setY(this.getCenter().y - 15);
@@ -268,7 +282,7 @@ Entity.prototype.draw = function(){
 				setTimeout(function(){
 					instance.dead = false;
 					instance.hp = instance.maxhp;
-					
+
 					instance.setX(instance.orig_loc.x);
 					instance.setY(instance.orig_loc.y);
 					game.addEntity(instance);
@@ -317,7 +331,7 @@ Entity.prototype.draw = function(){
 			this.flyingtexts.splice(i, 1);
 		}
 	}
-	
+
 	if(this.clientside){
 		if(!this.aggressive && now - this.lastMove > 5000){
 			if(!this.tooFar()){
@@ -332,7 +346,7 @@ Entity.prototype.draw = function(){
 	}
 
 	if(this.aggressive){
-		if(!this.aggressive.player.isDead()){
+		if(!this.aggressive.player.isDead() && this.aggressive.player.getMap() == this.map){
 			if(this.getDistanceFromTarget() <= this.getSettings().move_min_dist){
 				if(this.canAttack()){
 					if(game.getPlayerByUUID(this.aggressive.player.getUUID()) >= 0){

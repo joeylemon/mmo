@@ -1,13 +1,12 @@
-function GameMap(){
+function GameMap(file){
+	this.name = file;
 	this.maxX = 0;
 	this.maxY = 0;
 	this.front = new Array();
 	this.collisions = new Array();
 	this.map_layers = new Array();
 
-	this.tilesetImg = new Image();
-	this.tilesetImg.src = "js/world/tilesheet.png";
-	this.loadJSON("js/world/world.json", this.draw.bind(this));
+	this.loadJSON("js/world/" + file + ".json", this.draw.bind(this));
 };
 
 GameMap.prototype.draw = function(drawTop){
@@ -33,7 +32,7 @@ GameMap.prototype.draw = function(drawTop){
 GameMap.prototype.renderCell = function(cell){
 	if(cell.id != 0){
 		ctx.drawImage(
-			this.tilesetImg, cell.set_x, cell.set_y,
+			images.tileset, cell.set_x, cell.set_y,
 			this.set.tilewidth, this.set.tileheight,
 			cell.true_x, cell.true_y,
 			this.set.tilewidth, this.set.tileheight
@@ -142,6 +141,14 @@ GameMap.prototype.getMaxY = function(){
 	return this.maxY;
 }
 
+GameMap.prototype.getCenter = function(){
+	return {x: map.getMaxX() / 2, y: map.getMaxY() / 2};
+}
+
+GameMap.prototype.getName = function(){
+	return this.name;
+}
+
 GameMap.prototype.getTileAt = function(x, y){
 	/*
 	 * Set new collisions in world.json, using BOTTOM
@@ -154,3 +161,8 @@ GameMap.prototype.getTileAt = function(x, y){
 		}
 	}
 }
+
+maps = {
+	main: new GameMap(MapType.MAIN),
+	grasslands: new GameMap(MapType.GRASSLANDS)
+};

@@ -1,8 +1,9 @@
-var NPC = function(name, quest, id, x, y, dialogue, completed, low_level, doing_quest, doing_another_quest){
+var NPC = function(name, quest, id, x, y, map, dialogue, completed, low_level, doing_quest, doing_another_quest){
 	this.name = name;
 	this.id = id;
 	this.x = x;
 	this.y = y;
+	this.map = map;
 
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
@@ -42,6 +43,10 @@ NPC.prototype.getSprite = function(){
 
 NPC.prototype.getName = function(){
 	return this.name;
+};
+
+NPC.prototype.getMap = function(){
+	return this.map;
 };
 
 NPC.prototype.getX = function(){
@@ -112,7 +117,15 @@ NPC.prototype.talk = function(){
 	}, 4000);
 };
 
+NPC.prototype.onMap = function(){
+	return this.map == map.getName();
+};
+
 NPC.prototype.draw = function(){
+	if(!this.onMap()){
+		return;
+	}
+
 	if(this.sprites.shadow.isDataSet()){
 		this.sprites.shadow.setX(this.x + (this.sprites.npc.getWidth() / 2) - (this.sprites.shadow.getWidth() / 2));
 		this.sprites.shadow.setY(this.y + (this.sprites.npc.getHeight() / 2) + 6);
