@@ -29,6 +29,7 @@ var camera;
 var client;
 var events;
 var game;
+var map;
 
 var myIndex;
 
@@ -105,6 +106,8 @@ var EventType = {
 var EntitySettings = {
 	bat: {idle: 400, death_xp: 20, damage: 3, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
 	skeleton: {idle: 2500, death_xp: 40, damage: 5, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
+	crab: {idle: 800, death_xp: 35, damage: 4.5, walk_speed: 3.8, attack_speed: 1800, hit_dist: 90, move_min_dist: 125, shadow_offset: -10},
+	snake: {idle: 800, death_xp: 30, damage: 4, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125, shadow_offset: -10},
 	ogre: {idle: Settings.player_idle_change, death_xp: 200, damage: 20, walk_speed: 2.8, attack_speed: 2000, hit_dist: 175, move_min_dist: 200, shadow_offset: 55}
 };
 

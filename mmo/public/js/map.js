@@ -2,6 +2,8 @@ function GameMap(file){
 	this.name = file;
 	this.maxX = 0;
 	this.maxY = 0;
+	this.bgcolor = "#22AB00";
+
 	this.front = new Array();
 	this.collisions = new Array();
 	this.map_layers = new Array();
@@ -128,6 +130,8 @@ GameMap.prototype.loadJSON = function(url, callback){
 		instance.map_layers[0] = map_bottom;
 		instance.map_layers[1] = map_top;
 
+		instance.bgcolor = instance.data.background;
+
 		callback();
 		$("body").css("backgroundColor", "#22AB00");
 	});
@@ -149,6 +153,10 @@ GameMap.prototype.getName = function(){
 	return this.name;
 }
 
+GameMap.prototype.getBackgroundColor = function(){
+	return this.bgcolor;
+}
+
 GameMap.prototype.getTileAt = function(x, y){
 	/*
 	 * Set new collisions in world.json, using BOTTOM
@@ -164,5 +172,5 @@ GameMap.prototype.getTileAt = function(x, y){
 
 maps = {
 	main: new GameMap(MapType.MAIN),
-	grasslands: new GameMap(MapType.GRASSLANDS)
+	beach: new GameMap(MapType.BEACH)
 };

@@ -52,6 +52,8 @@ Game.prototype.switchMap = function(next){
 			me().setY(65);
 		}
 
+		$("body").css("backgroundColor", map.getBackgroundColor());
+
 		me().setMap(next);
 		var msg = {
 			index: myIndex,
@@ -63,19 +65,19 @@ Game.prototype.switchMap = function(next){
 };
 
 Game.prototype.getNextMap = function(orientation){
-	if(orientation == Orientation.UP){
+	if(orientation == Orientation.DOWN){
 		if(map.getName() == MapType.MAIN){
-			return MapType.GRASSLANDS;
+			return MapType.BEACH;
 		}
-	}else if(orientation == Orientation.DOWN){
-		if(map.getName() == MapType.GRASSLANDS){
+	}else if(orientation == Orientation.UP){
+		if(map.getName() == MapType.BEACH){
 			return MapType.MAIN;
 		}
 	}
 };
 
 Game.prototype.initializeClientEntities = function(){
-	maps[MapType.MAIN].entities.push(new Entity("ogre", ogreID, 850, 1650, 1000, MapType.MAIN, true));
+	entities.push(new Entity("ogre", ogreID, 1100, 810, 1000, MapType.BEACH, true));
 };
 
 Game.prototype.getKeyFromCode = function(code){
@@ -240,7 +242,7 @@ Game.prototype.getNearbyEntity = function(x, y){
 };
 
 Game.prototype.getNearbyItem = function(x, y){
-	for(var i = 0; i < this.items.length; i++){
+	for(var i = 0; i < items.length; i++){
 		var item = items[i];
 		if(item.onMap()){
 			if(distance(item.getCenter(), {x: x, y: y}) <= 50){
@@ -255,15 +257,15 @@ Game.prototype.addItem = function(item, x, y){
 	var sprite = item.sprites.item;
 	setTimeout(function(){
 		item.setPosition(x - (sprite.getWidth() / 2), y - (sprite.getHeight() / 2));
-		this.items.push(item);
+		items.push(item);
 	}, 250);
 };
 
 Game.prototype.removeItem = function(remove){
-	for(var i = 0; i < this.items.length; i++){
+	for(var i = 0; i < items.length; i++){
 		var item = items[i];
 		if(item.getX() == remove.getX() && item.getY() == remove.getY()){
-			this.items.splice(i, 1);
+			items.splice(i, 1);
 			break;
 		}
 	}

@@ -12,6 +12,7 @@ var Events = function(){
 		},
 
 		login_finish: function(){
+			game.initializeClientEntities();
 			screen.removeLoginScreen();
 			armory.setStoreItems();
 			updateNPCs();
