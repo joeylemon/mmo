@@ -24,6 +24,7 @@ var armory = new Armory();
 var questmenu = new QuestMenu();
 
 var ogreID = Math.random() * 100000;
+var hitSound = 1;
 var toKill;
 
 var camera;
@@ -101,6 +102,7 @@ var Settings = {
 };
 
 var EventType = {
+	LOAD_FINISH: "load_finish",
 	LOGIN_BEGIN: "login_begin",
 	LOGIN_FINISH: "login_finish"
 };
@@ -175,6 +177,15 @@ var KeyCodes = {
 	68: Key.RIGHT
 };
 
+var Sound = {
+	DEATH: "death",
+	KILL: "kill1",
+	HIT: "hit1",
+	CHAT: "chat",
+	PURCHASE: "purchase",
+	HEAL: "heal"
+};
+
 var Orientation = {
 	UP: 0,
 	DOWN: 1,
@@ -216,6 +227,18 @@ var MapLayer = {
 	TOP: true,
 	BOTTOM: false
 };
+
+var sounds = {};
+for(var key in Sound){
+	var sound = Sound[key];
+	var audio = new Audio("js/sounds/" + sound + ".mp3");
+	audio.volume = 0.25;
+	sounds[sound] = audio;
+}
+
+window.onload = function(){
+	events.fire(EventType.LOAD_FINISH);
+}
 
 /* Initialize functions */
 function me(){

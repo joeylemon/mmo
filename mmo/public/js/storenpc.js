@@ -45,6 +45,7 @@ StoreNPC.prototype.getCenter = function(){
 
 StoreNPC.prototype.talk = function(msg){
 	this.message = new Message(msg, TextColor.NPC_TALK);
+	game.playSound(Sound.CHAT);
 };
 
 StoreNPC.prototype.onMap = function(){

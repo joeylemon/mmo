@@ -133,7 +133,6 @@ GameMap.prototype.loadJSON = function(url, callback){
 		instance.bgcolor = instance.data.background;
 
 		callback();
-		$("body").css("backgroundColor", "#22AB00");
 	});
 }
 

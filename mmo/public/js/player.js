@@ -420,6 +420,7 @@ Player.prototype.say = function(msg){
 		color = TextColor.ADMIN_MESSAGE;
 	}
 	this.message = new Message(msg, color);
+	game.playSound(Sound.CHAT);
 };
 
 Player.prototype.move = function(dir){
@@ -470,6 +471,7 @@ Player.prototype.attack = function(){
 		var hit_entity = game.getHitEntity(this.getCenter(), this.getSprite().getOrientation());
 		var hit_player = game.getHitPlayer();
 		if(hit_entity){
+			game.playSound(Sound.HIT);
 			if(hit_entity.getHP() - amount > 0){
 				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit_entity.getUID(), amount: amount, map: map.getName()});
 				this.addXP(15);
@@ -499,6 +501,7 @@ Player.prototype.attack = function(){
 				hit_entity.aggro(this);
 			}
 		}else if(hit_player && this.isDoingObjective(Objective.KILL_PLAYER)){
+			game.playSound(Sound.HIT);
 			game.broadcast(Messages.ATTACK_PLAYER, {index: game.getPlayerByUUID(hit_player.getUUID()), uuid: "none", amount: amount});
 			this.addXP(15);
 		}
@@ -554,6 +557,8 @@ Player.prototype.softHurt = function(amount){
 Player.prototype.heal = function(amount){
 	var text = new Text("+" + amount + " hp", {size: 20, color: TextColor.XP});
 	this.addText(text);
+
+	game.playSound(Sound.HEAL);
 
 	if(this.isClient()){
 		this.hp += amount;
@@ -615,6 +620,7 @@ Player.prototype.revive = function(){
 		this.hp = 100;
 		this.updateHPBar();
 
+		game.switchMap(MapType.MAIN, false);
 		offset.x = (-map.maxX / 2) + (canvas.width / 2) - 150;
 		offset.y = (-map.maxY / 2) + (canvas.height / 2);
 		me().setX(game.getCenter().x);

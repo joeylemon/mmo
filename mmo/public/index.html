@@ -7,8 +7,17 @@
 		<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' />
 	</head>
 
-	<body style="background-color: #2D2D2D;" onresize="resize()">
-		<canvas id="game" class="game unselectable" draggable="false"></canvas>
+	<body style="background-image: url('styles/images/loading-bg.png');background-size: cover;" onresize="resize()">
+		<div id="loading">
+			<div class="blob blob-0"></div>
+			<div class="blob blob-1"></div>
+			<div class="blob blob-2"></div>
+			<div class="blob blob-3"></div>
+			<div class="blob blob-4"></div>
+			<div class="blob blob-5"></div>
+		</div>
+
+		<canvas id="game" class="game unselectable" draggable="false" style="display:none;"></canvas>
 
 		<div id="borders" class="borders"></div>
 
@@ -62,7 +71,7 @@
 			</div>
 		</span>
 
-		<div class="center-container">
+		<div id="center-container" class="center-container" style="display:none;">
 			<div style="overflow:visible">
 				<img src="styles/images/logo.png" class="logo" id="logo"></img>
 				<br>

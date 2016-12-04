@@ -113,6 +113,7 @@ NPC.prototype.talk = function(){
 		}
 
 		this.message = new Message(msg, TextColor.NPC_TALK);
+		game.playSound(Sound.CHAT);
 	}
 	this.current_dialogue.step++;
 

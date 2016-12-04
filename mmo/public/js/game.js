@@ -39,17 +39,20 @@ Game.prototype.flashMessage = function(message){
 	}, 5000);
 };
 
-Game.prototype.switchMap = function(next){
+Game.prototype.switchMap = function(next, cameraChange){
 	if(map.getName() != next && maps[next]){
 		map = maps[next];
-		if(me().getY() <= 60){
-			camera.setToBottom();
-			me().setX((map.getMaxX() / 2) - 64);
-			me().setY(map.getMaxY() - 150);
-		}else{
-			camera.setToTop();
-			me().setX((map.getMaxX() / 2) - 64);
-			me().setY(65);
+
+		if(cameraChange){
+			if(me().getY() <= 60){
+				camera.setToBottom();
+				me().setX((map.getMaxX() / 2) - 64);
+				me().setY(map.getMaxY() - 150);
+			}else{
+				camera.setToTop();
+				me().setX((map.getMaxX() / 2) - 64);
+				me().setY(65);
+			}
 		}
 
 		$("body").css("backgroundColor", map.getBackgroundColor());
@@ -80,8 +83,14 @@ Game.prototype.initializeClientEntities = function(){
 	entities.push(new Entity("ogre", ogreID, 1100, 810, 1000, MapType.BEACH, true));
 };
 
+Game.prototype.playSound = function(sound){
+	var audio = sounds[sound];
+	audio.currentTime = 0;
+	audio.play();
+};
+
 Game.prototype.setPlayerToKill = function(){
-	for(var i = 0; i < 50; i++){
+	for(var i = 0; i < 200; i++){
 		var player = players[getRange(0, players.length - 1)];
 		if(player != null && player.getUUID() != me().getUUID()){
 			toKill = player;

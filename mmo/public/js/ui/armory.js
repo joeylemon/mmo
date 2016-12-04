@@ -119,6 +119,8 @@ Armory.prototype.acceptPurchase = function(){
 		me().giveWeapon(this.current_purchase);
 	}
 
+	game.playSound(Sound.PURCHASE);
+
 	this.setStoreItems();
 	this.updateStoreCosts();
 

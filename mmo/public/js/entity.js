@@ -130,6 +130,7 @@ Entity.prototype.attack = function(player){
 	var orientation = game.getOrientation(this.getCenter(), player.getCenter());
 	player.hurt(this.getSettings().damage);
 	this.aggressive.lastAttack = Date.now();
+	game.playSound(Sound.HIT);
 
 	this.sprites.entity.setOrientation(orientation);
 	if(orientation == Orientation.UP){
@@ -179,6 +180,7 @@ Entity.prototype.kill = function(){
 	this.dead = true;
 	this.death = Date.now();
 	this.sprites.death.startAnimation(Animations.DEATH);
+	game.playSound(Sound.KILL);
 
 	if(this.id == "bat" && me().hasQuest() && me().getQuest().getTitle() == "Apple Pickers" && me().isDoingObjective(Objective.PICKUP_ITEM)){
 		if(Math.random() <= 0.25){

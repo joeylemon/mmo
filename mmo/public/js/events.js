@@ -1,5 +1,18 @@
 var Events = function(){
 	this.events = {
+		load_finish: function(){
+			$("#loading").fadeOut(250);
+
+			$("#game").delay(250).fadeIn(250);
+			$("#center-container").delay(500).fadeIn(250);
+
+			$(".blob").css("-webkit-animation-play-state", "paused");
+
+			setTimeout(function(){
+				$("body").css("background", "");
+			}, 750);
+		},
+
 		login_begin: function(){
 			myplayer.updateXPBar();
 			myplayer.updateGPValue();
