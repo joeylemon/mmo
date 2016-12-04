@@ -465,15 +465,17 @@ Player.prototype.attack = function(){
 
 	if(this.isClient()){
 		this.lastAttack = Date.now();
-		var hit = game.getHitEntity(this.getCenter(), this.getSprite().getOrientation());
-		if(hit){
-			var amount = this.getDamage();
-			if(hit.getHP() - amount > 0){
-				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit.getUID(), amount: amount, map: map.getName()});
+		var amount = this.getDamage();
+
+		var hit_entity = game.getHitEntity(this.getCenter(), this.getSprite().getOrientation());
+		var hit_player = game.getHitPlayer();
+		if(hit_entity){
+			if(hit_entity.getHP() - amount > 0){
+				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit_entity.getUID(), amount: amount, map: map.getName()});
 				this.addXP(15);
 			}else{
-				game.broadcast(Messages.KILL_ENTITY, {uid: hit.getUID(), map: map.getName()});
-				this.addXP(hit.getSettings().death_xp, TextColor.KILL_XP);
+				game.broadcast(Messages.KILL_ENTITY, {uid: hit_entity.getUID(), map: map.getName()});
+				this.addXP(hit_entity.getSettings().death_xp, TextColor.KILL_XP);
 				if(Math.random() <= 0.35){
 					var gp = getRange(3, 8);
 					this.addGP(gp);
@@ -484,7 +486,7 @@ Player.prototype.attack = function(){
 				}
 
 				if(this.isDoingObjective(Objective.KILL_ENTITY)){
-					if(hit.getID() == this.getCurrentObjective().getEntity()){
+					if(hit_entity.getID() == this.getCurrentObjective().getEntity()){
 						this.increaseQuestData("kills");
 						if(this.getQuestData().kills >= this.getCurrentObjective().getAmount()){
 							this.advanceQuest();
@@ -493,11 +495,12 @@ Player.prototype.attack = function(){
 				}
 			}
 
-			if(this.isClient()){
-				if(!hit.isAggressive()){
-					hit.aggro(this);
-				}
+			if(!hit_entity.isAggressive()){
+				hit_entity.aggro(this);
 			}
+		}else if(hit_player && this.isDoingObjective(Objective.KILL_PLAYER)){
+			game.broadcast(Messages.ATTACK_PLAYER, {index: game.getPlayerByUUID(hit_player.getUUID()), uuid: "none", amount: amount});
+			this.addXP(15);
 		}
 	}
 };
@@ -526,6 +529,24 @@ Player.prototype.hurt = function(amount){
 			this.updateHPBar();
 		}else{
 			this.kill();
+		}
+	}
+};
+
+Player.prototype.softHurt = function(amount){
+	amount *= 1 - this.getArmor().reduction;
+	amount = Math.floor(amount);
+
+	var text = new Text("-" + amount + " hp", {size: 20, color: TextColor.HURT});
+	this.addText(text);
+
+	if(this.isClient()){
+		var new_hp = this.hp - amount;
+		if(new_hp > 0){
+			this.hp -= amount;
+			this.updateHPBar();
+		}else{
+			this.softKill();
 		}
 	}
 };
@@ -567,6 +588,23 @@ Player.prototype.kill = function(){
 				}
 			//}
 		}, 100);
+	}
+};
+
+Player.prototype.softKill = function(){
+	this.dead = true;
+
+	this.sprites.death.setX(this.getCenter().x - 24);
+	this.sprites.death.setY(this.getCenter().y - 15);
+	this.sprites.death.startAnimation(Animations.DEATH);
+
+	if(this.isClient()){
+		this.hp = 0;
+		this.updateHPBar();
+
+		screen.showDeathScreen();
+
+		game.broadcast(Messages.SOFT_DEATH, {index: myIndex, uuid: this.uuid});
 	}
 };
 

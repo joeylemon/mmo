@@ -68,11 +68,14 @@ PlayerScreen.prototype.showMenu = function(){
 };
 
 PlayerScreen.prototype.hideMenu = function(){
+	console.log("hide menu");
 	this.fadeBlurOut();
 	$("#logo").fadeOut(250);
 	$("#menu").fadeOut(250);
 	$("#quests").fadeOut(250);
 	$("#store").fadeOut(250);
+	$("#confirm-purchase").fadeOut(250);
+	$("#overlay").fadeOut(250);
 	$("#info-container").fadeIn(250);
 };
 
@@ -124,6 +127,8 @@ PlayerScreen.prototype.showStore = function(){
 PlayerScreen.prototype.hideStore = function(){
 	this.fadeBlurOut();
 	$("#store").fadeOut(250);
+	$("#confirm-purchase").fadeOut(250);
+	$("#overlay").fadeOut(250);
 };
 
 PlayerScreen.prototype.showArmorStore = function(){

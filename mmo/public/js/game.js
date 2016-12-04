@@ -80,6 +80,16 @@ Game.prototype.initializeClientEntities = function(){
 	entities.push(new Entity("ogre", ogreID, 1100, 810, 1000, MapType.BEACH, true));
 };
 
+Game.prototype.setPlayerToKill = function(){
+	for(var i = 0; i < 50; i++){
+		var player = players[getRange(0, players.length - 1)];
+		if(player != null && player.getUUID() != me().getUUID()){
+			toKill = player;
+			break;
+		}
+	}
+};
+
 Game.prototype.getKeyFromCode = function(code){
 	return KeyCodes[code];
 };
@@ -164,15 +174,41 @@ Game.prototype.collides = function(x, y){
 };
 
 Game.prototype.getPlayerByUUID = function(uuid){
-	var index = -1;
 	for(var i = 0; i < players.length; i++){
 		var p = players[i];
 		if(p != null && p.getUUID() == uuid){
-			index = i;
-			break;
+			return i;
 		}
 	}
-	return index;
+	return -1;
+};
+
+Game.prototype.getHitPlayer = function(){
+	var player = this.getNearestPlayer();
+	if(player && !player.isDead() && distance(me().getCenter(), player.getCenter()) <= Settings.player_hit_dist){
+		var orientation = game.getOrientation(me().getCenter(), player.getCenter());
+		if(orientation == me().getSprite().getOrientation()){
+			return player;
+		}
+	}
+};
+
+Game.prototype.getNearestPlayer = function(){
+	var nearest_player;
+	var nearest_dist = 5000;
+
+	for(var i = 0; i < players.length; i++){
+		var player = players[i];
+		if(player != null && player.onMap() && player.getUUID() != me().getUUID()){
+			var dist = distance(player.getCenter(), me().getCenter());
+			if(dist <= nearest_dist){
+				nearest_player = player;
+				nearest_dist = dist;
+			}
+		}
+	}
+
+	return nearest_player;
 };
 
 Game.prototype.getEntity = function(uid){

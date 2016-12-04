@@ -47,17 +47,14 @@ document.onkeydown = function(event) {
 				screen.hideChatBox();
 				document.getElementById("message").value = "";
 			}
-			/**
-				MENU:
 
-				Leaderboards
-				Current Quest
-			*/
 			if(!screen.isMenuShowing()){
 				screen.showMenu();
 			}else{
 				screen.hideMenu();
 			}
+			$("#confirm-purchase").fadeOut(250);
+			$("#overlay").fadeOut(250);
 		}
 	}
 

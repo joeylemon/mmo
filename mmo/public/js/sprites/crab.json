@@ -32,7 +32,7 @@
 			"row": 3
 		},
 		"walk_up": {
-			"length": 6,
+			"length": 4,
 			"row": 4
 		},
 		"idle_up": {

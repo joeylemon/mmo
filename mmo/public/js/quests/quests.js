@@ -38,6 +38,16 @@ var quests = [
           ],
           2000,
           1000
+     ),
+     new Quest(
+          "Hitmen",
+          7,
+          [
+               new KillPlayerObjective(),
+               new TalkToNPCObjective("Agent Smith")
+          ],
+          500,
+          500
      )
 ];
 

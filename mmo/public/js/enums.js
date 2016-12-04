@@ -24,6 +24,7 @@ var armory = new Armory();
 var questmenu = new QuestMenu();
 
 var ogreID = Math.random() * 100000;
+var toKill;
 
 var camera;
 var client;
@@ -84,6 +85,7 @@ var Settings = {
 
 	/* Entity settings */
 	player_speed: 4.8,
+	player_hit_dist: 100,
 	attack_speed: 200,
 	player_idle_change: 800,
 	entity_idle_change: 800,
@@ -119,6 +121,7 @@ var Entity = {
 
 var Objective = {
 	KILL_ENTITY: "KillEntityObjective",
+	KILL_PLAYER: "KillPlayerObjective",
 	TALK_TO_NPC: "TalkToNPCObjective",
 	TALK_IN_CHAT: "TalkInChatObjective",
 	PICKUP_ITEM: "PickupItemObjective"

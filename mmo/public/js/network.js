@@ -70,7 +70,11 @@ socket.on('msg', function(data){
 	}else if(data.type == Messages.LEAVE){
 		var index = game.getPlayerByUUID(data.uuid);
 		if(index > -1){
+			var player = players[index];
 			players[index] = null;
+			if(toKill && player.getUUID() == toKill.getUUID()){
+				game.setPlayerToKill();
+			}
 		}
 		document.getElementById("online").innerHTML = game.getPlayersOnline();
 	}else if(data.type == Messages.KEYS){
@@ -110,8 +114,17 @@ socket.on('msg', function(data){
 		if(oldinv.sword != newinv.sword){
 			player.giveWeapon(game.getWeaponFromID(newinv.sword));
 		}
+	}else if(data.type == Messages.ATTACK_PLAYER){
+		players[data.index].softHurt(data.amount);
 	}else if(data.type == Messages.DEATH){
 		players[data.index].kill();
+	}else if(data.type == Messages.SOFT_DEATH){
+		players[data.index].softKill();
+		if(me().isDoingObjective(Objective.KILL_PLAYER)){
+			if(players[data.index].getUUID() == toKill.getUUID()){
+				me().advanceQuest();
+			}
+		}
 	}else if(data.type == Messages.REVIVE){
 		players[data.index].revive();
 	}

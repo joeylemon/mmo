@@ -15,6 +15,7 @@ var Events = function(){
 			game.initializeClientEntities();
 			screen.removeLoginScreen();
 			armory.setStoreItems();
+			game.setPlayerToKill();
 			updateNPCs();
 		}
 	};

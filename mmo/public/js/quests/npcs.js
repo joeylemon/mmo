@@ -8,8 +8,8 @@ var all_npcs = [
           "Shirtless Steve",
           0,
           "beachnpc",
-          1363,
-          573,
+          760,
+          220,
           MapType.BEACH,
           [
                "Hello there, traveler.",
@@ -46,21 +46,16 @@ var all_npcs = [
           "Shirtless Steve",
           3,
           "beachnpc",
-          1363,
-          573,
+          760,
+          220,
           MapType.BEACH,
           [
-               "Thanks for killing those mobs!",
-               "Our town has a much bigger problem now...",
                "The troll has returned!",
                "Decades ago, he was chased from our village.",
                "Now, he seeks revenge!",
-               "He's killed many of our own.",
-               "Our warriors have already tried killing him...",
-               "However, none of them returned!",
-               "You have shown great abilities...",
-               "You are the only one who can kill him!",
-               "Get rid of the troll, and you will become a legend!"
+               "It seems he has risen straight from the ocean.",
+               "Don't let him reach our village!",
+               "Kill him for good this time!"
           ],
           [
                "I can't believe it...",
@@ -69,10 +64,10 @@ var all_npcs = [
                "You are our hero!"
           ],
           [
-               "Hello there!",
-               "Hmm, I have a quest for you.",
-               "However, you need to be a little stronger!",
-               "Come back to me when you're level 15."
+               "Thank you so much for killing those mobs.",
+               "I have another urgent quest for you...",
+               "however, you must be much stronger.",
+               "Reach level 15, and maybe buy better armor."
           ],
           [
                "Have you killed the troll yet?",
@@ -93,7 +88,7 @@ var all_npcs = [
           340,
           MapType.MAIN,
           [
-               "Greetings, fellow programmer.",
+               "Greetings, %name.",
                "I hear you think you're a better coder than me?",
                "Bahaha! Fool.",
                "Tell you what...",
@@ -156,6 +151,38 @@ var all_npcs = [
                "Howdy partner!",
                "You seem a little busy, don't ya.",
                "I won't bother you with my worries."
+          ]
+     ),
+     new NPC(
+          "Agent Smith",
+          4,
+          "agent",
+          1363,
+          573,
+          MapType.BEACH,
+          [
+               "I've been scammed. I don't like this.",
+               "Hey you. You seem like the nefarious type.",
+               "I want you to kill a man named \"%tokill\".",
+               "I'll pay you very well."
+          ],
+          [
+               "Excellent. That'll improve my reputation.",
+               "Nobody will cross me again.",
+               "I hope you enjoy your extra large payment."
+          ],
+          [
+               "Scammers!",
+               "I've been scammed.",
+               "If you reach level 5, talk to me."
+          ],
+          [
+               "I need you to kill \"%tokill\"!",
+               "They won't get away with this."
+          ],
+          [
+               "You look busy.",
+               "I mustn't bother you right now."
           ]
      )
 ];

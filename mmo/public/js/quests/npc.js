@@ -107,6 +107,11 @@ NPC.prototype.talk = function(){
 	}
 
 	if(msg){
+		msg = replaceAll(msg, "%name", me().getName());
+		if(toKill){
+			msg = replaceAll(msg, "%tokill", toKill.getName());
+		}
+
 		this.message = new Message(msg, TextColor.NPC_TALK);
 	}
 	this.current_dialogue.step++;
