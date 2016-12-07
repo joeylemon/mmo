@@ -24,6 +24,9 @@ var armory = new Armory();
 var questmenu = new QuestMenu();
 
 var ogreID = Math.random() * 100000;
+var prevChats = new Array();
+var chatbox = new Array();
+var prevChatIndex = 0;
 var hitSound = 1;
 var toKill;
 
@@ -83,6 +86,7 @@ var Settings = {
 	message_flash_diff: 150,
 	store_flash_diff: 175,
 	idle_camera_speed: {x: -0.10, y: -0.175},
+	not_admin_message: "You do not have permission to do that!",
 
 	/* Entity settings */
 	player_speed: 4.8,
@@ -118,7 +122,8 @@ var EntitySettings = {
 var Entity = {
 	SKELETON: "skeleton",
 	BAT: "bat",
-	OGRE: "ogre"
+	OGRE: "ogre",
+	CRAB: "crab"
 };
 
 var Objective = {
@@ -183,7 +188,8 @@ var Sound = {
 	HIT: "hit1",
 	CHAT: "chat",
 	PURCHASE: "purchase",
-	HEAL: "heal"
+	HEAL: "heal",
+	LEVEL_UP: "levelup"
 };
 
 var Orientation = {
@@ -253,8 +259,58 @@ function distance(p1, p2){
 	return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
 }
 
+function removeAllOccurances(array, item){
+	for(var i = array.length - 1; i >= 0; i--){
+		var text = array[i];
+		if(text == item){
+			array.splice(i, 1);
+		}
+	}
+}
+
 function replaceAll(str, find, replace) {
   return str.replace(new RegExp(find, 'g'), replace);
+}
+
+function editDistance(s1, s2) {
+	s1 = s1.toLowerCase();
+	s2 = s2.toLowerCase();
+
+	var costs = new Array();
+	for (var i = 0; i <= s1.length; i++){
+		var lastValue = i;
+		for (var j = 0; j <= s2.length; j++){
+			if (i == 0)
+				costs[j] = j;
+			else{
+				if (j > 0){
+					var newValue = costs[j - 1];
+					if (s1.charAt(i - 1) != s2.charAt(j - 1))
+						newValue = Math.min(Math.min(newValue, lastValue),
+						costs[j]) + 1;
+						costs[j - 1] = lastValue;
+						lastValue = newValue;
+				}
+			}
+		}
+		if (i > 0)
+			costs[s2.length] = lastValue;
+	}
+	return costs[s2.length];
+}
+
+function getSimilarity(s1, s2){
+	var longer = s1;
+	var shorter = s2;
+	if (s1.length < s2.length){
+		longer = s2;
+		shorter = s1;
+	}
+	var longerLength = longer.length;
+	if(longerLength == 0){
+		return 1.0;
+	}
+	return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
 }
 
 function getProperArticle(word){

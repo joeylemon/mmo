@@ -23,7 +23,7 @@ var all_npcs = [
                "Thank you so much for killing those mobs.",
                "I have another urgent quest for you...",
                "however, you must be much stronger.",
-               "Reach level 15, and maybe buy better armor."
+               "Reach level %level, and maybe buy better armor."
           ],
           [
                "Hello there!",
@@ -67,7 +67,7 @@ var all_npcs = [
                "Thank you so much for killing those mobs.",
                "I have another urgent quest for you...",
                "however, you must be much stronger.",
-               "Reach level 15, and maybe buy better armor."
+               "Reach level %level, and maybe buy better armor."
           ],
           [
                "Have you killed the troll yet?",
@@ -103,7 +103,7 @@ var all_npcs = [
           [
                "Greetings, young traveler.",
                "Pass along, you're unworthy of my quests.",
-               "Try coming back when you're level 2."
+               "Try coming back when you're level %level."
           ],
           [
                "Answer my question: what is a variable?",
@@ -139,7 +139,7 @@ var all_npcs = [
           ],
           [
                "These darn bats!",
-               "Hey you, if you ever reach level 5...",
+               "Hey you, if you ever reach level %level...",
                "me 'n you could have a little chat."
           ],
           [
@@ -174,7 +174,7 @@ var all_npcs = [
           [
                "Scammers!",
                "I've been scammed.",
-               "If you reach level 5, talk to me."
+               "If you reach level %level, talk to me."
           ],
           [
                "I need you to kill \"%tokill\"!",
@@ -230,12 +230,17 @@ function getBestNPC(name){
 	var npc;
 	for(var i = 0; i < all_npcs.length; i++){
 		var n = all_npcs[i];
-		if(n.quest){
-			var level = quests[n.getQuestID()].getMinimumLevel();
-			if(!me().hasCompletedQuest(n.getQuestID()) && n.getName() == name && me().getLevel() <= level){
-				npc = n;
+		if(n.quest && n.getName() == name){
+               if(me().hasQuest() && getQuestID(me().getQuest().getTitle()) == n.getQuestID()){
+                    npc = n;
                     break;
-			}
+               }else{
+     			var level = quests[n.getQuestID()].getMinimumLevel();
+     			if(!me().hasCompletedQuest(n.getQuestID()) && me().getLevel() <= level){
+     				npc = n;
+                         break;
+     			}
+               }
 		}
 	}
 	if(!npc){

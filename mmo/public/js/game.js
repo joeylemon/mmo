@@ -79,6 +79,58 @@ Game.prototype.getNextMap = function(orientation){
 	}
 };
 
+Game.prototype.kick = function(name){
+	if(!me().isAdmin()){
+		return Settings.not_admin_message;
+	}
+
+	var player = players[this.getPlayerByName(name)];
+	if(player){
+		game.broadcast(Messages.ADMIN_KICK, {uuid: player.getUUID()});
+	}
+};
+
+Game.prototype.mute = function(name){
+	if(!me().isAdmin()){
+		return Settings.not_admin_message;
+	}
+
+	var player = players[this.getPlayerByName(name)];
+	if(player){
+		game.broadcast(Messages.ADMIN_MUTE, {uuid: player.getUUID()});
+	}
+};
+
+Game.prototype.unmute = function(name){
+	if(!me().isAdmin()){
+		return Settings.not_admin_message;
+	}
+
+	var player = players[this.getPlayerByName(name)];
+	if(player){
+		game.broadcast(Messages.ADMIN_UNMUTE, {uuid: player.getUUID()});
+	}
+};
+
+Game.prototype.giveGP = function(name, amount){
+	if(!me().isAdmin()){
+		return Settings.not_admin_message;
+	}
+
+	var player = players[this.getPlayerByName(name)];
+	if(player){
+		game.broadcast(Messages.ADMIN_GIVE_GP, {uuid: player.getUUID(), amount: amount});
+	}
+};
+
+Game.prototype.giveAllGP = function(amount){
+	if(!me().isAdmin()){
+		return Settings.not_admin_message;
+	}
+
+	game.broadcast(Messages.ADMIN_GIVE_ALL_GP, {uuid: "empty", amount: amount});
+};
+
 Game.prototype.initializeClientEntities = function(){
 	entities.push(new Entity("ogre", ogreID, 1100, 810, 1000, MapType.BEACH, true));
 };
@@ -87,6 +139,17 @@ Game.prototype.playSound = function(sound){
 	var audio = sounds[sound];
 	audio.currentTime = 0;
 	audio.play();
+};
+
+Game.prototype.appendChat = function(msg){
+	chatbox.push(msg);
+	if(chatbox.length > 7){
+		chatbox.splice(0, 1);
+	}
+	document.getElementById("prev-chatbox").innerHTML = "";
+	for(var i = 0; i < chatbox.length; i++){
+		document.getElementById("prev-chatbox").innerHTML = document.getElementById("prev-chatbox").innerHTML + chatbox[i];
+	}
 };
 
 Game.prototype.setPlayerToKill = function(){
@@ -186,6 +249,16 @@ Game.prototype.getPlayerByUUID = function(uuid){
 	for(var i = 0; i < players.length; i++){
 		var p = players[i];
 		if(p != null && p.getUUID() == uuid){
+			return i;
+		}
+	}
+	return -1;
+};
+
+Game.prototype.getPlayerByName = function(name){
+	for(var i = 0; i < players.length; i++){
+		var p = players[i];
+		if(p != null && p.getName() == name){
 			return i;
 		}
 	}
@@ -297,8 +370,8 @@ Game.prototype.getNearbyItem = function(x, y){
 	}
 };
 
-Game.prototype.addItem = function(item, x, y){
-	var item = new Item(item, x, y);
+Game.prototype.addItem = function(item, x, y, map){
+	var item = new Item(item, x, y, map);
 	var sprite = item.sprites.item;
 	setTimeout(function(){
 		item.setPosition(x - (sprite.getWidth() / 2), y - (sprite.getHeight() / 2));

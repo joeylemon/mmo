@@ -1,10 +1,10 @@
 var quests = [
      new Quest(
-          "Tale of the Shirtless Man",
+          "Steve's Dilemma",
           10,
           [
+               new KillEntityObjective(Entity.CRAB, 5),
                new KillEntityObjective(Entity.SKELETON, 5),
-               new KillEntityObjective(Entity.BAT, 5),
                new TalkToNPCObjective("Shirtless Steve")
           ],
           1000,

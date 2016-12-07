@@ -25,6 +25,9 @@
 			<span id="msg" style="display: none;"></span>
 		</div>
 
+		<div id="prev-chatbox" class="prev-chatbox">
+
+		</div>
 		<div id="chatbox" class="chatbox">
 			<input id="message" type="text" placeholder="Type your message" name="msg" maxlength="35"></input>
 		</div>
@@ -160,12 +163,6 @@
 					</span>
 				</div>
 
-				<div id="dead" class="dead unselectable">
-					<span class="title">You have died.</span>
-					<br>
-					<input id="dead-button" class="button dead-button" type="submit" value="Respawn" onclick="me().revive()"></input>
-				</div>
-
 				<div id="store" class="store unselectable">
 					<span class="close-button unselectable" onclick="screen.hideMenu()">x</span>
 					<span class="title">Armory</span>
@@ -176,6 +173,18 @@
 					</div>
 					<div class="sub-store" id="armor-store"></div>
 					<div class="sub-store" id="weapon-store" style="display: none;"></div>
+				</div>
+
+				<div id="dead" class="dead unselectable">
+					<span class="title">You have died.</span>
+					<br>
+					<input id="dead-button" class="button dead-button" type="submit" value="Respawn" onclick="me().revive()"></input>
+				</div>
+
+				<div id="disconnected" class="disconnected">
+					<span id="kick-msg">Disconnected from game server.</span>
+					<br>
+					<input id="refresh-button" class="button refresh-button" type="submit" value="Reconnect" onclick="location.reload()"></input>
 				</div>
 
 			</div>

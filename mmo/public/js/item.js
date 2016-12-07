@@ -1,6 +1,7 @@
-var Item = function(id, x, y){
+var Item = function(id, x, y, map){
      this.x = x;
      this.y = y;
+     this.map = map;
 	this.id = id;
 
      this.idleStep = 1;
@@ -8,8 +9,8 @@ var Item = function(id, x, y){
 
      this.death = Date.now() + 30000;
 
-	 this.floating = true;
-	 this.float_y = y;
+     this.floating = true;
+     this.float_y = y;
 
      this.sprites = {
 		item: new Sprite(id, x, y, true),
@@ -81,4 +82,6 @@ Item.prototype.draw = function(){
      }
 
 	 game.drawText(this.x + (this.sprites.item.getWidth() / 2), this.float_y + this.sprites.item.getHeight() + 25, "Press E to pick up", 15, "#000", 5, "#fff");
+
+      client.entities_onscreen++;
 };

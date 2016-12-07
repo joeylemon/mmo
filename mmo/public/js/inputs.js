@@ -19,14 +19,50 @@ document.onkeydown = function(event) {
 				if(chat.length > 0){
 					var send = true;
 					if(me().isDoingObjective(Objective.TALK_IN_CHAT)){
-						if(chat.includes(me().getCurrentObjective().getExpectedMessage())){
+						if(getSimilarity(me().getCurrentObjective().getExpectedMessage(), chat) >= 0.7){
 							me().advanceQuest();
 							send = false;
 						}
 					}
 
+					if(me().muted){
+						me().say("I'm muted!");
+						send = false;
+					}
+
+					if(chat.startsWith("/")){
+						if(me().isAdmin()){
+							var args = chat.substr(1).split(" ");
+
+							if(args[1] != undefined){
+								if(args[0] == "kick"){
+									game.kick(args[1]);
+									me().say("I have kicked " + args[1] + ".");
+								}else if(args[0] == "mute"){
+									game.mute(args[1]);
+									me().say("I have muted " + args[1] + ".");
+								}else if(args[0] == "unmute"){
+									game.unmute(args[1]);
+									me().say("I have unmuted " + args[1] + ".");
+								}else if(args[0] == "givegp" && args[2] != undefined){
+									game.giveGP(args[1], parseInt(args[2]));
+									me().say("I have given " + args[2] + " gp to " + args[1] + ".");
+								}else if(args[0] == "giveallgp"){
+									game.giveGP(parseInt(args[1]));
+									me().say("I have given " + args[2] + " gp to everyone.");
+								}
+							}
+						}else{
+							me().say("I can't do that!");
+						}
+						send = false;
+					}
+
 					if(send){
 						me().say(chat);
+
+						removeAllOccurances(prevChats, chat);
+						prevChats.push(chat);
 
 						var msg = {
 							index: myIndex,
@@ -46,15 +82,25 @@ document.onkeydown = function(event) {
 			if(screen.isChatBoxOpen()){
 				screen.hideChatBox();
 				document.getElementById("message").value = "";
-			}
-
-			if(!screen.isMenuShowing()){
-				screen.showMenu();
 			}else{
-				screen.hideMenu();
+				if(!screen.isMenuShowing()){
+					screen.showMenu();
+				}else{
+					screen.hideMenu();
+				}
+				$("#confirm-purchase").fadeOut(250);
+				$("#overlay").fadeOut(250);
 			}
-			$("#confirm-purchase").fadeOut(250);
-			$("#overlay").fadeOut(250);
+		}
+	}else if(code == 38 && screen.isChatBoxOpen()){
+		if(prevChats.length > 0){
+			var msg = prevChats[prevChatIndex];
+			document.getElementById("message").value = msg;
+
+			prevChatIndex--;
+			if(prevChatIndex < 0){
+				prevChatIndex = prevChats.length - 1;
+			}
 		}
 	}
 

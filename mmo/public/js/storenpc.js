@@ -81,4 +81,6 @@ StoreNPC.prototype.draw = function(){
 	}else{
 		this.message = undefined;
 	}
+
+	client.entities_onscreen++;
 };

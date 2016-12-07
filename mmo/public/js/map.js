@@ -25,6 +25,9 @@ GameMap.prototype.draw = function(drawTop){
 				var cell = this.map_layers[0][i];
 				if(game.isVisible(cell.true_x, cell.true_y)){
 					this.renderCell(cell);
+					if(screen.showingDebug()){
+						game.strokeRect(cell.true_x, cell.true_y, this.set.tilewidth, this.set.tileheight, "#000");
+					}
 				}
 			}
 		}

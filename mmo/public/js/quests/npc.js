@@ -1,4 +1,4 @@
-var NPC = function(name, quest, id, x, y, map, dialogue, completed, low_level, doing_quest, doing_another_quest){
+var NPC = function(name, quest, id, x, y, map, dialogue, completed, low_level, doing_quest, doing_another_quest, other_quests){
 	this.name = name;
 	this.id = id;
 	this.x = x;
@@ -13,7 +13,8 @@ var NPC = function(name, quest, id, x, y, map, dialogue, completed, low_level, d
 		completed: completed,
 		low_level: low_level,
 		doing: doing_quest,
-		doing_wrong: doing_another_quest
+		doing_wrong: doing_another_quest,
+		other_quests: other_quests
 	};
 
 	this.current_dialogue = {
@@ -69,30 +70,40 @@ NPC.prototype.getCenter = function(){
 	return {x: this.getX() + (this.sprites.npc.getWidth() / 2), y: this.getY() + (this.sprites.npc.getWidth() / 2)};
 };
 
+NPC.prototype.isObjective = function(){
+	return me().isDoingObjective(Objective.TALK_TO_NPC) && me().getCurrentObjective().getNPC() == this.name;
+};
+
+NPC.prototype.getCurrentDialogue = function(){
+	if(me().getQuest() && getQuestID(me().getQuest().getTitle()) == this.quest.id){
+		return this.dialogue.doing;
+	}else if(me().hasCompletedQuest(this.quest.id)){
+		return this.dialogue.completed;
+	}else if(me().getQuest() && getQuestID(me().getQuest().getTitle()) != this.quest.id){
+		if(this.isObjective() && this.dialogue.other_quests & this.dialogue.other_quests[me().getQuest().getTitle()]){
+			return this.dialogue.other_quests[me().getQuest().getTitle()];
+		}else{
+			return this.dialogue.doing_wrong;
+		}
+	}else if(me().getLevel() < quests[this.quest.id].getMinimumLevel()){
+		this.quest.canStart = false;
+		return this.dialogue.low_level;
+	}else if(me().getLevel() >= quests[this.quest.id].getMinimumLevel()){
+		this.quest.canStart = true;
+		return this.dialogue.regular;
+	}
+};
+
 NPC.prototype.talk = function(){
 	if(this.stepTask){
 		clearInterval(this.stepTask);
 	}
 
-	if(me().isDoingObjective(Objective.TALK_TO_NPC)){
-		if(me().getCurrentObjective().getNPC() == this.name){
-			me().advanceQuest();
-		}
+	if(this.isObjective()){
+		me().advanceQuest();
 	}
 
-	if(me().getQuest() && getQuestID(me().getQuest().getTitle()) == this.quest.id){
-		this.current_dialogue.messages = this.dialogue.doing;
-	}else if(me().hasCompletedQuest(this.quest.id)){
-		this.current_dialogue.messages = this.dialogue.completed;
-	}else if(me().getQuest() && getQuestID(me().getQuest().getTitle()) != this.quest.id){
-		this.current_dialogue.messages = this.dialogue.doing_wrong;
-	}else if(me().getLevel() < quests[this.quest.id].getMinimumLevel()){
-		this.current_dialogue.messages = this.dialogue.low_level;
-		this.quest.canStart = false;
-	}else if(me().getLevel() >= quests[this.quest.id].getMinimumLevel()){
-		this.current_dialogue.messages = this.dialogue.regular;
-		this.quest.canStart = true;
-	}
+	this.current_dialogue.messages = this.getCurrentDialogue();
 
 	var msg = this.current_dialogue.messages[this.current_dialogue.step - 1];
 	if(!msg){
@@ -108,6 +119,7 @@ NPC.prototype.talk = function(){
 
 	if(msg){
 		msg = replaceAll(msg, "%name", me().getName());
+		msg = replaceAll(msg, "%level", quests[this.quest.id].getMinimumLevel());
 		if(toKill){
 			msg = replaceAll(msg, "%tokill", toKill.getName());
 		}
@@ -154,4 +166,6 @@ NPC.prototype.draw = function(){
 	}else{
 		this.message = undefined;
 	}
+
+	client.entities_onscreen++;
 };

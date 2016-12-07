@@ -10,6 +10,7 @@ var Events = function(){
 
 			setTimeout(function(){
 				$("body").css("background", "");
+				$("#existing-username").focus();
 			}, 750);
 		},
 

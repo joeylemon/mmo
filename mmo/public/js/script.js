@@ -14,8 +14,6 @@ soundtrack.addEventListener('ended', function(){
 soundtrack.volume = 0.25;
 //soundtrack.play();
 
-$("#existing-username").focus();
-
 resize();
 
 camera = new Camera();
@@ -169,6 +167,9 @@ function fadeSoundtrackOut(){
 }
 
 function resize(){
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+
 	var width = $(window).height() / 1.2;
 	var margin = $(window).height() / 15;
 	$("#logo").css("width", width + "px");

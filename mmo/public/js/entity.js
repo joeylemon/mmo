@@ -183,8 +183,8 @@ Entity.prototype.kill = function(){
 	game.playSound(Sound.KILL);
 
 	if(this.id == "bat" && me().hasQuest() && me().getQuest().getTitle() == "Apple Pickers" && me().isDoingObjective(Objective.PICKUP_ITEM)){
-		if(Math.random() <= 0.25){
-			game.addItem("apple", this.getCenter().x, this.getCenter().y);
+		if(Math.random() <= 0.5){
+			game.addItem("apple", this.getCenter().x, this.getCenter().y, this.getMap());
 		}
 	}
 };
@@ -385,4 +385,6 @@ Entity.prototype.draw = function(){
 			this.dest = undefined;
 		}
 	}
+
+	client.entities_onscreen++;
 };

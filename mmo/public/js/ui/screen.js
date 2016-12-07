@@ -1,6 +1,7 @@
 var PlayerScreen = function(){
 	this.debug = false;
 	this.chatbox = false;
+	this.disconnect = false;
 };
 
 PlayerScreen.prototype.toggleDebug = function(){
@@ -101,6 +102,7 @@ PlayerScreen.prototype.hideDeathScreen = function(){
 
 PlayerScreen.prototype.showChatBox = function(){
 	$("#chatbox").fadeIn(0);
+	$("#prev-chatbox").fadeIn(0);
 	$("#info-container").fadeOut(0);
 	$("#message").focus();
 	this.chatbox = true;
@@ -108,11 +110,25 @@ PlayerScreen.prototype.showChatBox = function(){
 
 PlayerScreen.prototype.hideChatBox = function(){
 	$("#chatbox").fadeOut(0);
+	$("#prev-chatbox").fadeOut(0);
 	$("#info-container").fadeIn(0);
 	$("#message").blur();
 	this.chatbox = false;
+	prevChatIndex = prevChats.length - 1;
 };
 
 PlayerScreen.prototype.isChatBoxOpen = function(){
 	return this.chatbox;
+};
+
+PlayerScreen.prototype.showDisconnected = function(){
+	$("#logo").fadeOut(250);
+	$("#menu").fadeOut(250);
+	$("#quests").fadeOut(250);
+	$("#store").fadeOut(250);
+	$("#info-container").fadeOut(250);
+
+	this.fadeBlurIn();
+	$("#disconnected").delay(250).fadeIn(250);
+	this.disconnect = true;
 };

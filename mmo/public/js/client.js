@@ -8,6 +8,10 @@ var Client = function(){
 };
 
 Client.prototype.draw = function(){
+	if(screen.disconnect){
+		return;
+	}
+	
 	now = Date.now();
 	elapsed = now - then;
 
@@ -30,7 +34,6 @@ Client.prototype.draw = function(){
 					p.setX(p.getX() - pos.x);
 					p.setY(p.getY() - pos.y);
 					p.draw();
-					this.players_onscreen++;
 				}
 			}
 		}
@@ -104,7 +107,6 @@ Client.prototype.drawArray = function(array){
 		var object = array[i];
 		if(object.getSprite().isDataSet() && (game.isVisible(object.getCenter().x, object.getCenter().y) || object.dest)){
 			object.draw();
-			this.entities_onscreen++;
 		}
 	}
 };

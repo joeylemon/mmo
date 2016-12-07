@@ -36,6 +36,8 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 
 	this.dead = false;
 
+	this.muted = false;
+
 	this.sprites = {
 		player: new Sprite(inventory.armor, position.x, position.y),
 		shadow: new Sprite(Sprites.SHADOW, position.x, position.y),
@@ -58,6 +60,10 @@ Player.prototype.getUUID = function(){
 
 Player.prototype.getName = function(){
 	return this.name;
+};
+
+Player.prototype.isAdmin = function(){
+	return this.name == "admin" || this.name == "joeythelemon";
 };
 
 Player.prototype.getArmor = function(){
@@ -216,6 +222,11 @@ Player.prototype.addGP = function(gp){
 	this.gp += gp;
 	game.broadcast(Messages.UPDATE_GP, {newgp: this.gp});
 	this.updateGPValue();
+
+	if(this.isClient()){
+		var text = new Text("+" + gp + " gp", {size: 25, color: TextColor.GP});
+		this.addText(text);
+	}
 };
 
 Player.prototype.removeGP = function(gp){
@@ -223,8 +234,10 @@ Player.prototype.removeGP = function(gp){
 	game.broadcast(Messages.UPDATE_GP, {newgp: this.gp});
 	this.updateGPValue();
 
-	var text = new Text("-" + gp + " gp", {size: 20, color: TextColor.HURT});
-	this.addText(text);
+	if(this.isClient()){
+		var text = new Text("-" + gp + " gp", {size: 20, color: TextColor.HURT});
+		this.addText(text);
+	}
 };
 
 Player.prototype.getGP = function(gp){
@@ -293,6 +306,7 @@ Player.prototype.levelUp = function(){
 	var text = new Text("Level Up!", {size: 40, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4});
 	this.addText(text);
 
+	game.playSound(Sound.LEVEL_UP);
 	game.broadcast(Messages.LEVEL_UP, {index: myIndex, uuid: me().getUUID(), newlevel: this.level.level});
 };
 
@@ -416,11 +430,14 @@ Player.prototype.addText = function(text){
 
 Player.prototype.say = function(msg){
 	var color = TextColor.MESSAGE;
-	if(this.name == "admin"){
+	var chatbox = "#CCCCCC";
+	if(this.isAdmin()){
 		color = TextColor.ADMIN_MESSAGE;
+		chatbox = "#C63A3A";
 	}
 	this.message = new Message(msg, color);
 	game.playSound(Sound.CHAT);
+	game.appendChat("<span style='color:" + chatbox + "'>" + this.getName() + ":</span> " + msg + "<br>");
 };
 
 Player.prototype.move = function(dir){
@@ -479,11 +496,9 @@ Player.prototype.attack = function(){
 				game.broadcast(Messages.KILL_ENTITY, {uid: hit_entity.getUID(), map: map.getName()});
 				this.addXP(hit_entity.getSettings().death_xp, TextColor.KILL_XP);
 				if(Math.random() <= 0.35){
-					var gp = getRange(3, 8);
-					this.addGP(gp);
+					var gp = getRange(5, 15);
 					setTimeout(function(){
-						var text = new Text("+" + gp + " gp", {size: 25, color: TextColor.GP});
-						me().addText(text);
+						this.addGP(gp);
 					}, 500);
 				}
 
@@ -704,4 +719,6 @@ Player.prototype.draw = function(){
 	}else{
 		this.message = undefined;
 	}
+
+	client.players_onscreen++;
 };

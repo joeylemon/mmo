@@ -1,3 +1,7 @@
+socket.on('disconnect', function (){
+	screen.showDisconnected();
+});
+
 socket.on('msg', function(data){
 	/* Initial server pong */
 	if(data.type == Messages.GET_PLAYERS_RESPONSE){
@@ -27,42 +31,76 @@ socket.on('msg', function(data){
 		events.fire(EventType.LOGIN_FINISH);
 	}
 
-	/* Entity messages */
-	if(me()){
-		if(data.type == Messages.ADD_ENTITY){
-			var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp, data.entity.map);
-			game.addEntity(entity);
-		}else if(data.type == Messages.KILL_ENTITY){
-			game.getEntity(data.uid).kill();
-		}else if(data.type == Messages.ATTACK_ENTITY){
-			game.getEntity(data.uid).hurt(data.amount);
-		}else if(data.type == Messages.MOVE_ENTITIES){
-			for(var i = 0; i < data.moves.length; i++){
-				var move = data.moves[i];
-				var entity = game.getEntity(move.uid);
-				if(entity && !entity.isAggressive()){
-					entity.move(move.x, move.y);
-				}
-			}
-		}else if(data.type == Messages.AGGRO){
-			var player = players[game.getPlayerByUUID(data.player)];
-			var entity = game.getEntity(data.uid);
-			if(player && !player.isClient() && entity){
-				entity.aggro(player);
-			}
-		}else if(data.type == Messages.ENTITY_MOVE){
-			if(data.player != me().getUUID()){
-				var entity = game.getEntity(data.uid);
-				entity.move(data.x, data.y);
-			}
-		}
-	}
-
-	/* Global player messages */
-	if(me() == undefined || data.uuid == undefined || data.uuid == me().uuid){
+	if(!me()){
 		return;
 	}
 
+	/* Entity messages */
+	if(data.type == Messages.ADD_ENTITY){
+		var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp, data.entity.map);
+		game.addEntity(entity);
+	}else if(data.type == Messages.KILL_ENTITY){
+		game.getEntity(data.uid).kill();
+	}else if(data.type == Messages.ATTACK_ENTITY){
+		game.getEntity(data.uid).hurt(data.amount);
+	}else if(data.type == Messages.MOVE_ENTITIES){
+		for(var i = 0; i < data.moves.length; i++){
+			var move = data.moves[i];
+			var entity = game.getEntity(move.uid);
+			if(entity && !entity.isAggressive()){
+				entity.move(move.x, move.y);
+			}
+		}
+	}else if(data.type == Messages.AGGRO){
+		var player = players[game.getPlayerByUUID(data.player)];
+		var entity = game.getEntity(data.uid);
+		if(player && !player.isClient() && entity){
+			entity.aggro(player);
+		}
+	}else if(data.type == Messages.ENTITY_MOVE){
+		if(data.player != me().getUUID()){
+			var entity = game.getEntity(data.uid);
+			entity.move(data.x, data.y);
+		}
+	}
+
+	if(!data.uuid){
+		return;
+	}
+
+	/* Admin messages */
+	if(data.type == Messages.ADMIN_KICK){
+		if(data.uuid == me().getUUID()){
+			document.getElementById("kick-msg").innerHTML = "Kicked from game server.";
+			socket.disconnect();
+		}
+	}else if(data.type == Messages.ADMIN_MUTE){
+		if(data.uuid == me().getUUID()){
+			me().muted = true;
+
+			var text = new Text("Muted", {size: 20, color: TextColor.HURT});
+			me().addText(text);
+		}
+	}else if(data.type == Messages.ADMIN_UNMUTE){
+		if(data.uuid == me().getUUID()){
+			me().muted = false;
+
+			var text = new Text("Unmuted", {size: 20, color: TextColor.XP});
+			me().addText(text);
+		}
+	}else if(data.type == Messages.ADMIN_GIVE_GP){
+		if(data.uuid == me().getUUID()){
+			me().addGP(data.amount);
+		}
+	}else if(data.type == Messages.ADMIN_GIVE_ALL_GP){
+		me().addGP(data.amount);
+	}
+
+	if(data.uuid == me().getUUID()){
+		return;
+	}
+
+	/* Player messages */
 	if(data.type == Messages.JOIN){
 		var p = new Player(data.uuid, data.username, data.level, data.inv, data.pos, data.quests, data.gp);
 		players.push(p);
