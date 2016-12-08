@@ -1,6 +1,5 @@
 var store_npcs = [
-     new StoreNPC(1531, 1480, MapType.MAIN, StoreType.ARMORY),
-     new StoreNPC(1531, 1223, MapType.MAIN, StoreType.HEALER)
+     new StoreNPC(1530, 1375, MapType.MAIN, StoreType.ARMORY)
 ];
 
 var all_npcs = [

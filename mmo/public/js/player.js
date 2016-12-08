@@ -33,6 +33,8 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.blocktext = false;
 
 	this.lastAttack = 0;
+	this.lastHurt = 0;
+	this.healStep = 0;
 
 	this.dead = false;
 
@@ -490,15 +492,15 @@ Player.prototype.attack = function(){
 		if(hit_entity){
 			game.playSound(Sound.HIT);
 			if(hit_entity.getHP() - amount > 0){
-				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit_entity.getUID(), amount: amount, map: map.getName()});
+				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit_entity.getUID(), amount: amount});
 				this.addXP(15);
 			}else{
-				game.broadcast(Messages.KILL_ENTITY, {uid: hit_entity.getUID(), map: map.getName()});
+				game.broadcast(Messages.KILL_ENTITY, {uid: hit_entity.getUID()});
 				this.addXP(hit_entity.getSettings().death_xp, TextColor.KILL_XP);
 				if(Math.random() <= 0.35){
 					var gp = getRange(5, 15);
 					setTimeout(function(){
-						this.addGP(gp);
+						me().addGP(gp);
 					}, 500);
 				}
 
@@ -541,6 +543,8 @@ Player.prototype.hurt = function(amount){
 	this.addText(text);
 
 	if(this.isClient()){
+		this.lastHurt = Date.now();
+
 		var new_hp = this.hp - amount;
 		if(new_hp > 0){
 			this.hp -= amount;
@@ -671,6 +675,7 @@ Player.prototype.draw = function(){
 		return;
 	}
 
+	var now = Date.now();
 
 	if(this.sprites.shadow.isDataSet()){
 		this.sprites.shadow.setX(this.position.x + 38);
@@ -680,12 +685,12 @@ Player.prototype.draw = function(){
 
 	if(!this.sprites.player.isDoingAnimation()){
 		var idle = this.sprites.player.getIdleAnimation();
-		if(Date.now() > this.lastIdleChange + Settings.player_idle_change){
+		if(now > this.lastIdleChange + Settings.player_idle_change){
 			this.idleStep += 1;
 			if(this.idleStep > idle.length){
 				this.idleStep = 1;
 			}
-			this.lastIdleChange = Date.now();
+			this.lastIdleChange = now;
 		}
 		this.sprites.player.draw(this.idleStep, idle.row);
 		this.sprites.sword.draw(this.idleStep, idle.row);
@@ -718,6 +723,24 @@ Player.prototype.draw = function(){
 		this.message.draw(pos);
 	}else{
 		this.message = undefined;
+	}
+
+	if(this.hp < 100 && this.lastHurt > 0 && now - this.lastHurt > Settings.player_heal_wait){
+		if(this.healStep == 0){
+			this.hp += 1;
+			this.updateHPBar();
+			if(this.hp >= 100){
+				this.hp = 100;
+				this.lastHurt = 0;
+				this.healStep = 0;
+			}
+		}
+
+		this.healStep++;
+
+		if(this.healStep > 5){
+			this.healStep = 0;
+		}
 	}
 
 	client.players_onscreen++;

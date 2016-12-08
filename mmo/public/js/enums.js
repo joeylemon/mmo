@@ -87,12 +87,14 @@ var Settings = {
 	store_flash_diff: 175,
 	idle_camera_speed: {x: -0.10, y: -0.175},
 	not_admin_message: "You do not have permission to do that!",
+	invalid_command: "Invalid command.",
 
 	/* Entity settings */
 	player_speed: 4.8,
 	player_hit_dist: 100,
 	attack_speed: 200,
 	player_idle_change: 800,
+	player_heal_wait: 10000,
 	entity_idle_change: 800,
 	health_bar_width: 45,
 	health_bar_height: 5,

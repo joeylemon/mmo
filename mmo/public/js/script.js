@@ -1,3 +1,4 @@
+var currentDots = 0;
 var existing = true;
 var loggingIn = false;
 
@@ -15,6 +16,7 @@ soundtrack.volume = 0.25;
 //soundtrack.play();
 
 resize();
+flashDots();
 
 camera = new Camera();
 
@@ -187,4 +189,26 @@ function resize(){
 	if(me()){
 		client.clearKeys();
 	}
+}
+
+function flashDots(){
+	var dots = "";
+	for(var i = 0; i < currentDots; i++){
+		dots += ".";
+	}
+	document.getElementById("dots").innerHTML = dots;
+
+	currentDots++;
+	if(currentDots > 3){
+		currentDots = 0;
+	}
+	if(currentDots >= 0){
+		setTimeout(function(){
+			flashDots();
+		}, 500);
+	}
+}
+
+function stopFlashDots(){
+	currentDots = -2;
 }

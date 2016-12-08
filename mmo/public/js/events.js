@@ -6,7 +6,7 @@ var Events = function(){
 			$("#game").delay(250).fadeIn(250);
 			$("#center-container").delay(500).fadeIn(250);
 
-			$(".blob").css("-webkit-animation-play-state", "paused");
+			stopFlashDots();
 
 			setTimeout(function(){
 				$("body").css("background", "");

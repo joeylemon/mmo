@@ -34,7 +34,7 @@ document.onkeydown = function(event) {
 						if(me().isAdmin()){
 							var args = chat.substr(1).split(" ");
 
-							if(args[1] != undefined){
+							if(args[0] != undefined && args[1] != undefined){
 								if(args[0] == "kick"){
 									game.kick(args[1]);
 									me().say("I have kicked " + args[1] + ".");
@@ -48,10 +48,17 @@ document.onkeydown = function(event) {
 									game.giveGP(args[1], parseInt(args[2]));
 									me().say("I have given " + args[2] + " gp to " + args[1] + ".");
 								}else if(args[0] == "giveallgp"){
-									game.giveGP(parseInt(args[1]));
-									me().say("I have given " + args[2] + " gp to everyone.");
+									game.giveAllGP(parseInt(args[1]));
+									me().say("I have given " + args[1] + " gp to everyone.");
+								}else{
+									me().say(Settings.invalid_command);
 								}
+							}else{
+								me().say(Settings.invalid_command);
 							}
+
+							removeAllOccurances(prevChats, chat);
+							prevChats.push(chat);
 						}else{
 							me().say("I can't do that!");
 						}
