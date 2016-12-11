@@ -44,6 +44,10 @@ Item.prototype.getID = function(){
 	return this.id;
 };
 
+Item.prototype.getName = function(){
+	return ItemName[this.id];
+};
+
 Item.prototype.getCenter = function(){
 	return {x: this.x + (this.sprites.item.getWidth() / 2), y: this.y + (this.sprites.item.getWidth() / 2)};
 };

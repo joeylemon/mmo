@@ -158,7 +158,8 @@ Entity.prototype.aggro = function(player){
 		lastAttack: 0
 	};
 
-	if(me().getUUID() == this.aggressive.player.getUUID()){
+	if(this.aggressive.player.isClient()){
+		me().totalAggressed++;
 		game.broadcast(Messages.AGGRO, {uid: this.uid, player: player.getUUID(), map: this.getMap()});
 	}
 };
@@ -168,8 +169,16 @@ Entity.prototype.isAggressive = function(){
 };
 
 Entity.prototype.resetAggressiveness = function(){
+	if(this.aggressive.player.isClient()){
+		me().totalAggressed--;
+	}
 	this.aggressive = undefined;
 	this.dest = undefined;
+
+	var ogre = getOgreEntity();
+	if(ogre && this.getUID() == ogre.getUID()){
+		ogre.setHP(ogre.maxhp);
+	}
 };
 
 Entity.prototype.getDistanceFromTarget = function(){
@@ -186,6 +195,14 @@ Entity.prototype.kill = function(){
 		if(Math.random() <= 0.5){
 			game.addItem("apple", this.getCenter().x, this.getCenter().y, this.getMap());
 		}
+	}else if(this.id == "deathknight"){
+		if(Math.random() <= 0.3){
+			game.addItem("moneybag", this.getCenter().x, this.getCenter().y, this.getMap());
+		}
+	}
+
+	if(this.aggressive && this.aggressive.player.isClient()){
+		me().totalAggressed--;
 	}
 };
 
@@ -253,6 +270,10 @@ Entity.prototype.isVisible = function(){
 };
 
 Entity.prototype.draw = function(){
+	if(this.aggressive && this.aggressive.player.getMap() != this.map){
+		this.resetAggressiveness();
+	}
+
 	if(!this.onMap()){
 		return;
 	}

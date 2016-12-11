@@ -25,8 +25,12 @@ GameMap.prototype.draw = function(drawTop){
 				var cell = this.map_layers[0][i];
 				if(game.isVisible(cell.true_x, cell.true_y)){
 					this.renderCell(cell);
-					if(screen.showingDebug()){
-						game.strokeRect(cell.true_x, cell.true_y, this.set.tilewidth, this.set.tileheight, "#000");
+				}
+			}
+			if(screen.showingDebug()){
+				for(var x = 0; x < this.getMaxX(); x += this.set.tilewidth){
+					for(var y = 0; y < this.getMaxY(); y += this.set.tileheight){
+						game.strokeRect(x, y, this.set.tilewidth, this.set.tileheight, "rgba(0, 0, 0, 0.6)");
 					}
 				}
 			}
@@ -87,8 +91,8 @@ GameMap.prototype.loadJSON = function(url, callback){
 
 		instance.set_width = instance.set.imagewidth / instance.set.tilewidth;
 		Settings.tilewidth = instance.set.tilewidth;
-		for(var layer = 0; layer < instance.data.layers.length; ++layer){
-			for (var cell = 0; cell < instance.data.layers[layer].data.length; ++cell){
+		for(var layer = 0; layer < instance.data.layers.length; layer++){
+			for (var cell = 0; cell < instance.data.layers[layer].data.length; cell++){
 				var id = instance.data.layers[layer].data[cell];
 				var x = cell % instance.data.layers[layer].width;
 				var y = Math.floor((cell - x) / instance.data.layers[layer].height);
@@ -174,5 +178,6 @@ GameMap.prototype.getTileAt = function(x, y){
 
 maps = {
 	main: new GameMap(MapType.MAIN),
-	beach: new GameMap(MapType.BEACH)
+	beach: new GameMap(MapType.BEACH),
+	hell: new GameMap(MapType.HELL)
 };

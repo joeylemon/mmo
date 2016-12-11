@@ -161,6 +161,8 @@ NPC.prototype.draw = function(){
 	}
 	this.sprites.npc.draw(this.idleStep, idle.row);
 
+	game.drawText(this.getCenter().x, this.getY() + this.getSprite().getHeight() + 10, this.name, 16, "#000", 5, "#fff");
+
 	if(this.message && !this.message.isDead()){
 		this.message.draw(this.getTop());
 	}else{

@@ -20,8 +20,8 @@ $("#game").mousedown(function(event){
 var socket = io();
 
 var screen = new PlayerScreen();
-var armory = new Armory();
 var questmenu = new QuestMenu();
+var armory = new Armory();
 
 var ogreID = Math.random() * 100000;
 var prevChats = new Array();
@@ -114,11 +114,13 @@ var EventType = {
 };
 
 var EntitySettings = {
-	bat: {idle: 400, death_xp: 20, damage: 3, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
+	bat: {idle: 200, death_xp: 20, damage: 3, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
 	skeleton: {idle: 2500, death_xp: 40, damage: 5, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125},
+	spectre: {idle: 800, death_xp: 50, damage: 10, walk_speed: 4.0, attack_speed: 1500, hit_dist: 90, move_min_dist: 125, shadow_offset: 5},
 	crab: {idle: 800, death_xp: 35, damage: 4.5, walk_speed: 3.8, attack_speed: 1800, hit_dist: 90, move_min_dist: 125, shadow_offset: -10},
 	snake: {idle: 800, death_xp: 30, damage: 4, walk_speed: 3.8, attack_speed: 2000, hit_dist: 90, move_min_dist: 125, shadow_offset: -10},
-	ogre: {idle: Settings.player_idle_change, death_xp: 200, damage: 20, walk_speed: 2.8, attack_speed: 2000, hit_dist: 175, move_min_dist: 200, shadow_offset: 55}
+	deathknight: {idle: 800, death_xp: 55, damage: 17, walk_speed: 2.8, attack_speed: 1800, hit_dist: 90, move_min_dist: 125, shadow_offset: 10},
+	ogre: {idle: 800, death_xp: 200, damage: 20, walk_speed: 2.8, attack_speed: 2000, hit_dist: 175, move_min_dist: 200, shadow_offset: 55}
 };
 
 var Entity = {
@@ -126,6 +128,11 @@ var Entity = {
 	BAT: "bat",
 	OGRE: "ogre",
 	CRAB: "crab"
+};
+
+var ItemName = {
+	apple: "apple",
+	moneybag: "money bag"
 };
 
 var Objective = {

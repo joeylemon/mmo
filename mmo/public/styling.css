@@ -233,18 +233,7 @@ img {
      width: 100%;
      background-color: #EEEEEE;
      margin-top: 5px;
-}
-
-.quests .completed {
-     background-color: #F1F1F1;
-}
-
-.quests .in-progress {
-     background-color: #F1F1F1;
-}
-
-.quests .not-started {
-     background-color: #F1F1F1;
+     border-bottom: 2px solid #BDBDBD;
 }
 
 .quest .title {

@@ -8,7 +8,7 @@ var quests = [
                new TalkToNPCObjective("Shirtless Steve")
           ],
           1000,
-          100
+          300
      ),
      new Quest(
           "Cocky Coders",

@@ -71,9 +71,13 @@ Game.prototype.getNextMap = function(orientation){
 	if(orientation == Orientation.DOWN){
 		if(map.getName() == MapType.MAIN){
 			return MapType.BEACH;
+		}else if(map.getName() == MapType.HELL){
+			return MapType.MAIN;
 		}
 	}else if(orientation == Orientation.UP){
-		if(map.getName() == MapType.BEACH){
+		if(map.getName() == MapType.MAIN){
+			return MapType.HELL;
+		}else if(map.getName() == MapType.BEACH){
 			return MapType.MAIN;
 		}
 	}
@@ -385,6 +389,17 @@ Game.prototype.removeItem = function(remove){
 		if(item.getX() == remove.getX() && item.getY() == remove.getY()){
 			items.splice(i, 1);
 			break;
+		}
+	}
+};
+
+Game.prototype.getNearbyNPC = function(x, y){
+	for(var i = 0; i < npcs.length; i++){
+		var npc = npcs[i];
+		if(npc.onMap()){
+			if(distance(npc.getCenter(), {x: x, y: y}) <= 75){
+				return npc;
+			}
 		}
 	}
 };

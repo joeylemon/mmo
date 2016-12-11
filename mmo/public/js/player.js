@@ -32,6 +32,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.flyingtexts = new Array();
 	this.blocktext = false;
 
+	this.totalAggressed = 0;
 	this.lastAttack = 0;
 	this.lastHurt = 0;
 	this.healStep = 0;
@@ -176,6 +177,16 @@ Player.prototype.getWeapon = function(){
 };
 
 Player.prototype.giveItem = function(item, amount){
+	if(this.isDoingObjective(Objective.PICKUP_ITEM)){
+		if(item.getID() == this.getCurrentObjective().getItem()){
+			this.increaseQuestData("items");
+			if(this.getQuestData().items >= this.getCurrentObjective().getAmount()){
+				this.advanceQuest();
+			}
+			return;
+		}
+	}
+
 	if(!this.inventory.items[item.getID()]){
 		this.inventory.items[item.getID()] = amount;
 	}else{
@@ -184,15 +195,6 @@ Player.prototype.giveItem = function(item, amount){
 
 	if(this.isClient()){
 		this.sendInventoryUpdate();
-	}
-
-	if(this.isDoingObjective(Objective.PICKUP_ITEM)){
-		if(item.getID() == this.getCurrentObjective().getItem()){
-			this.increaseQuestData("items");
-			if(this.getQuestData().items >= this.getCurrentObjective().getAmount()){
-				this.advanceQuest();
-			}
-		}
 	}
 };
 
@@ -492,11 +494,10 @@ Player.prototype.attack = function(){
 		if(hit_entity){
 			game.playSound(Sound.HIT);
 			if(hit_entity.getHP() - amount > 0){
-				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit_entity.getUID(), amount: amount});
-				this.addXP(15);
+				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit_entity.getUID(), amount: amount, player: me().getUUID()});
 			}else{
-				game.broadcast(Messages.KILL_ENTITY, {uid: hit_entity.getUID()});
-				this.addXP(hit_entity.getSettings().death_xp, TextColor.KILL_XP);
+				game.broadcast(Messages.KILL_ENTITY, {uid: hit_entity.getUID(), player: me().getUUID()});
+
 				if(Math.random() <= 0.35){
 					var gp = getRange(5, 15);
 					setTimeout(function(){
@@ -725,7 +726,7 @@ Player.prototype.draw = function(){
 		this.message = undefined;
 	}
 
-	if(this.hp < 100 && this.lastHurt > 0 && now - this.lastHurt > Settings.player_heal_wait){
+	if(this.totalAggressed <= 0 && this.hp < 100 && this.lastHurt > 0 && now - this.lastHurt > Settings.player_heal_wait){
 		if(this.healStep == 0){
 			this.hp += 1;
 			this.updateHPBar();

@@ -11,7 +11,7 @@ Client.prototype.draw = function(){
 	if(screen.disconnect){
 		return;
 	}
-	
+
 	now = Date.now();
 	elapsed = now - then;
 

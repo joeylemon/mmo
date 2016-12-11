@@ -19,7 +19,7 @@ QuestMenu.prototype.updateQuests = function(){
 		var quest = me().getQuest();
 
 		$("#quests-list").append("" +
-		"<div class='quest in-progress'>" +
+		"<div class='quest'>" +
 			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 			"<br>" +
 			"<span class='status in-progress'>In Progress</span>" +
@@ -32,7 +32,7 @@ QuestMenu.prototype.updateQuests = function(){
 	for(var i = 0; i < incompleted.length; i++){
 		var quest = incompleted[i];
 		$("#quests-list").append("" +
-			"<div class='quest not-started'>" +
+			"<div class='quest'>" +
 				"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 				"<br>" +
 				"<span class='status not-started'>Not Started</span>" +
@@ -40,13 +40,13 @@ QuestMenu.prototype.updateQuests = function(){
 				"<span class='status objective'>talk to " + getQuestNPC(getQuestID(quest.getTitle())).getName() + " at lvl. " + quest.getMinimumLevel() + "</span>" +
 			"</div>");
 	}
-	
+
 	var completed = me().getCompletedQuests();
 	for(var i = 0; i < completed.length; i++){
 		var quest = completed[i];
 
 		$("#quests-list").append("" +
-		"<div class='quest completed'>" +
+		"<div class='quest'>" +
 			"<span class='title'>\"" + quest.getTitle() + "\"</span>" +
 			"<br>" +
 			"<span class='status completed'>Completed</span>" +

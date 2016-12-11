@@ -122,12 +122,38 @@ document.onkeydown = function(event) {
 		screen.toggleDebug();
 	}else if(code == 69){
 		var item = game.getNearbyItem(me().getCenter().x, me().getCenter().y);
+		var npc = game.getNearbyNPC(me().getCenter().x, me().getCenter().y);
 		if(item){
 			game.removeItem(item);
 
-			me().giveItem(item, 1);
-			var text = new Text("+1 " + item.getID(), {size: 25, color: TextColor.GP});
-			me().addText(text);
+			if(item.getID() == "moneybag"){
+				me().addGP(getRange(30, 100));
+			}else{
+				me().giveItem(item, 1);
+				var text = new Text("+1 " + item.getName(), {size: 25, color: TextColor.GP});
+				me().addText(text);
+			}
+		}else if(npc){
+			if(npc.quest){
+				npc.talk();
+			}else{
+				if(npc.getType() == StoreType.ARMORY){
+					armory.showStore();
+				}else if(npc.getType() == StoreType.HEALER){
+					if(me().getHP() < 100){
+						if(me().getGP() >= Settings.heal_cost){
+							me().heal(100 - me().getHP());
+							setTimeout(function(){
+								me().removeGP(Settings.heal_cost);
+							}, 500);
+						}else{
+							npc.talk("Healing costs " + Settings.heal_cost + " gp.");
+						}
+					}else{
+						npc.talk("You are fully healed already.");
+					}
+				}
+			}
 		}
 	}
 };
@@ -163,29 +189,7 @@ document.onmousedown = function(event) {
 
 	if(code == 0){
 		if(!screen.isMenuShowing()){
-			var npc = game.getClickedNPC();
-			if(npc){
-				if(npc.quest){
-					npc.talk();
-				}else{
-					if(npc.getType() == StoreType.ARMORY){
-						armory.showStore();
-					}else if(npc.getType() == StoreType.HEALER){
-						if(me().getHP() < 100){
-							if(me().getGP() >= Settings.heal_cost){
-								me().heal(100 - me().getHP());
-								setTimeout(function(){
-									me().removeGP(Settings.heal_cost);
-								}, 500);
-							}else{
-								npc.talk("Healing costs " + Settings.heal_cost + " gp.");
-							}
-						}else{
-							npc.talk("You are fully healed already.");
-						}
-					}
-				}
-			}else if(me().canAttack()){
+			if(me().canAttack()){
 				me().attack();
 				var msg = {
 					index: myIndex,

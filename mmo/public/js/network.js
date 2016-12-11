@@ -40,9 +40,17 @@ socket.on('msg', function(data){
 		var entity = new Entity(data.entity.id, data.entity.uid, data.entity.x, data.entity.y, data.entity.hp, data.entity.map);
 		game.addEntity(entity);
 	}else if(data.type == Messages.KILL_ENTITY){
-		game.getEntity(data.uid).kill();
+		var entity = game.getEntity(data.uid);
+		entity.kill();
+		if(data.player == me().getUUID()){
+			me().addXP(entity.getSettings().death_xp, TextColor.KILL_XP);
+		}
 	}else if(data.type == Messages.ATTACK_ENTITY){
-		game.getEntity(data.uid).hurt(data.amount);
+		var entity = game.getEntity(data.uid);
+		entity.hurt(data.amount);
+		if(data.player == me().getUUID()){
+			me().addXP(15);
+		}
 	}else if(data.type == Messages.MOVE_ENTITIES){
 		for(var i = 0; i < data.moves.length; i++){
 			var move = data.moves[i];
