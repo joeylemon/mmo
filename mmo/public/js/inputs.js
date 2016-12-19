@@ -119,7 +119,9 @@ document.onkeydown = function(event) {
 	if(key){
 		client.addKey(key);
 	}else if(code == 192){
-		screen.toggleDebug();
+		//if(me().isAdmin()){
+			screen.toggleDebug();
+		//}
 	}else if(code == 69){
 		var item = game.getNearbyItem(me().getCenter().x, me().getCenter().y);
 		var npc = game.getNearbyNPC(me().getCenter().x, me().getCenter().y);

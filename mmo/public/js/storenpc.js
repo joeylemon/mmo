@@ -9,6 +9,8 @@ var StoreNPC = function(x, y, map, type){
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
 
+	this.interact = false;
+
 	this.sprites = {
 		npc: new Sprite(this.id, x, y, true),
 		shadow: new Sprite(Sprites.SHADOW, x, y)
@@ -52,6 +54,14 @@ StoreNPC.prototype.onMap = function(){
 	return this.map == map.getName();
 };
 
+StoreNPC.prototype.showInteraction = function(){
+	this.interact = true;
+};
+
+StoreNPC.prototype.hideInteraction = function(){
+	this.interact = false;
+};
+
 StoreNPC.prototype.draw = function(){
 	if(!this.onMap()){
 		return;
@@ -75,6 +85,13 @@ StoreNPC.prototype.draw = function(){
 	this.getSprite().draw(this.idleStep, idle.row);
 
 	game.drawText(this.getCenter().x, this.getY() + this.getSprite().getHeight() + 10, this.name, 16, "#000", 5, "#fff");
+	if(this.interact){
+		if(distance(me().getCenter(), this.getCenter()) >= Settings.nearby_npc_dist){
+			this.interact = false;
+		}else{
+			game.drawText(this.getCenter().x, this.getY() + this.getSprite().getHeight() + 27, "Press E to interact", 14, "#000", 5, "#00BA19");
+		}
+	}
 
 	if(this.message && !this.message.isDead()){
 		this.message.draw(this.getTop());

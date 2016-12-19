@@ -44,12 +44,12 @@ Client.prototype.draw = function(){
 			var fullnext = me().getNextPosition();
 			var validity = me().isNextPositionValid();
 
-			if(fullnext.y <= 60 && Math.abs(fullnext.x - map.getCenter().x) <= 200){
+			if(fullnext.y <= 60 /*&& Math.abs(fullnext.x - map.getCenter().x) <= 200*/){
 				var next = game.getNextMap(Orientation.UP);
 				if(next){
 					game.switchMap(next, true);
 				}
-			}else if(fullnext.y >= map.getMaxY() - 90 && Math.abs(fullnext.x - map.getCenter().x) <= 200){
+			}else if(fullnext.y >= map.getMaxY() - 90 /*&& Math.abs(fullnext.x - map.getCenter().x) <= 200*/){
 				var next = game.getNextMap(Orientation.DOWN);
 				if(next){
 					game.switchMap(next, true);

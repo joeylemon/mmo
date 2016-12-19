@@ -8,7 +8,7 @@ socket.on('msg', function(data){
 		for(var i = 0; i < data.players.length; i++){
 			var object = data.players[i];
 			if(object != null){
-				var p = new Player(object.uuid, object.username, object.level, object.inv, object.pos, object.quests, object.gp);
+				var p = new Player(object.uuid, object.username, object.level, object.inv, object.pos, object.quests, object.gp, object.map);
 				players.push(p);
 			}else{
 				players.push(null);
@@ -110,7 +110,7 @@ socket.on('msg', function(data){
 
 	/* Player messages */
 	if(data.type == Messages.JOIN){
-		var p = new Player(data.uuid, data.username, data.level, data.inv, data.pos, data.quests, data.gp);
+		var p = new Player(data.uuid, data.username, data.level, data.inv, data.pos, data.quests, data.gp, MapType.MAIN);
 		players.push(p);
 		document.getElementById("online").innerHTML = game.getPlayersOnline();
 	}else if(data.type == Messages.LEAVE){

@@ -1,7 +1,7 @@
 var quests = [
      new Quest(
           "Steve's Dilemma",
-          10,
+          7,
           [
                new KillEntityObjective(Entity.CRAB, 5),
                new KillEntityObjective(Entity.SKELETON, 5),
@@ -14,7 +14,7 @@ var quests = [
           "Cocky Coders",
           2,
           [
-               new TalkInChatObjective("Question: what is a variable?", "named location in storage"),
+               new TalkInChatObjective("What is a variable?", "named location in storage"),
           ],
           100,
           25
@@ -48,7 +48,26 @@ var quests = [
           ],
           500,
           500
-     )
+     ),
+     new Quest(
+          "Joe's Dilemma",
+          9,
+          [
+               new KillEntityObjective(Entity.SPECTRE, 10),
+               new TalkToNPCObjective("Farmer Joe")
+          ],
+          1500,
+          500
+     ),
+	 new Quest(
+          "Cocky Coders II",
+          4,
+          [
+               new TalkInChatObjective("What is a class?", "blueprint"),
+          ],
+          100,
+          75
+     ),
 ];
 
 function getQuestID(title){

@@ -204,10 +204,65 @@ img {
      border-radius: 2px;
 }
 
+.leaderboards {
+     display: none;
+     position: relative;
+     width: 700px;
+     height: 600px;
+     background-color: #fff;
+     border-radius: 3px;
+     font-family: profont;
+     padding-bottom: 10px;
+}
+
+.leaderboards .title {
+     font-size: 30px;
+}
+
+.leaderboards .next-page {
+	top: 30px;
+	right: 208px;
+}
+
+.leaderboards .last-page {
+	top: 30px;
+	left: 208px;
+}
+
+.leaderboards .rank {
+	color: #707070;
+}
+
+.leaderboards .armor-icon {
+     width: 30px;
+     height: 30px;
+     margin-right: 13px;
+}
+
+div.leaderboards table {
+     margin: 0 auto;
+     margin-top: 30px;
+     text-align: left;
+     font-size: 23px;
+     width: 90%;
+}
+
+div.leaderboards td, th {
+     border: 0px;
+     text-align: left;
+     padding: 8px;
+     color: #077B00;
+}
+
+div.leaderboards tbody:nth-child(even) {
+     background-color: #f5f5f5;
+}
+
 .quests {
      display: none;
      position: relative;
      width: 600px;
+	 height: 407px;
      background-color: #fff;
      border-radius: 3px;
      font-family: profont;
@@ -215,8 +270,32 @@ img {
 }
 
 .quests .title {
-     font-size: 40px;
+     font-size: 30px;
      color: #000;
+}
+
+.quests .list {
+     padding-top: 10px;
+}
+
+.page-button {
+     font-size: 17px;
+     position: absolute;
+}
+
+.page-button:hover {
+     cursor: pointer;
+     opacity: 0.6;
+}
+
+.quests .next-page {
+	top: 31px;
+	right: 205px;
+}
+
+.quests .last-page {
+	top: 31px;
+	left: 205px;
 }
 
 .close-button {
@@ -226,6 +305,10 @@ img {
 	cursor: pointer;
 	font-size: 25px;
      color: #BCBCBC;
+}
+
+.close-button:hover {
+     opacity: 0.6;
 }
 
 .quests .quest {
@@ -288,7 +371,7 @@ img {
      margin-top: 10px;
      background-color: rgba(0, 0, 0, 0);
      color: #fff;
-     box-shadow: 2px 2px 5px #000;
+     box-shadow: 1px 1px 5px #000;
      border-radius: 2px;
      border: 2px solid #fff;
      text-shadow: 2px 2px #000;
@@ -472,6 +555,7 @@ img {
 .new-hero {
 	display: inline-block;
 	width: 500px;
+     padding-left: 30px;
 }
 
 .new-hero .title {
@@ -490,6 +574,10 @@ img {
 	margin-left: 30px;
 	margin-top: 5px;
 	text-align: left;
+}
+
+.stats .stat-title {
+     color: #670000;
 }
 
 .login .title {
@@ -572,4 +660,5 @@ img {
      color: #fff;
      border: 2px solid #fff;
      background-color: rgba(0, 0, 0, 0);
+     box-shadow: 1px 1px 5px #000;
 }

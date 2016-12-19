@@ -28,9 +28,18 @@ var Events = function(){
 		login_finish: function(){
 			game.initializeClientEntities();
 			screen.removeLoginScreen();
+			$("#new-user").fadeOut(250);
 			armory.setStoreItems();
 			game.setPlayerToKill();
 			updateNPCs();
+		},
+
+		player_move: function(){
+			var center = me().getCenter();
+			var npc = game.getNearbyNPC(center.x, center.y);
+			if(npc){
+				npc.showInteraction();
+			}
 		}
 	};
 };

@@ -116,46 +116,21 @@
 				</div>
 				<!-- End new user creation -->
 
-				<!-- Begin new hero display -->
-				<div id="new-hero" class="new-hero-container">
-					<div class="login new-hero">
-						<span class="title">New Hero</span>
-						<hr>
-						<div class="player">
-							<img src="styles/images/player.png"></img>
-						</div>
-						<div class="stats">
-							Name: <span id="new-hero-name"></span>
-							<br>
-							Level: 1
-							<br>
-							Armor: cloth
-						</div>
-					</div>
-				</div>
-				<!-- End new hero display -->
-
 				<div id="menu" class="menu-container">
 					<div class="menu">
 						<input class="button menu-button" type="submit" value="Quest Journal" onclick="questmenu.show()"></input>
+						<input class="button menu-button" type="submit" value="Leaderboards" onclick="leaderboard.show()"></input>
 						<input class="button menu-button" type="submit" value="Leave Game" onclick="location.reload()"></input>
 					</div>
 				</div>
 
 				<div id="quests" class="quests">
 					<span class="close-button unselectable" onclick="questmenu.hide()">x</span>
+					<span id="q-next-page" class="page-button next-page" onclick="questmenu.next()"></span>
+					<span id="q-last-page" class="page-button last-page" onclick="questmenu.prev()"></span>
+
 					<span class="title">Quest Journal</span>
-					<span id="quests-list">
-					<!--
-					<div class="quest">
-						<span class="title">Tale of the Shirtless Man</span>
-						<br>
-						<span class="status in-progress">In Progress</span>
-						<span class="separator"> | </span>
-						<span class="status objective">Kill 5 skeletons</span>
-					</div>
-					-->
-					</span>
+					<div class="list" id="quests-list"></div>
 				</div>
 
 				<div id="store" class="store unselectable">
@@ -168,6 +143,14 @@
 					</div>
 					<div class="sub-store" id="armor-store"></div>
 					<div class="sub-store" id="weapon-store" style="display: none;"></div>
+				</div>
+
+				<div id="leaderboards" class="leaderboards unselectable">
+					<span class="close-button unselectable" onclick="leaderboard.hide()">x</span>
+					<span id="l-next-page" class="page-button next-page" onclick="leaderboard.next()"></span>
+					<span id="l-last-page" class="page-button last-page" onclick="leaderboard.prev()"></span>
+					<span class="title">Leaderboards</span>
+					<table id="leaderboard-table"></table>
 				</div>
 
 				<div id="dead" class="dead unselectable">
@@ -205,6 +188,7 @@
 	<script src="js/ui/screen.js"></script>
 	<script src="js/ui/armory.js"></script>
 	<script src="js/ui/questmenu.js"></script>
+	<script src="js/ui/leaderboard.js"></script>
 
 	<script src="js/game.js"></script>
 	<script src="js/enums.js"></script>

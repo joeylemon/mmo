@@ -23,6 +23,7 @@ PlayerScreen.prototype.removeLoginScreen = function(){
 	fadeSoundtrackOut();
 
 	$("#existing-user").fadeOut(250);
+	$("#new-user").fadeOut(250);
 	$("#borders").fadeOut(1000);
 	$("#logo").fadeOut(0);
 	this.fadeBlurOut();

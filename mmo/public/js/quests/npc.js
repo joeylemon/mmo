@@ -8,6 +8,8 @@ var NPC = function(name, quest, id, x, y, map, dialogue, completed, low_level, d
 	this.idleStep = 1;
 	this.lastIdleChange = 0;
 
+	this.interact = false;
+
 	this.dialogue = {
 		regular: dialogue,
 		completed: completed,
@@ -135,6 +137,14 @@ NPC.prototype.talk = function(){
 	}, 4000);
 };
 
+NPC.prototype.showInteraction = function(){
+	this.interact = true;
+};
+
+NPC.prototype.hideInteraction = function(){
+	this.interact = false;
+};
+
 NPC.prototype.onMap = function(){
 	return this.map == map.getName();
 };
@@ -162,6 +172,13 @@ NPC.prototype.draw = function(){
 	this.sprites.npc.draw(this.idleStep, idle.row);
 
 	game.drawText(this.getCenter().x, this.getY() + this.getSprite().getHeight() + 10, this.name, 16, "#000", 5, "#fff");
+	if(this.interact){
+		if(distance(me().getCenter(), this.getCenter()) >= Settings.nearby_npc_dist){
+			this.interact = false;
+		}else{
+			game.drawText(this.getCenter().x, this.getY() + this.getSprite().getHeight() + 27, "Press E to interact", 14, "#000", 5, "#00BA19");
+		}
+	}
 
 	if(this.message && !this.message.isDead()){
 		this.message.draw(this.getTop());

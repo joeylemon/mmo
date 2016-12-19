@@ -1,4 +1,4 @@
-var Player = function(uuid, name, level, inventory, position, my_quests, gp){
+var Player = function(uuid, name, level, inventory, position, my_quests, gp, map){
 	this.uuid = uuid;
 	this.name = name;
 	this.level = level;
@@ -7,7 +7,7 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 	this.gp = gp;
 	this.hp = 100;
 	this.keys = new Array();
-	this.map = MapType.MAIN;
+	this.map = map;
 
 	this.armor = game.getArmorFromID(inventory.armor);
 	this.sword = game.getWeaponFromID(inventory.sword);
@@ -50,7 +50,10 @@ var Player = function(uuid, name, level, inventory, position, my_quests, gp){
 };
 
 Player.prototype.isClient = function(){
-	return me().getUUID() == this.uuid;
+	if(!this.isclient){
+		this.isclient = me().getUUID() == this.uuid;
+	}
+	return this.isclient;
 };
 
 Player.prototype.getObject = function(){
@@ -98,6 +101,9 @@ Player.prototype.setX = function(x){
 		this.position.x = x;
 		this.sprites.player.setX(x);
 		this.sprites.sword.setX(x + game.getSwordOffset(this.sprites.player.getOrientation).x);
+		if(this.isClient()){
+			events.fire(EventType.PLAYER_MOVE);
+		}
 	}
 };
 
@@ -401,6 +407,8 @@ Player.prototype.getCompletedQuests = function(){
 		var id = this.quests.completed[i];
 		completed.push(quests[id]);
 	}
+
+	completed.sortQuests(SortType.HIGH_LOW);
 	return completed;
 };
 
@@ -411,6 +419,8 @@ Player.prototype.getIncompletedQuests = function(){
 			incompleted.push(quests[i]);
 		}
 	}
+
+	incompleted.sortQuests(SortType.LOW_HIGH);
 	return incompleted;
 };
 
@@ -440,8 +450,11 @@ Player.prototype.say = function(msg){
 		chatbox = "#C63A3A";
 	}
 	this.message = new Message(msg, color);
-	game.playSound(Sound.CHAT);
 	game.appendChat("<span style='color:" + chatbox + "'>" + this.getName() + ":</span> " + msg + "<br>");
+
+	if(this.isClient()){
+		game.playSound(Sound.CHAT);
+	}
 };
 
 Player.prototype.move = function(dir){
@@ -461,7 +474,7 @@ Player.prototype.move = function(dir){
 };
 
 Player.prototype.getDamage = function(){
-	return Math.floor(this.getWeapon().damage + (this.getLevel() / 5));
+	return this.getWeapon().damage;
 };
 
 Player.prototype.canAttack = function(){
@@ -495,8 +508,24 @@ Player.prototype.attack = function(){
 			game.playSound(Sound.HIT);
 			if(hit_entity.getHP() - amount > 0){
 				game.broadcast(Messages.ATTACK_ENTITY, {uid: hit_entity.getUID(), amount: amount, player: me().getUUID()});
+
+				if(!hit_entity.isAggressive()){
+					hit_entity.aggro(this);
+				}
 			}else{
 				game.broadcast(Messages.KILL_ENTITY, {uid: hit_entity.getUID(), player: me().getUUID()});
+
+				if(hit_entity.id == "bat" && me().hasQuest() && me().getQuest().getTitle() == "Apple Pickers" && me().isDoingObjective(Objective.PICKUP_ITEM)){
+					if(Math.random() <= 0.5){
+						game.addItem("apple", hit_entity.getCenter().x, hit_entity.getCenter().y, hit_entity.getMap());
+					}
+				}else if(hit_entity.id == "deathknight"){
+					if(Math.random() <= 0.3){
+						game.addItem("moneybag", hit_entity.getCenter().x, hit_entity.getCenter().y, hit_entity.getMap());
+					}
+				}
+
+				game.playSound(Sound.KILL);
 
 				if(Math.random() <= 0.35){
 					var gp = getRange(5, 15);
@@ -513,10 +542,6 @@ Player.prototype.attack = function(){
 						}
 					}
 				}
-			}
-
-			if(!hit_entity.isAggressive()){
-				hit_entity.aggro(this);
 			}
 		}else if(hit_player && this.isDoingObjective(Objective.KILL_PLAYER)){
 			game.playSound(Sound.HIT);
@@ -552,6 +577,15 @@ Player.prototype.hurt = function(amount){
 			this.updateHPBar();
 		}else{
 			this.kill();
+		}
+
+		if(!bordersFading){
+			bordersFading = true;
+			$("#borders").fadeIn(25);
+			$("#borders").delay(500).fadeOut(500);
+			setTimeout(function(){
+				bordersFading = false;
+			}, 1000);
 		}
 	}
 };

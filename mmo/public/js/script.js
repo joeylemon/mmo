@@ -80,9 +80,11 @@ function login(){
 			url: "js/login.js",
 			data: {'username': username, 'password': password},
 			success: function (result){
+				setLoggingIn(false);
+
 				if(result.length > 30){
 					var object = $.parseJSON(result);
-					myplayer = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos), $.parseJSON(object.quests), object.gp);
+					myplayer = new Player(object.uuid, object.username, $.parseJSON(object.level), $.parseJSON(object.inv), $.parseJSON(object.pos), $.parseJSON(object.quests), object.gp, MapType.MAIN);
 					events.fire(EventType.LOGIN_BEGIN);
 				}else{
 					if(result == "bad username"){
@@ -91,8 +93,6 @@ function login(){
 						alertBadInput("password", "Password is incorrect.");
 					}
 				}
-
-				setLoggingIn(false);
 			}
 		});
 	}else{
@@ -102,24 +102,18 @@ function login(){
 			url: "js/newuser.js",
 			data: {'username': username, 'password': password, 'uuid': game.getNewUUID()},
 			success: function (result){
+				setLoggingIn(false);
+
 				if(result != "bad username"){
 					var form = document.getElementById("existing-login");
 					form.elements["existing-username"].value = username;
 					form.elements["existing-password"].value = password;
 
-					$("#new-user").fadeOut(250);
-					$("#new-hero").delay(250).fadeIn(250);
-					setTimeout(function(){
-						$("#new-hero").fadeOut(250);
-						showLogin("existing");
-					}, 5000);
-
-					document.getElementById("new-hero-name").innerHTML = username;
+					existing = true;
+					login();
 				}else{
 					alertBadInput("username", "Username already exists.");
 				}
-
-				setLoggingIn(false);
 			}
 		});
 	}

@@ -25,7 +25,12 @@ PlayerScreen.prototype.removeLoginScreen = function(){
 	fadeSoundtrackOut();
 
 	$("#existing-user").fadeOut(250);
+
 	$("#borders").fadeOut(1000);
+	setTimeout(function(){
+		$("#borders").css("boxShadow", "inset 0 0 50px #8A0808");
+	}, 1000);
+
 	$("#logo").fadeOut(0);
 	this.fadeBlurOut();
 
@@ -74,6 +79,7 @@ PlayerScreen.prototype.hideMenu = function(){
 	$("#menu").fadeOut(250);
 	$("#quests").fadeOut(250);
 	$("#store").fadeOut(250);
+	$("#leaderboards").fadeOut(250);
 	$("#info-container").fadeIn(250);
 };
 

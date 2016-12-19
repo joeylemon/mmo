@@ -117,6 +117,41 @@ var all_npcs = [
                "Maybe once you're done!"
           ]
      ),
+	 new NPC(
+          "Nerdy Nate",
+          6,
+          "coder",
+          225,
+          340,
+          MapType.MAIN,
+          [
+               "We meet again, %name.",
+               "This time you shall not embarrass me.",
+               "What is a class?"
+          ],
+          [
+               "My word... I suppose you are the better coder.",
+               "I admit my defeat to you.",
+               "You don't have to rub it in."
+          ],
+          [
+               "Greetings again, %name.",
+               "You're unworthy of my next question.",
+               "Try coming back when you're level %level."
+          ],
+          [
+               "Answer my question: what is a class?",
+               "The answer is a single word, less than 10 letters.",
+               "Type out your answer in chat, any day now!",
+               "Simply press ENTER and type your answer!"
+          ],
+          [
+               "Hello again, %name!",
+               "I would challenge your intelligence once more...",
+               "But you seem to be busy already.",
+               "Maybe once you're done!"
+          ]
+     ),
      new NPC(
           "Farmer Joe",
           2,
@@ -129,7 +164,7 @@ var all_npcs = [
                "I was just about to gather me up some dinner.",
                "Problem is... the darned bats stole my fresh apples!",
                "This old man ain't got the strength to fight no more.",
-               "Maybe you could get my apples for me, what d'ya say?"
+			   "Go kill them bats, hopefully they'll drop my apples!"
           ],
           [
                "Now that's what I'm talking 'bout!",
@@ -145,6 +180,39 @@ var all_npcs = [
                "Have you gotten the food yet?",
                "The bats stole the apples from me!",
                "I'll pay ya to get them back, I swear on it!"
+          ],
+          [
+               "Howdy partner!",
+               "You seem a little busy, don't ya.",
+               "I won't bother you with my worries."
+          ]
+     ),
+	 new NPC(
+          "Farmer Joe",
+          5,
+          "desertnpc",
+          1367,
+          376,
+          MapType.MAIN,
+          [
+               "%name!",
+               "I need you again!",
+               "I'm trying to expand my farm.",
+               "But all land north of here is haunted!",
+               "Kill some of them spectres up there for me, would ya?"
+          ],
+          [
+               "You are one mighty good man.",
+               "A gentleman and a scholar!"
+          ],
+          [
+               "Hey there %name.",
+               "I'll need you again soon!",
+               "Once you reach level %level, talk to me!"
+          ],
+          [
+               "Have you killed the spectres?",
+			   "Tell me when you've killed them off!"
           ],
           [
                "Howdy partner!",
@@ -226,7 +294,7 @@ function getHighestLevelNPC(name){
 }
 
 function getBestNPC(name){
-	var npc;
+     var npc;
 	for(var i = 0; i < all_npcs.length; i++){
 		var n = all_npcs[i];
 		if(n.quest && n.getName() == name){
@@ -235,7 +303,7 @@ function getBestNPC(name){
                     break;
                }else{
      			var level = quests[n.getQuestID()].getMinimumLevel();
-     			if(!me().hasCompletedQuest(n.getQuestID()) && me().getLevel() <= level){
+     			if(!me().hasCompletedQuest(n.getQuestID())){
      				npc = n;
                          break;
      			}

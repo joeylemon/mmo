@@ -46,11 +46,11 @@ Game.prototype.switchMap = function(next, cameraChange){
 		if(cameraChange){
 			if(me().getY() <= 60){
 				camera.setToBottom();
-				me().setX((map.getMaxX() / 2) - 64);
+				//me().setX((map.getMaxX() / 2) - 64);
 				me().setY(map.getMaxY() - 150);
 			}else{
 				camera.setToTop();
-				me().setX((map.getMaxX() / 2) - 64);
+				//me().setX((map.getMaxX() / 2) - 64);
 				me().setY(65);
 			}
 		}
@@ -179,6 +179,24 @@ Game.prototype.getAnimationFromKey = function(key){
 		return Animations.WALK_LEFT;
 	}else if(key == Key.RIGHT){
 		return Animations.WALK_RIGHT;
+	}
+};
+
+Game.prototype.getWeaponProperName = function(id){
+	for(var key in Weapon){
+		var type = Weapon[key];
+		if(type.id == id){
+			return type.name;
+		}
+	}
+};
+
+Game.prototype.getArmorProperName = function(id){
+	for(var key in Armor){
+		var type = Armor[key];
+		if(type.id == id){
+			return type.name;
+		}
 	}
 };
 
@@ -397,7 +415,7 @@ Game.prototype.getNearbyNPC = function(x, y){
 	for(var i = 0; i < npcs.length; i++){
 		var npc = npcs[i];
 		if(npc.onMap()){
-			if(distance(npc.getCenter(), {x: x, y: y}) <= 75){
+			if(distance(npc.getCenter(), {x: x, y: y}) <= Settings.nearby_npc_dist){
 				return npc;
 			}
 		}
@@ -427,6 +445,15 @@ Game.prototype.getPlayersOnline = function(){
 		}
 	}
 	return online;
+};
+
+Game.prototype.getOnlinePlayer = function(uuid){
+	for(var i = 0; i < players.length; i++){
+		var player = players[i];
+		if(player && player != null && player.uuid == uuid){
+			return player;
+		}
+	}
 };
 
 Game.prototype.getHealthColor = function(percent){

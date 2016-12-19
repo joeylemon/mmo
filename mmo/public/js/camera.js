@@ -38,11 +38,11 @@ Camera.prototype.setToMiddle = function(){
 };
 
 Camera.prototype.setToBottom = function(){
-	offset.x = (-map.maxX / 2) + (canvas.width / 2);
+	//offset.x = (-map.maxX / 2) + (canvas.width / 2);
 	offset.y = -map.getMaxY() + canvas.height;
 };
 
 Camera.prototype.setToTop = function(){
-	offset.x = (-map.maxX / 2) + (canvas.width / 2);
+	//offset.x = (-map.maxX / 2) + (canvas.width / 2);
 	offset.y = 0;
 }

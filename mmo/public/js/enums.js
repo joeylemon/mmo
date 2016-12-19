@@ -19,6 +19,7 @@ $("#game").mousedown(function(event){
 /* Initialize game variables */
 var socket = io();
 
+var leaderboard = new Leaderboard();
 var screen = new PlayerScreen();
 var questmenu = new QuestMenu();
 var armory = new Armory();
@@ -26,8 +27,10 @@ var armory = new Armory();
 var ogreID = Math.random() * 100000;
 var prevChats = new Array();
 var chatbox = new Array();
+var bordersFading = false;
 var prevChatIndex = 0;
 var hitSound = 1;
+var nearbyNPC;
 var toKill;
 
 var camera;
@@ -88,6 +91,9 @@ var Settings = {
 	idle_camera_speed: {x: -0.10, y: -0.175},
 	not_admin_message: "You do not have permission to do that!",
 	invalid_command: "Invalid command.",
+	quests_per_page: 5,
+	players_per_page: 13,
+	nearby_npc_dist: 75,
 
 	/* Entity settings */
 	player_speed: 4.8,
@@ -110,7 +116,8 @@ var Settings = {
 var EventType = {
 	LOAD_FINISH: "load_finish",
 	LOGIN_BEGIN: "login_begin",
-	LOGIN_FINISH: "login_finish"
+	LOGIN_FINISH: "login_finish",
+	PLAYER_MOVE: "player_move"
 };
 
 var EntitySettings = {
@@ -127,7 +134,9 @@ var Entity = {
 	SKELETON: "skeleton",
 	BAT: "bat",
 	OGRE: "ogre",
-	CRAB: "crab"
+	CRAB: "crab",
+	SPECTRE: "spectre",
+	DEATH_KNIGHT: "deathknight"
 };
 
 var ItemName = {
@@ -243,6 +252,11 @@ var MapLayer = {
 	BOTTOM: false
 };
 
+var SortType = {
+	LOW_HIGH: "low_high",
+	HIGH_LOW: "high_low"
+};
+
 var sounds = {};
 for(var key in Sound){
 	var sound = Sound[key];
@@ -256,6 +270,56 @@ window.onload = function(){
 }
 
 /* Initialize functions */
+Array.prototype.getPage = function(page, items){
+	var start = (page - 1) * items;
+	var end = ((page - 1) * items) + (items);
+	if(this[start]){
+		return this.slice(start, end);
+	}
+};
+
+Array.prototype.sortQuests = function(type){
+	if(type == SortType.LOW_HIGH){
+		this.sort(function(a, b){
+			if(a.getMinimumLevel() > b.getMinimumLevel()){
+				return 1;
+			}else if(a.getMinimumLevel() < b.getMinimumLevel()){
+				return -1;
+			}
+			return 0;
+		});
+	}else{
+		this.sort(function(a, b){
+			if(a.getMinimumLevel() < b.getMinimumLevel()){
+				return 1;
+			}else if(a.getMinimumLevel() > b.getMinimumLevel()){
+				return -1;
+			}
+			return 0;
+		});
+	}
+};
+
+Array.prototype.sortPlayers = function(){
+	this.sort(function(a, b){
+		if(a.level.level > b.level.level){
+			return -1;
+		}else if(a.level.level < b.level.level){
+			return 1;
+		}
+		return 0;
+	});
+};
+
+Array.prototype.containsName = function(name){
+	for(var i = 0; i < this.length; i++){
+		var player = this[i];
+		if(player.username == name){
+			return i;
+		}
+	}
+};
+
 function me(){
 	return players[myIndex];
 }
