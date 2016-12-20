@@ -92,7 +92,7 @@ var Settings = {
 	not_admin_message: "You do not have permission to do that!",
 	invalid_command: "Invalid command.",
 	quests_per_page: 5,
-	players_per_page: 13,
+	players_per_page: 11,
 	nearby_npc_dist: 75,
 
 	/* Entity settings */

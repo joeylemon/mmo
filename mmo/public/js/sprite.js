@@ -9,10 +9,10 @@ var Sprite = function(id, x, y, idle){
 
 Sprite.prototype.setData = function(){
 	var sprite = this;
+	sprite.image = images[sprite.id];
 
 	$.getJSON("js/sprites/" + this.id + ".json", function(value){
 		sprite.data = value;
-		sprite.image = images[sprite.id];
 	});
 };
 

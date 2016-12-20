@@ -316,7 +316,6 @@ div.leaderboards tbody:nth-child(even) {
      width: 100%;
      background-color: #EEEEEE;
      margin-top: 5px;
-     border-bottom: 2px solid #BDBDBD;
 }
 
 .quest .title {
