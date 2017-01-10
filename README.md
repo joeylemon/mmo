@@ -5,9 +5,8 @@ An online multiplayer game which allows players to interact with each other and 
 
 <h2>Features included</h2>
 - Persistent user accounts
- - Allows users to log in from any device and pick up where they left off
 - Real time multiplayer using socket.io and node.js
-- Explorable maps
+- Explorable world
 - Purchasable weapons and armor
 - Health system
 - Level system
