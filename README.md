@@ -3,7 +3,7 @@ An online multiplayer game which allows players to interact with each other and 
 
 ![](http://i.imgur.com/vQVsxHm.png)
 
-<h2>Features included</h2>
+## Features included
 - Persistent user accounts
 - Real time multiplayer using socket.io and node.js
 - Explorable world
