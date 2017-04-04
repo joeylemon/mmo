@@ -187,6 +187,16 @@ img {
 	display: none;
 }
 
+.menu-container .credits {
+	position: fixed;
+	bottom: 0px;
+	left: 7px;
+	font-family: profont;
+	color: #fff;
+	font-size: 20px;
+	text-shadow: 1px 1px 3px #000;
+}
+
 .menu {
 	display: inline-block;
 	font-size: 25px;
@@ -626,7 +636,7 @@ div.leaderboards tbody:nth-child(even) {
 }
 
 .login .break {
-	margin-top: 50px;
+	margin-top: 40px;
 }
 
 .login .change-login a {

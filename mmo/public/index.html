@@ -91,7 +91,9 @@
 					</form>
 
 					<div class="break"></div>
-					<span class="change-login"><a href="#" onclick="showLogin('new')">Need to create an account? Click here.</a></span>
+					<span class="change-login"><a href="#" onclick="showLogin('new')">Want to create an account? Click here.</a></span>
+					<br>
+					<span class="change-login"><a href="#" onclick="quickCreate()">Play as guest? Click here.</a></span>
 				</div>
 				<!-- End existing user login -->
 
@@ -113,6 +115,8 @@
 
 					<div class="break"></div>
 					<span class="change-login"><a href="#" onclick="showLogin('existing')">Already have an account? Click here.</a></span>
+					<br>
+					<span class="change-login"><a href="#" onclick="quickCreate()">Play as guest? Click here.</a></span>
 				</div>
 				<!-- End new user creation -->
 
@@ -122,6 +126,9 @@
 						<input class="button menu-button" type="submit" value="Leaderboards" onclick="leaderboard.show()"></input>
 						<input class="button menu-button" type="submit" value="Source Code" onclick="window.open('https://github.com/finelime/mmo', '_blank');"></input>
 						<input class="button menu-button" type="submit" value="Leave Game" onclick="location.reload()"></input>
+					</div>
+					<div class="credits">
+						Art assets borrowed from Mozilla's Browser Quest.
 					</div>
 				</div>
 

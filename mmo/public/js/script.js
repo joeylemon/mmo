@@ -119,6 +119,31 @@ function login(){
 	}
 }
 
+function quickCreate(){
+	var username = "#" + Math.random().toString(36).substr(2, 5);
+	var password = "123";
+	setLoggingIn(true);
+	$.ajax({
+		type: "POST",
+		url: "js/newuser.js",
+		data: {'username': username, 'password': password, 'uuid': game.getNewUUID()},
+		success: function (result){
+			setLoggingIn(false);
+
+			if(result != "bad username"){
+				var form = document.getElementById("existing-login");
+				form.elements["existing-username"].value = username;
+				form.elements["existing-password"].value = password;
+
+				existing = true;
+				login();
+			}else{
+				alertBadInput("username", "Username already exists.");
+			}
+		}
+	});
+}
+
 function setLoggingIn(set){
 	var ids = getFormIDs();
 	if(set){
