@@ -79,6 +79,7 @@ var all_npcs = [
                "Maybe once you're done!"
           ]
      ),
+	 /*
      new NPC(
           "Nerdy Nate",
           1,
@@ -152,6 +153,7 @@ var all_npcs = [
                "Maybe once you're done!"
           ]
      ),
+	 */
      new NPC(
           "Farmer Joe",
           2,

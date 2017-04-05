@@ -120,7 +120,7 @@ function login(){
 }
 
 function quickCreate(){
-	var username = "#" + Math.random().toString(36).substr(2, 5);
+	var username = game.getRandomName();
 	var password = "123";
 	setLoggingIn(true);
 	$.ajax({

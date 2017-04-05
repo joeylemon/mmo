@@ -10,7 +10,6 @@ var quests = [
           1000,
           300
      ),
-	 /*
      new Quest(
           "Cocky Coders",
           2,
@@ -20,7 +19,6 @@ var quests = [
           100,
           25
      ),
-	 */
      new Quest(
           "Apple Pickers",
           5,
@@ -61,7 +59,6 @@ var quests = [
           1500,
           500
      ),
-	 /*
 	 new Quest(
           "Cocky Coders II",
           4,
@@ -71,7 +68,6 @@ var quests = [
           100,
           75
      ),
-	 */
 ];
 
 function getQuestID(title){

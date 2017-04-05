@@ -41,9 +41,11 @@ socket.on('msg', function(data){
 		game.addEntity(entity);
 	}else if(data.type == Messages.KILL_ENTITY){
 		var entity = game.getEntity(data.uid);
-		entity.kill();
-		if(data.player == me().getUUID()){
-			me().addXP(entity.getSettings().death_xp, TextColor.KILL_XP);
+		if(entity){
+			entity.kill();
+			if(data.player == me().getUUID()){
+				me().addXP(entity.getSettings().death_xp, TextColor.KILL_XP);
+			}
 		}
 	}else if(data.type == Messages.ATTACK_ENTITY){
 		var entity = game.getEntity(data.uid);
@@ -68,7 +70,9 @@ socket.on('msg', function(data){
 	}else if(data.type == Messages.ENTITY_MOVE){
 		if(data.player != me().getUUID()){
 			var entity = game.getEntity(data.uid);
-			entity.move(data.x, data.y);
+			if(entity){
+				entity.move(data.x, data.y);
+			}
 		}
 	}
 
@@ -132,10 +136,12 @@ socket.on('msg', function(data){
 		}
 	}else if(data.type == Messages.LOCATION){
 		var player = players[data.index];
-		player.setX(data.x);
-		player.setY(data.y);
-		if(data.clear){
-			player.clearKeys();
+		if(player){
+			player.setX(data.x);
+			player.setY(data.y);
+			if(data.clear){
+				player.clearKeys();
+			}
 		}
 	}else if(data.type == Messages.CHANGE_MAP){
 		var player = players[data.index];

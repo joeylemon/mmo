@@ -498,6 +498,10 @@ Game.prototype.getNewUUID = function(){
 		s4() + '-' + s4() + s4() + s4();
 };
 
+Game.prototype.getRandomName = function(){
+	return "#" + Math.random().toString(36).substr(2, 5);
+};
+
 Game.prototype.getCenter = function(){
 	var x = (canvas.width / 2) - offset.x - 64;
 	var y = (canvas.height / 2) - offset.y - 64;

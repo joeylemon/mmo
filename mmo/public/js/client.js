@@ -5,6 +5,12 @@ var Client = function(){
 	this.temp_pos = {x: 10, y: 10};
 	this.players_onscreen = 0;
 	this.entities_onscreen = 0;
+	
+	this.total_elapsed = 0;
+	this.total_checks = 0;
+	this.avg_elapsed = 20;
+	this.speed = 0;
+	this.reset = false;
 };
 
 Client.prototype.draw = function(){
@@ -14,8 +20,20 @@ Client.prototype.draw = function(){
 
 	now = Date.now();
 	elapsed = now - then;
+	if(this.total_checks < 1000){
+		this.total_elapsed += elapsed;
+		this.total_checks += 1;
+		this.avg_elapsed = this.total_elapsed / this.total_checks;
+		this.speed = this.avg_elapsed * 0.175;
+	}else if(!this.reset){
+		this.total_elapsed = 0;
+		this.total_checks = 0;
+		this.reset = true;
+	}
 
 	if(elapsed > fpsInterval){
+		Settings.player_speed = this.speed;
+		
 		then = now - (elapsed % fpsInterval);
 
 		ctx.clearRect(0, 0, width, height);

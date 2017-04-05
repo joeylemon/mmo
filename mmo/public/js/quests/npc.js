@@ -9,10 +9,6 @@ var NPC = function(name, quest, id, x, y, map, dialogue, completed, low_level, d
 	this.lastIdleChange = 0;
 
 	this.interact = false;
-	this.show = true;
-	if(this.name == "Nerdy Nate"){
-		this.show = false;
-	}
 
 	this.dialogue = {
 		regular: dialogue,
@@ -154,7 +150,7 @@ NPC.prototype.onMap = function(){
 };
 
 NPC.prototype.draw = function(){
-	if(!this.onMap() || !this.show){
+	if(!this.onMap()){
 		return;
 	}
 

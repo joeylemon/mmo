@@ -80,6 +80,9 @@ Sprite.prototype.draw = function(column, row){
 };
 
 Sprite.prototype.setIdleAnimation = function(animation){
+	if(!this.data){
+		return;
+	}
 	var row = this.data.animations[animation.name].row;
 	var length = this.data.animations[animation.name].length;
 	this.idleAnim = {length: length, row: row};

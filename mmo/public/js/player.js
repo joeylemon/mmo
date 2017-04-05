@@ -543,7 +543,7 @@ Player.prototype.attack = function(){
 					}
 				}
 			}
-		}else if(hit_player && this.isDoingObjective(Objective.KILL_PLAYER)){
+		}else if(hit_player && this.isDoingObjective(Objective.KILL_PLAYER) && hit_player.name == toKill.name){
 			game.playSound(Sound.HIT);
 			game.broadcast(Messages.ATTACK_PLAYER, {index: game.getPlayerByUUID(hit_player.getUUID()), uuid: "none", amount: amount});
 			this.addXP(15);
