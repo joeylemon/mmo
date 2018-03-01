@@ -139,10 +139,11 @@
 
 					<span class="title">Quest Journal</span>
 					<div class="list" id="quests-list"></div>
+					<input id="quit-button" class="button quit-current" type="submit" value="Quit current quest" onclick="me().quitQuest()"></input>
 				</div>
 
 				<div id="store" class="store unselectable">
-					<span class="close-button unselectable" onclick="screen.hideMenu()">x</span>
+					<span class="close-button unselectable" style="position: absolute;top: 5px;right: 20px;color: #3c3c3c;" onclick="screen.hideMenu()">x</span>
 					<span class="title">Armory</span>
 					<div class="nav">
 						<span class="type"><a href="#" onclick="armory.showArmorStore()">Armor</a></span>

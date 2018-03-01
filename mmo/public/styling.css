@@ -272,11 +272,19 @@ div.leaderboards tbody:nth-child(even) {
      display: none;
      position: relative;
      width: 600px;
-	 height: 407px;
+	 height: 450px;
      background-color: #fff;
      border-radius: 3px;
      font-family: profont;
      padding-bottom: 10px;
+}
+
+.quests .quit-current {
+	width: 100%;
+	margin-top: 10px;
+	font-size: 25px;
+	color: #fff;
+	background-color: #A90000;
 }
 
 .quests .title {
@@ -387,27 +395,31 @@ div.leaderboards tbody:nth-child(even) {
 }
 
 .store {
-     display: none;
-     position: relative;
-     width: 600px;
-     height: 635px;
-     background-color: #fff;
-     border-radius: 3px;
-     font-family: profont;
-     margin-top: -30px;
-     box-shadow: 0px 0px 10px #252525;
+    display: none;
+    position: relative;
+    width: 620px;
+    height: 600px;
+    /* background-color: #fff; */
+    border-radius: 3px;
+    background-image: url(styles/images/login-bg.png);
+    background-size: cover;
+    font-family: profont;
+    margin-top: -30px;
+    /* box-shadow: 0px 0px 10px #252525; */
 }
 
 .store .title {
-     font-size: 50px;
-     color: #000;
+    position: relative;
+    top: 35px;
+    font-size: 50px;
+    color: #000;
 }
 
 .store .nav {
-     position: absolute;
-     top: 12px;
-     left: 15px;
-     font-size: 17px;
+    position: absolute;
+    top: 45px;
+    left: 40px;
+    font-size: 17px;
 }
 
 .nav .type a {
@@ -430,6 +442,11 @@ div.leaderboards tbody:nth-child(even) {
      font-size: 18px;
 }
 
+.sub-store {
+    transform: scale(0.85, 0.85);
+    margin-top: 15px;
+}
+
 .sub-store .store-item {
      display: inline-block;
      float: left;
@@ -440,7 +457,7 @@ div.leaderboards tbody:nth-child(even) {
 }
 
 .store-item:hover {
-     background-color: #eaeaea;
+     background-color: rgba(0, 0, 0, 0.1);
 }
 
 .store-item .image {
