@@ -36,6 +36,17 @@ img {
      filter: blur(15px);
 }
 
+.minimap {
+	display: none;
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	width: 200px;
+	height: 200px;
+	filter: none;
+	box-shadow: 0px 0px 4px #000;
+}
+
 .borders {
 	position: fixed;
 	top: 0px;
@@ -215,14 +226,17 @@ img {
 }
 
 .leaderboards {
-     display: none;
-     position: relative;
-     width: 700px;
-     height: 600px;
-     background-color: #fff;
-     border-radius: 3px;
-     font-family: profont;
-     padding-bottom: 10px;
+	display: none;
+	position: relative;
+    width: 685px;
+    height: 665px;
+	border-radius: 3px;
+	font-family: profont;
+	color: #000;
+	padding-bottom: 10px;
+	padding-top: 50px;
+	background-image: url(styles/images/login-bg.png);
+	background-size: cover;
 }
 
 .leaderboards .title {
@@ -230,13 +244,13 @@ img {
 }
 
 .leaderboards .next-page {
-	top: 30px;
-	right: 208px;
+	top: 80px;
+	right: 250px;
 }
 
 .leaderboards .last-page {
-	top: 30px;
-	left: 208px;
+	top: 80px;
+	left: 250px;
 }
 
 .leaderboards .rank {
@@ -250,11 +264,12 @@ img {
 }
 
 div.leaderboards table {
-     margin: 0 auto;
-     margin-top: 30px;
-     text-align: left;
-     font-size: 23px;
-     width: 90%;
+	margin: 0 auto;
+	margin-top: 10px;
+	margin-left: 50;
+	text-align: left;
+	font-size: 23px;
+	width: 90%;
 }
 
 div.leaderboards td, th {
@@ -265,26 +280,28 @@ div.leaderboards td, th {
 }
 
 div.leaderboards tbody:nth-child(even) {
-     background-color: #f5f5f5;
+     background-color: rgba(0, 0, 0, 0.05);
 }
 
 .quests {
      display: none;
      position: relative;
-     width: 600px;
-	 height: 450px;
-     background-color: #fff;
+     width: 570px;
+	 height: 555px;
      border-radius: 3px;
      font-family: profont;
      padding-bottom: 10px;
+	 padding-top: 40px;
+	 background-image: url(styles/images/login-bg.png);
+	 background-size: cover;
 }
 
 .quests .quit-current {
-	width: 100%;
-	margin-top: 10px;
-	font-size: 25px;
-	color: #fff;
-	background-color: #A90000;
+	width: 450px;
+    margin-top: 20px;
+    font-size: 25px;
+    color: #fff;
+    background-color: #a90000;
 }
 
 .quests .title {
@@ -307,13 +324,13 @@ div.leaderboards tbody:nth-child(even) {
 }
 
 .quests .next-page {
-	top: 31px;
-	right: 205px;
+	top: 70px;
+	right: 190px;
 }
 
 .quests .last-page {
-	top: 31px;
-	left: 205px;
+	top: 70px;
+	left: 190px;
 }
 
 .close-button {
@@ -325,6 +342,13 @@ div.leaderboards tbody:nth-child(even) {
      color: #BCBCBC;
 }
 
+.page-close {
+	position: absolute;
+    top: 5px;
+    right: 20px;
+    color: #3c3c3c;
+}
+
 .close-button:hover {
      opacity: 0.6;
 }
@@ -332,7 +356,6 @@ div.leaderboards tbody:nth-child(even) {
 .quests .quest {
      display: inline-block;
      width: 100%;
-     background-color: #EEEEEE;
      margin-top: 5px;
 }
 

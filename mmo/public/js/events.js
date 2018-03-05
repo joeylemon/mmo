@@ -29,6 +29,7 @@ var Events = function(){
 			game.initializeClientEntities();
 			screen.removeLoginScreen();
 			$("#new-user").fadeOut(250);
+			$("#minimap").fadeIn(250);
 			armory.setStoreItems();
 			game.setPlayerToKill();
 			updateNPCs();

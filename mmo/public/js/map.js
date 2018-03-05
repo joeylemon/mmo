@@ -155,6 +155,15 @@ GameMap.prototype.getCenter = function(){
 	return {x: map.getMaxX() / 2, y: map.getMaxY() / 2};
 }
 
+GameMap.prototype.getMinimapLocation = function(x, y){
+	var new_x = x / (map.getMaxX() / 200);
+	var new_y = y / (map.getMaxY() / 200);
+	
+	var minimap_size = 200;
+	var minimap_margin = 20;
+	return {x: new_x + window.innerWidth - minimap_size - minimap_margin, y: new_y + minimap_margin};
+}
+
 GameMap.prototype.getName = function(){
 	return this.name;
 }
@@ -181,3 +190,11 @@ maps = {
 	beach: new GameMap(MapType.BEACH),
 	hell: new GameMap(MapType.HELL)
 };
+
+var minimaps = {};
+for(var key in maps){
+	var img = new Image();
+	img.src = "js/minimap/" + key + ".png";
+
+	minimaps[key] = img;
+}

@@ -129,10 +129,13 @@ socket.on('msg', function(data){
 		document.getElementById("online").innerHTML = game.getPlayersOnline();
 	}else if(data.type == Messages.KEYS){
 		var array = data.keys;
-		if(array.length > 0){
-			players[data.index].setKeys(array);
-		}else{
-			players[data.index].clearKeys();
+		var player = players[data.index];
+		if(player){
+			if(array.length > 0){
+				player.setKeys(array);
+			}else{
+				player.clearKeys();
+			}
 		}
 	}else if(data.type == Messages.LOCATION){
 		var player = players[data.index];
@@ -145,39 +148,64 @@ socket.on('msg', function(data){
 		}
 	}else if(data.type == Messages.CHANGE_MAP){
 		var player = players[data.index];
-		player.setMap(data.newmap);
+		if(player){
+			player.setMap(data.newmap);
+		}
 	}else if(data.type == Messages.ATTACK){
-		players[data.index].attack();
+		var player = players[data.index];
+		if(player){
+			player.attack();
+		}
 	}else if(data.type == Messages.LEVEL_UP){
-		players[data.index].setLevel(data.newlevel);
-		players[data.index].addText(new Text("Level Up!", {size: 25, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4}));
+		var player = players[data.index];
+		if(player){
+			player.setLevel(data.newlevel);
+			player.addText(new Text("Level Up!", {size: 25, block: true, color: TextColor.LEVEL_UP, death: 1000, speed: 0.4}));
+		}
 	}else if(data.type == Messages.CHAT){
-		players[data.index].say(data.msg);
+		var player = players[data.index];
+		if(player){
+			player.say(data.msg);
+		}
 	}else if(data.type == Messages.UPDATE_INV){
 		var player = players[data.index];
 		var oldinv = player.inventory;
 		var newinv = data.newinv;
+		
+		if(player){
+			player.inventory = newinv;
 
-		player.inventory = newinv;
-
-		if(oldinv.armor != newinv.armor){
-			player.giveArmor(game.getArmorFromID(newinv.armor));
-		}
-		if(oldinv.sword != newinv.sword){
-			player.giveWeapon(game.getWeaponFromID(newinv.sword));
+			if(oldinv.armor != newinv.armor){
+				player.giveArmor(game.getArmorFromID(newinv.armor));
+			}
+			if(oldinv.sword != newinv.sword){
+				player.giveWeapon(game.getWeaponFromID(newinv.sword));
+			}
 		}
 	}else if(data.type == Messages.ATTACK_PLAYER){
-		players[data.index].softHurt(data.amount);
+		var player = players[data.index];
+		if(player){
+			player.softHurt(data.amount);
+		}
 	}else if(data.type == Messages.DEATH){
-		players[data.index].kill();
+		var player = players[data.index];
+		if(player){
+			player.kill();
+		}
 	}else if(data.type == Messages.SOFT_DEATH){
-		players[data.index].softKill();
-		if(me().isDoingObjective(Objective.KILL_PLAYER)){
-			if(players[data.index].getUUID() == toKill.getUUID()){
-				me().advanceQuest();
+		var player = players[data.index];
+		if(player){
+			player.softKill();
+			if(me().isDoingObjective(Objective.KILL_PLAYER)){
+				if(players[data.index].getUUID() == toKill.getUUID()){
+					me().advanceQuest();
+				}
 			}
 		}
 	}else if(data.type == Messages.REVIVE){
-		players[data.index].revive();
+		var player = players[data.index];
+		if(player){
+			player.revive();
+		}
 	}
 });

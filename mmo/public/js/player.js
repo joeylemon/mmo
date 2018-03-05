@@ -376,6 +376,25 @@ Player.prototype.advanceQuest = function(){
 	this.sendQuestUpdate();
 };
 
+Player.prototype.quitQuest = function(){
+	if(this.hasQuest()){
+		game.flashMessage("<span style='color:#FF9B2E'>Ended:</span> \"" + this.getQuest().getTitle() + "\"");
+		
+		var npc = getQuestNPC(getQuestID(this.getQuest().getTitle()));
+		npc.quest.given = false;
+		
+		this.quests.current = -1;
+		this.quests.step = -1;
+		this.quests.data = {};
+		
+		this.progress.quest = undefined;
+		this.progress.step = 1;
+		this.progress.data = undefined;
+		
+		questmenu.show();
+	}
+};
+
 Player.prototype.completeQuest = function(){
 	this.addXP(this.getQuest().getXPReward());
 	this.addGP(this.getQuest().getGPReward());

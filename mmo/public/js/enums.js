@@ -12,12 +12,17 @@ var top = canvas.height / 2  - (height * scale) / 2;
 var left = canvas.width / 2 - (width * scale) / 2;
 ctx.setTransform(scale, 0, 0, scale, left, top);
 
+var mini_canvas = document.getElementById("minimap");
+var mini_ctx = mini_canvas.getContext("2d");
+mini_canvas.width  = $("#minimap").width();
+mini_canvas.height = $("#minimap").height();
+
 $("#game").mousedown(function(event){
 	event.preventDefault();
 });
 
 /* Initialize game variables */
-var socket = io();
+var socket = io("75.131.33.49:3000");
 
 var leaderboard = new Leaderboard();
 var screen = new PlayerScreen();
@@ -28,6 +33,7 @@ var ogreID = Math.random() * 100000;
 var prevChats = new Array();
 var chatbox = new Array();
 var bordersFading = false;
+var minimapShowing = true;
 var prevChatIndex = 0;
 var hitSound = 1;
 var nearbyNPC;
@@ -110,7 +116,10 @@ var Settings = {
 	item_float_dist: 15,
 
 	/* Collision settings */
-	collision_factor: 6
+	collision_factor: 6,
+	
+	/* Minimap settings */
+	minimap_player_size: 5
 };
 
 var EventType = {
@@ -269,6 +278,15 @@ window.onload = function(){
 	events.fire(EventType.LOAD_FINISH);
 }
 
+function downloadCanvas(link, canvasId, filename) {
+    link.href = document.getElementById(canvasId).toDataURL();
+    link.download = filename;
+}
+
+document.getElementById('download').addEventListener('click', function() {
+    downloadCanvas(this, 'game', 'canvas.png');
+}, false);
+
 /* Initialize functions */
 Array.prototype.getPage = function(page, items){
 	var start = (page - 1) * items;
@@ -322,6 +340,15 @@ Array.prototype.containsName = function(name){
 
 function me(){
 	return players[myIndex];
+}
+
+function toggleMinimap(){
+	if(minimapShowing){
+		$("#minimap").hide();
+	}else{
+		$("#minimap").show();
+	}
+	minimapShowing = !minimapShowing;
 }
 
 function clone(object){

@@ -9,6 +9,8 @@
 
 	<body style="background-image: url('styles/images/loading-bg.png');background-size: cover;" onresize="resize()">
 		<canvas id="game" class="game unselectable" draggable="false" style="display:none;"></canvas>
+		
+		<canvas class="minimap" id="minimap"></canvas>
 
 		<div id="borders" class="borders"></div>
 
@@ -124,16 +126,17 @@
 					<div class="menu">
 						<input class="button menu-button" type="submit" value="Quest Journal" onclick="questmenu.show()"></input>
 						<input class="button menu-button" type="submit" value="Leaderboards" onclick="leaderboard.show()"></input>
-						<input class="button menu-button" type="submit" value="Source Code" onclick="window.open('https://github.com/finelime/mmo', '_blank');"></input>
+						<input class="button menu-button" type="submit" value="Toggle Minimap" onclick="toggleMinimap()"></input>
+						<input class="button menu-button" type="submit" value="Source Code" onclick="window.open('https://github.com/joeylemon/mmo', '_blank');"></input>
 						<input class="button menu-button" type="submit" value="Leave Game" onclick="location.reload()"></input>
 					</div>
 					<div class="credits">
-						Art assets borrowed from Mozilla's Browser Quest.
+						<a id="download">Download canvas as image</a>
 					</div>
 				</div>
 
 				<div id="quests" class="quests">
-					<span class="close-button unselectable" onclick="questmenu.hide()">x</span>
+					<span class="close-button page-close unselectable" onclick="questmenu.hide()">x</span>
 					<span id="q-next-page" class="page-button next-page" onclick="questmenu.next()"></span>
 					<span id="q-last-page" class="page-button last-page" onclick="questmenu.prev()"></span>
 
@@ -143,7 +146,7 @@
 				</div>
 
 				<div id="store" class="store unselectable">
-					<span class="close-button unselectable" style="position: absolute;top: 5px;right: 20px;color: #3c3c3c;" onclick="screen.hideMenu()">x</span>
+					<span class="close-button page-close unselectable" onclick="screen.hideMenu()">x</span>
 					<span class="title">Armory</span>
 					<div class="nav">
 						<span class="type"><a href="#" onclick="armory.showArmorStore()">Armor</a></span>
@@ -155,7 +158,7 @@
 				</div>
 
 				<div id="leaderboards" class="leaderboards unselectable">
-					<span class="close-button unselectable" onclick="leaderboard.hide()">x</span>
+					<span class="close-button page-close unselectable" onclick="leaderboard.hide()">x</span>
 					<span id="l-next-page" class="page-button next-page" onclick="leaderboard.next()"></span>
 					<span id="l-last-page" class="page-button last-page" onclick="leaderboard.prev()"></span>
 					<span class="title">Leaderboards</span>
@@ -202,6 +205,7 @@
 	<script src="js/game.js"></script>
 	<script src="js/enums.js"></script>
 	<script src="js/map.js"></script>
+	<script src="js/minimap.js"></script>
 	<script src="js/flyingtext.js"></script>
 	<script src="js/message.js"></script>
 	<script src="js/sprite.js"></script>

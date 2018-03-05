@@ -43,7 +43,9 @@ Client.prototype.draw = function(){
 
 		map.draw(MapLayer.BOTTOM);
 		this.drawArray(items);
-
+		
+		minimap.draw();
+		
 		for(var i = 0; i < players.length; i++){
 			var p = players[i];
 			if(i != myIndex && p != null){
@@ -52,6 +54,10 @@ Client.prototype.draw = function(){
 					p.setX(p.getX() - pos.x);
 					p.setY(p.getY() - pos.y);
 					p.draw();
+				}
+				
+				if(p.getMap() == me().getMap()){
+					minimap.drawPlayer(p.getX(), p.getY(), "#fff");
 				}
 			}
 		}
@@ -93,6 +99,7 @@ Client.prototype.draw = function(){
 			}
 
 			me().draw();
+			minimap.drawPlayer(me().getX(), me().getY(), "gold");
 		}else{
 			camera.update(this.temp_pos, Settings.idle_camera_speed);
 			this.temp_pos.x += Settings.idle_camera_speed;
@@ -103,7 +110,7 @@ Client.prototype.draw = function(){
 
 		map.draw(MapLayer.TOP);
 
-		this.drawArray(npcs);
+		this.drawArray(npcs, true);
 		this.drawArray(store_npcs);
 
 		document.getElementById("players").innerHTML = this.players_onscreen;
@@ -120,11 +127,17 @@ Client.prototype.draw = function(){
 	}
 };
 
-Client.prototype.drawArray = function(array){
+Client.prototype.drawArray = function(array, drawMini){
 	for(var i = 0; i < array.length; i++){
 		var object = array[i];
 		if(object.getSprite().isDataSet() && (game.isVisible(object.getCenter().x, object.getCenter().y) || object.dest)){
 			object.draw();
+		}
+		
+		if(drawMini){
+			if(object.getMap() == me().getMap()){
+				minimap.drawPlayer(object.getX(), object.getY(), "#42d7f4");
+			}
 		}
 	}
 };

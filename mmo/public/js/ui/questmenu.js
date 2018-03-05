@@ -8,6 +8,12 @@ QuestMenu.prototype.show = function(){
 	$("#logo").fadeOut(250);
 	$("#menu").fadeOut(250);
 	$("#quests").delay(250).fadeIn(250);
+	
+	if(me().hasQuest()){
+		$("#quit-button").show();
+	}else{
+		$("#quit-button").hide();
+	}
 };
 
 QuestMenu.prototype.hide = function(){

@@ -44,8 +44,10 @@ PlayerScreen.prototype.fadeBlurOut = function(){
 		blur -= 0.3;
 		if(blur >= 0){
 			$("#game").css("filter", "blur(" + blur + "px)");
+			$("#minimap").css("filter", "blur(" + blur + "px)");
 		}else{
 			$("#game").css("filter", "blur(0px)");
+			$("#minimap").css("filter", "blur(0px)");
 			clearInterval(task);
 			noblur = true;
 		}
@@ -58,8 +60,10 @@ PlayerScreen.prototype.fadeBlurIn = function(){
 		blur += 0.3;
 		if(blur < Settings.max_blur){
 			$("#game").css("filter", "blur(" + blur + "px)");
+			$("#minimap").css("filter", "blur(" + blur + "px)");
 		}else{
 			$("#game").css("filter", "blur(" + Settings.max_blur + "px)");
+			$("#minimap").css("filter", "blur(" + Settings.max_blur + "px)");
 			clearInterval(task);
 			noblur = false;
 		}
