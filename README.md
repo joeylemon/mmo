@@ -4,7 +4,7 @@ An online multiplayer game which allows players to interact with each other and 
 ![](http://i.imgur.com/vQVsxHm.png)
 
 ## Features included
-- Persistent user accounts
+- Persistent user accounts secured with encryption
 - Real time multiplayer using socket.io and node.js
 - Explorable world
 - Purchasable weapons and armor
